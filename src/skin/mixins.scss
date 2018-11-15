@@ -1,0 +1,18 @@
+/*
+ * @Author: zhang dajia 
+ * @Date: 2017-10-19 13:28:10 
+ * @Last Modified by: zhang dajia
+ * @Last Modified time: 2018-11-14 10:08:01
+ */
+ $baseFontSize:      32px !default; //默认页面默认根元素的font-size
+ // pixels to rems 
+ @function pxToRem($px) {
+   @return $px / $baseFontSize * 1rem;
+ }
+ @mixin center-x-y {
+   position: absolute;
+   left: 50%;
+   top: 50%;
+   transform: translateX(-50%) translateY(-50%);
+ }
+ 
