@@ -1,7 +1,7 @@
 {
   "name": "hmbird-ssr",
   "version": "1.0.0",
-  "description": "{{description||'HMbird-ssr是一个基于React16+   ReactRouter4.0  koa2.0搭建的一个node服务端渲染框架'}}",
+  "description": "{{description}}",
   "main": "webpack.config.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -20,7 +20,7 @@
     "type": "git",
     "url": "{{url}}"
   },
-  "author": "{{author||'zhangdajia'}}",
+  "author": "{{author}}",
   "license": "MIT",
   "devDependencies": {
     "autoprefixer": "^6.4.0",
