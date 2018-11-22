@@ -1,3 +1,3 @@
 module.exports = {
-    ssrPageFilter:['favicon.ico','vendor'] //过滤掉不需要服务端渲染的页面 'fxcformcommon_server','fxcformcommon_server_router'
+    ssrPageFilter:['favicon.ico','vendor','images'] // 过滤掉不需要服务端渲染的页面 默认favicon.ico vendor images不要动  
 }

@@ -9,7 +9,14 @@ class App extends Component {
         super(props);
     }
     render() {
-        return <div className="demo">hello HMbird-ssr,I`m a static page</div>;
+        return (
+            <div className="demo">
+                <span>
+                    <img src={require('images/with-react/time.png')} />
+                </span>
+                hello HMbird-ssr,I`m a static page
+            </div>
+        );
     }
 }
 module.exports = App;

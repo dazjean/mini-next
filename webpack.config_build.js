@@ -125,7 +125,7 @@ copyVendorAction();//copy 第三方库到dist目录
 let buildConfig = Object.assign({}, config, {
     devtool: false,
     output: {
-        publicPath:"../", //生产环境脚本代码则设置cdn地址 https://j1.58cdn.com.cn/escstatic/hmbird/
+        publicPath:"/", //生产环境脚本代码则设置cdn地址 https://j1.58cdn.com.cn/escstatic/hmbird/
         libraryTarget: 'umd',
         path: __dirname + '/dist/', //打包后的文件存放的地方
         filename:'[name].js' //打包后输出文件的文件名
