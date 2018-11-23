@@ -1,12 +1,13 @@
 /* * @Author: zhang dajia * @Date: 2018-11-05 14:16:25 
  * @Last Modified by: zhang dajia
- * @Last Modified time: 2018-11-09 11:41:22
+ * @Last Modified time: 2018-11-23 20:33:09
 * @Last  description: undefined */
 const React =require('react');
 import ReactDOMServer from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom';
 const router = require('koa-router')();
 import fs from 'fs';
+const getStream = require('get-stream');
 import PageComponent from './pageInit';//初始化ssr页面入口文件导入配置
 /**
  * 用Promise封装异步读取文件方法
@@ -28,26 +29,34 @@ function render( pagename ) {
 router.get('/hmbird/:pagename', async (ctx, next) => {
     let pagename = ctx.params.pagename;
     let App = PageComponent[pagename];
+    let Htmlstream = '';
     let Html = '';
     try {
-        Html = ReactDOMServer.renderToString(<App/>);
+        Htmlstream = ReactDOMServer.renderToNodeStream(<App/>);
     } catch (error) {
         console.log('服务端渲染异常，降级使用客户端渲染！');
     }
     // 加载 index.html 的内容
-    let data = await render( pagename )
+    let data = await render( pagename );
+    try {
+        Html = await getStream(Htmlstream);
+    } catch (error) {
+        console.log('流转化字符串异常，降级使用客户端渲染！');
+    }
     // 把渲染后的 React HTML 插入到 div 中
     let document = data.replace(/<div id="app"><\/div>/, `<div id="app">${Html}</div>`);
     // 把响应传回给客户端
     ctx.response.body = document; 
 });
+
 router.get('/hmbird_router/:pagename',async(ctx,next)=>{
     const context = {}
     var pagename = ctx.params.pagename;
     let App = PageComponent[pagename];
     let Html = '';
+    let Htmlstream = '';
     try {
-        Html = ReactDOMServer.renderToString(
+        Htmlstream = ReactDOMServer.renderToNodeStream(
             <StaticRouter
             location={ctx.request.url}
             context={context}
@@ -65,7 +74,12 @@ router.get('/hmbird_router/:pagename',async(ctx,next)=>{
         ctx.response.end()
     } else {
         // 加载 index.html 的内容
-        let data = await render( pagename )
+        let data = await render( pagename );
+        try {
+            Html = await getStream(Htmlstream);
+        } catch (error) {
+            console.log('流转化字符串异常，降级使用客户端渲染！');
+        }
         // 把渲染后的 React HTML 插入到 div 中
         let document = data.replace(/<div id="app"><\/div>/, `<div id="app">${Html}</div>`);
         // 把响应传回给客户端

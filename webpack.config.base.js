@@ -1,4 +1,5 @@
 var fs = require('fs');
+var webpack = require('webpack');
 var ExtractTextPlugin = require("extract-text-webpack-plugin"); //css单独打包
 var optimist = require("optimist");
 var cateName = optimist.argv.cate;
@@ -59,7 +60,12 @@ let config = {
         hotOnly: true
     },
     plugins: [
-        new ExtractTextPlugin('[name].css')
+        new ExtractTextPlugin('[name].css'),
+        new webpack.DefinePlugin({
+            "process.env": {
+                NODE_ENV: JSON.stringify("development")
+            }
+        })
     ],
      externals: {
         'react-router': {

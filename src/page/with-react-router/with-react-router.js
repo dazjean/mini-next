@@ -1,4 +1,3 @@
-//test
 'use strict';
 //引入样式文件
 //引入组件
@@ -8,13 +7,14 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import ReactDom from 'react-dom';
 import App from './app';
 
-var inBrowser = typeof window !== 'undefined';
+let inBrowser = typeof window !== 'undefined';
+console.log('当前环境是：' + process.env.NODE_ENV);
+let ReactRender = process.env.NODE_ENV == 'development' ? ReactDom.render : ReactDom.hydrate;
 inBrowser &&
-    ReactDom.render(
+    ReactRender(
         <Router basename="/hmbird_router/with-react-router">
             <App />
         </Router>,
         document.getElementById('app')
     );
-
 module.exports = App;

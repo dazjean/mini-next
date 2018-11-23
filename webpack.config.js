@@ -1,4 +1,5 @@
 'use strict';
+process.env.NODE_ENV = 'development';//设置当前环境
 var HTMLWebpackPlugin = require('html-webpack-plugin');
 var fs = require('fs');
 var {config,entryObj} = require('./webpack.config.base');

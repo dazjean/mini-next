@@ -12,7 +12,7 @@ class App extends Component {
         return (
             <div className="demo">
                 <span>
-                    <img src={require('images/with-react/time.png')} />
+                    <img src={require('images/with-react/addressIcon.jpg')} />
                 </span>
                 hello HMbird-ssr,I`m a static page
             </div>

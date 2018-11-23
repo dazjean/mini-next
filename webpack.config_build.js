@@ -1,4 +1,5 @@
 'use strict';
+process.env.NODE_ENV = 'production';//设置当前环境
 var webpack = require('webpack');
 var path = require('path');
 var copyfiles = require('copyfiles');
