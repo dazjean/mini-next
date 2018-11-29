@@ -1,6 +1,10 @@
 >hmbird-ssr是一个基于React16+   ReactRouter4.0  koa2.0搭建的一个node服务端渲染框架；
 
- 
+  ## 更新记录：
+ ### 2018-11-29 
+
+ - 解决页面进入router之后 刷新页面事路由页面404问题;
+- 服务端项目可构建编译npmrun build:server
 
 ## 框架特性：
 
@@ -199,7 +203,7 @@ ctx.response.body = document;
 //pageInit.js  
 /* * @Author: zhang dajia * @Date: 2018-11-05 14:58:28 
  * @Last Modified by: zhang dajia
- * @Last Modified time: 2018-11-23 20:31:48
+ * @Last Modified time: 2018-11-29 18:32:37
 * @Last  description: 服务端启动时初始化page入口文件 */
 const fs = require('fs');
 const path = require('path');
