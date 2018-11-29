@@ -1,11 +1,15 @@
 /* * @Author: zhang dajia * @Date: 2018-11-05 14:16:25 
  * @Last Modified by: zhang dajia
- * @Last Modified time: 2018-11-23 20:33:09
+ * @Last Modified time: 2018-11-29 18:08:55
 * @Last  description: undefined */
 const React =require('react');
 import ReactDOMServer from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom';
-const router = require('koa-router')();
+const Router = require('koa-router');
+const router_static = new Router();
+const router_dynamic = new Router();
+
+var forums = new Router();
 import fs from 'fs';
 const getStream = require('get-stream');
 import PageComponent from './pageInit';//初始化ssr页面入口文件导入配置
@@ -14,7 +18,7 @@ import PageComponent from './pageInit';//初始化ssr页面入口文件导入配
  * @param  {string} page html文件名称
  * @return {promise}      
  */
-function render( pagename ) {
+const render = ( pagename )=> {
     return new Promise(( resolve, reject ) => {
       let viewUrl = `./dist/${pagename}/${pagename}.html`
       fs.readFile(viewUrl, "utf8", ( err, data ) => {
@@ -26,8 +30,14 @@ function render( pagename ) {
       })
     })
 }
-router.get('/hmbird/:pagename', async (ctx, next) => {
+/**
+ * 静态资源类型页面渲染解析
+ * @param {*} ctx 
+ * @param {*} next 
+ */
+const renderServerStatic = async(ctx,next)=>{
     let pagename = ctx.params.pagename;
+    console.log('匹配到页面'+pagename)
     let App = PageComponent[pagename];
     let Htmlstream = '';
     let Html = '';
@@ -45,11 +55,16 @@ router.get('/hmbird/:pagename', async (ctx, next) => {
     }
     // 把渲染后的 React HTML 插入到 div 中
     let document = data.replace(/<div id="app"><\/div>/, `<div id="app">${Html}</div>`);
+    return document;
     // 把响应传回给客户端
-    ctx.response.body = document; 
-});
-
-router.get('/hmbird_router/:pagename',async(ctx,next)=>{
+    
+}
+/**
+ * Router类型页面渲染解析
+ * @param {*} ctx 
+ * @param {*} next 
+ */
+const renderServerDynamic = async(ctx,next)=>{
     const context = {}
     var pagename = ctx.params.pagename;
     let App = PageComponent[pagename];
@@ -83,8 +98,26 @@ router.get('/hmbird_router/:pagename',async(ctx,next)=>{
         // 把渲染后的 React HTML 插入到 div 中
         let document = data.replace(/<div id="app"><\/div>/, `<div id="app">${Html}</div>`);
         // 把响应传回给客户端
-        ctx.response.body = document; 
+        return document;
     }
+}
+//主入口文件路由
+router_static.get('/', async (ctx, next) => {
+   let document = await renderServerStatic(ctx,next);
+   ctx.response.body = document; 
 });
+//router主入口文件路由
+router_dynamic.get('/',async(ctx,next)=>{
+    console.log('匹配到页面'+ctx.params.pagename)
+    let document = await renderServerDynamic(ctx,next);
+    ctx.response.body = document; 
+});
+//router页面router路由 防止刷新路由页面404
+router_dynamic.get('/:pagepath',async(ctx,next)=>{
+    console.log('匹配到页面路由'+ctx.params.pagepath)
+    let document = await renderServerDynamic(ctx,next);
+    ctx.response.body = document; });
+forums.use('/hmbird/:pagename',router_static.routes(),router_static.allowedMethods());
+forums.use('/hmbird_router/:pagename',router_dynamic.routes(),router_dynamic.allowedMethods());
 
-module.exports = router;
+module.exports = forums;

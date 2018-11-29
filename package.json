@@ -7,7 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "webpack-dev-server  --progress --colors --cate",
     "build": "webpack --config webpack.config_build.js -p  --cate",
+    "build:server": "webpack --config webpack.config_server.js -p  --cate",
     "start": "node server/start.js",
+    "start:server": "node build_server/server.bundle.js",
     "arthur-start": "npm run build && pm2 start server/start.js --name=hmbirdSsrService",
     "arthur-stop": "pm2 stop hmbirdSsrService",
     "lint:js": "eslint src/page/**/*/*.{js,css} --fix && eslint src/components/**/*/*.{js,css} --fix",
@@ -81,6 +83,7 @@
     "react-dom": "^16.2.0",
     "react-redux": "^5.0.6",
     "react-router-dom": "^4.3.1",
+    "webpack-node-externals": "^1.7.2",
     "whatwg-fetch": "^2.0.3"
   }
 }
