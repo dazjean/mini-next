@@ -4,7 +4,7 @@
  ### 2018-11-29 
 
  - 解决页面进入router之后 刷新页面事路由页面404问题;
-- 服务端项目可构建编译npmrun build:server
+- 服务端项目可构建编译npm run build:server
 
 ## 框架特性：
 
