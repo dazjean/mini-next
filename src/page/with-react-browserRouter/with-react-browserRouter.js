@@ -4,9 +4,6 @@
 import './with-react-browserRouter.scss';
 import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
-//import { Router } from 'react-router-dom';
-//import createHistory from 'history/createBrowserHistory';
-//let history = createHistory();
 import ReactDom from 'react-dom';
 import App from './app';
 
