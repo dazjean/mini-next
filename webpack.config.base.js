@@ -41,8 +41,8 @@ let config = {
             { test: /\.js$/, loader: "jsx!babel", include: srcPath ,exclude: /node_modules/},
             { test: /\.css$/, loader: ExtractTextPlugin.extract("css", "css!postcss") },
             { test: /\.scss$/, loader: ExtractTextPlugin.extract("css", "css!postcss!sass") },
+            {test: /\.less$/, loader: ExtractTextPlugin.extract('css','css!postcss!less')}
             { test: /\.(png|jpg)$/, loader: 'url?limit=8192&name=images/[hash:8].[name].[ext]' },
-            {test: /\.less$/, loader: 'css!postcss!less'}
         ]
     },
     postcss: [
