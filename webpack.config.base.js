@@ -35,10 +35,10 @@ let config = {
     module: {
         preLoaders: [
             // 配置 eslint-loader
-            {test: /\.(js|jsx)$/, loader: "eslint-loader",include:srcPath, exclude: /node_modules/}
+            {test: /\.(js|jsx)$/, loader: "eslint-loader",include:/src/, exclude: /node_modules/}
         ],
         loaders: [
-            { test: /\.js$/, loader: "jsx!babel", include: srcPath ,exclude: /node_modules/},
+            { test: /\.(js|jsx)$/, loader: "jsx!babel", include: /src/ ,exclude: /node_modules/},
             { test: /\.css$/, loader: ExtractTextPlugin.extract("css", "css!postcss") },
             { test: /\.scss$/, loader: ExtractTextPlugin.extract("css", "css!postcss!sass") },
             {test: /\.less$/, loader: ExtractTextPlugin.extract('css','css!postcss!less')},
