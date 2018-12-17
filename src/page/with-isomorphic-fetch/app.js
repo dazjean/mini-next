@@ -9,17 +9,24 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.state = { data: '' };
+        this.getInitData = this.getInitData.bind(this);
     }
-    async getInitData() {
-        let response = await fetch('http://localhost:9991/mock/test.json');
-        let listData = await response.json();
-        return listData;
-    }
-    async componentWillMount() {
+    getInitData() {
         let self = this;
-        var getData = await this.getInitData();
-        console.log(getData);
-        self.setState({ data: getData.text });
+        fetch('http://localhost:9991/mock/test.json')
+            .then(response => {
+                return response.json();
+            })
+            .then(res => {
+                self.setState({ data: res.text });
+            })
+            .catch(e => {
+                self.setState({ data: '接口异常' + e });
+            });
+    }
+    componentWillMount() {
+        let self = this;
+        self.getInitData();
     }
     render() {
         return <div className="demo">{this.state.data}</div>;

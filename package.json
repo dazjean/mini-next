@@ -12,11 +12,11 @@
     "start:server": "node build_server/server.bundle.js",
     "arthur-start": "npm run build && pm2 start server/start.js --name=hmbirdSsrService",
     "arthur-stop": "pm2 stop hmbirdSsrService",
-    "lint:js": "eslint src/page --fix && eslint src/components --fix",
+    "lint": "eslint src/page --fix && eslint src/components --fix",
     "format": "prettier --write   src/page && prettier --write   src/components"
   },
   "pre-commit": [
-    "lint:js"
+    "lint"
   ],
   "repository": {
     "type": "git",
