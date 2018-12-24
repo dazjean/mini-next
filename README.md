@@ -447,7 +447,7 @@ IE11 和所有的现代浏览器使用了@babel/preset-env。为了支持 IE11�
 ### 安装
     npm install -g hmbird-cli
     
-    hmbird-cli init yourproject
+    hmbird init yourproject
 
 ### 开发启动
     npm run dev 
