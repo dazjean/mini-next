@@ -4,7 +4,7 @@
   "description": "{{description}}",
   "main": "webpack.config.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "output": "node server/build.js --cate",
     "dev": "webpack-dev-server  --progress --colors --cate",
     "build": "webpack --config webpack.config_build.js -p  --cate",
     "build:server": "webpack --config webpack.config_server.js -p  --cate",

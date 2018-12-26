@@ -1,11 +1,19 @@
 ## 更新记录：
-### 2018-11-29 
+### 2018-12-26
+- 新增本地导出服务端渲染模板功能 
+```
+ npm run output  //导出所有项目服务端渲染模板
+ npm run output pagename //导出某一个项目服务端渲染模板
+```
 
+- 解决服务端渲染路由页面刷新时无法匹配到相应的路由问题
+
+### 2018-12-11
+- 解决windows环境下项目构建异常（loader配置include绝对路径导致）
+
+### 2018-11-29 
 - 解决页面进入router之后 刷新页面事路由页面404问题;
 - 服务端项目可构建编译npm run build:server
-### 2018-12-11
-
-- 解决windows环境下项目构建异常（loader配置include绝对路径导致）
 
 >hmbird-ssr是一个基于React16+   ReactRouter4.0  koa2.0搭建的一个node服务端渲染框架；目前已经在二手车业务线中进行项目开发和部署上线，支持SEO，提升首屏加载速度
 
@@ -215,7 +223,7 @@ ctx.response.body = document;
 //pageInit.js  
 /* * @Author: zhang dajia * @Date: 2018-11-05 14:58:28 
  * @Last Modified by: zhang dajia
- * @Last Modified time: 2018-11-06 16:13:34
+ * @Last Modified time: 2018-12-26 16:32:59
 * @Last  description: 服务端启动时初始化page入口文件 */
 const fs = require('fs');
 const path = require('path');

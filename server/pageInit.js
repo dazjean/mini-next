@@ -1,6 +1,6 @@
 /* * @Author: zhang dajia * @Date: 2018-11-05 14:58:28 
  * @Last Modified by: zhang dajia
- * @Last Modified time: 2018-11-29 18:23:46
+ * @Last Modified time: 2018-12-25 15:30:38
 * @Last  description: 服务端启动时初始化page入口文件 */
 const fs = require('fs');
 const path = require('path');
@@ -10,10 +10,10 @@ let pageComponent = {};
 /**
  * 读取dist目录下入口文件夹路径 require引入存放到PageCompoent中
  */
-let pageInit = ()=>{
+const pageInit = ()=>{
     return new Promise((resolve,reject)=>{
         try {
-            console.log("初始化导入项目"+targetDistPath)
+            //console.log("初始化导入项目"+targetDistPath)
             fs.readdir(targetDistPath,function(err,files){
                 if(err){
                     reject(err);  
@@ -37,9 +37,14 @@ let pageInit = ()=>{
         }
         
     })
-}
-(async function(){
+};
+const getPageComponent = async()=>{
     pageComponent = await pageInit();
-    console.log(`初始化服务端dist目录下所有的入口文件:${JSON.stringify(pageComponent)}`);
-}());
-module.exports = pageComponent;
+    console.log(`初始化服务端dist目录下所有的入口文件`);
+    return pageComponent;
+}
+getPageComponent()
+module.exports = {
+    pageComponent,
+    getPageComponent
+};
