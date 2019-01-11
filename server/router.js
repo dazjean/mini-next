@@ -108,5 +108,5 @@ router_dynamic.get('/:pagepath',async(ctx,next)=>{
     ctx.response.body = document; });
 forums.use('/hmbird/:pagename',router_static.routes(),router_static.allowedMethods());
 forums.use('/hmbird_router/:pagename',router_dynamic.routes(),router_dynamic.allowedMethods());
-forums.use('/:pagename',router_dynamic.routes(),router_dynamic.allowedMethods());
+//forums.use('/:pagename',router_dynamic.routes(),router_dynamic.allowedMethods());
 module.exports = forums;
