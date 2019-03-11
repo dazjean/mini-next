@@ -2,7 +2,7 @@
  * @Author: zhang dajia 
  * @Date: 2018-12-22 17:10:16 
  * @Last Modified by: zhang dajia
- * @Last Modified time: 2018-12-25 15:29:30
+ * @Last Modified time: 2019-02-28 18:11:46
  * 服务端渲染解析工具类
  */
 const React =require('react');
@@ -78,7 +78,7 @@ const renderServerDynamic = async(pagename,App)=>{
     try {
         Html = await getStream(Htmlstream);
     } catch (error) {
-        console.log(`${pagename}------流转化字符串异常!`);
+        console.log(`${pagename}------流转化字符串异常!-${error}`);
     }
     // 把渲染后的 React HTML 插入到 div 中
     let document = data.replace(/<div id="app"><\/div>/, `<div id="app">${Html}</div>`);

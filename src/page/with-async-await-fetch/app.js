@@ -19,9 +19,10 @@ class App extends Component {
         let self = this;
         var getData = await this.getInitData();
         console.log(getData);
-        self.setState({ data: getData.text });
+        self.setState({ data: getData.text }); //服务端渲染时无效 Warning: setState(...): Can only update a mounting component. This usually means you called setState() outside componentWillMount() on the server. This is a no-op
     }
     render() {
+        console.log(this.state.data + '-----------');
         return <div className="demo">{this.state.data}</div>;
     }
 }

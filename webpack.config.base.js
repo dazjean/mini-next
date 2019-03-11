@@ -1,5 +1,6 @@
 var fs = require('fs');
 var webpack = require('webpack');
+var autoprefixer = require('autoprefixer');
 var ExtractTextPlugin = require("extract-text-webpack-plugin"); //css单独打包
 var optimist = require("optimist");
 var cateName = optimist.argv.cate;
@@ -46,7 +47,7 @@ let config = {
         ]
     },
     postcss: [
-        require('autoprefixer') //调用autoprefixer插件,css3自动补全
+        autoprefixer({ browsers: ['last 10 versions'] })//调用autoprefixer插件,css3自动补全
     ],
 
     devServer: {
