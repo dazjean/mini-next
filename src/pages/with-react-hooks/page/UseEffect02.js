@@ -2,10 +2,9 @@ import { useState, useEffect } from 'react';
 let APP = () => {
     const [time, setTime] = useState(new Date().getTime());
     useEffect(() => {
-        
         console.log('初始渲染!');
         return function() {
-           // clearTimeout(timer);
+            // clearTimeout(timer);
             console.log('被卸载了!');
         };
     });
