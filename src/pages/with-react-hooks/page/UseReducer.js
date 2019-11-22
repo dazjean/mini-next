@@ -14,9 +14,9 @@ function Clock() {
             <button
                 onClick={async () => {
                     //initState();//异步获取请求
-                    fetchTime().then(action=>{
-                      dispatch(action);
-                    })
+                    fetchTime().then(action => {
+                        dispatch(action);
+                    });
                 }}>
                 get
             </button>

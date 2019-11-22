@@ -1,53 +1,67 @@
 var fs = require('fs');
 var webpack = require('webpack');
 var autoprefixer = require('autoprefixer');
-var ExtractTextPlugin = require("extract-text-webpack-plugin"); //css单独打包
-var optimist = require("optimist");
-var cateName = optimist.argv.cate;
+var ExtractTextPlugin = require('extract-text-webpack-plugin'); //css单独打包
+var optimist = require('optimist');
+var cateName = optimist.argv.cate || 0; //0 来源entry构建
 var entryObj = {};
 var srcPath = __dirname + '/src';
-var entryPath = srcPath+'/page/';
-if (cateName == true) {
-    fs.readdirSync(entryPath).forEach(function(cateName, index) {
-        //cateName/cateName指定输出路径为entryname
-        if (cateName != "index.html"&&cateName!=".DS_Store") entryObj[cateName + '/' + cateName] = entryPath + cateName + '/' + cateName + '.js';
-    });
-} else if(cateName.indexOf(",")) {//一次打包多个入口文件以逗号分隔
-    var cateNameArray = cateName.split(",");
-    for(var i =0;i<cateNameArray.length;i++){
-        entryObj[cateNameArray[i] + '/' + cateNameArray[i]] = entryPath + cateNameArray[i] + '/' + cateNameArray[i] + '.js';
+var entryPath = srcPath + '/pages/';
+if (cateName != 0) {
+    if (cateName == true) {
+        fs.readdirSync(entryPath).forEach(function(cateName, index) {
+            //cateName/cateName指定输出路径为entryname
+            if (cateName != 'index.html' && cateName != '.DS_Store')
+                entryObj[cateName + '/' + cateName] = entryPath + cateName + '/' + cateName + '.js';
+        });
+    } else if (cateName.indexOf(',')) {
+        //一次打包多个入口文件以逗号分隔
+        var cateNameArray = cateName.split(',');
+        for (var i = 0; i < cateNameArray.length; i++) {
+            entryObj[cateNameArray[i] + '/' + cateNameArray[i]] =
+                entryPath + cateNameArray[i] + '/' + cateNameArray[i] + '.js';
+        }
+    } else {
+        //打包单个入口文件
+        entryObj[cateName + '/' + cateName] = entryPath + cateName + '/' + cateName + '.js';
     }
-}else{ //打包单个入口文件
-    entryObj[cateName+"/"+cateName] = entryPath + cateName + '/' + cateName + '.js';
 }
 let config = {
     //devtool: 'eval-source-map',// 开发环境使用
     //devtool: 'cheap-module-source-map',
-    devtool:'#eval-source-map',
-    debug:true,
-    cache:true,
+    devtool: 'cheap-module-eval-source-map',
+    debug: true,
+    cache: true,
     entry: entryObj, //类别入口文件
     output: {
-        publicPath:"/", 
+        publicPath: '/',
         libraryTarget: 'umd',
-        path: __dirname + '/dist/', //打包后的文件存放的地方
-        filename:'[name].js' //打包后输出文件的文件名
+        path: __dirname + '/build/', //打包后的文件存放的地方
+        filename: '[name].js' //打包后输出文件的文件名
     },
     module: {
         preLoaders: [
             // 配置 eslint-loader
-            {test: /\.(js|jsx)$/, loader: "eslint-loader",include:/src/, exclude: /node_modules/}
+            {
+                test: /\.(js|jsx)$/,
+                loader: 'eslint-loader',
+                include: /src/,
+                exclude: /node_modules/
+            }
         ],
         loaders: [
-            { test: /\.(js|jsx)$/, loader: "jsx!babel", include: /src/ ,exclude: /node_modules/},
-            { test: /\.css$/, loader: ExtractTextPlugin.extract("css", "css!postcss") },
-            { test: /\.scss$/, loader: ExtractTextPlugin.extract("css", "css!postcss!sass") },
-            {test: /\.less$/, loader: ExtractTextPlugin.extract('css','css!postcss!less')},
-            { test: /\.(png|jpg)$/, loader: 'url?limit=8192&name=images/[hash:8].[name].[ext]' }
+            { test: /\.(js|jsx)$/, loader: 'jsx!babel', exclude: /node_modules/ },
+            { test: /\.css$/, loader: ExtractTextPlugin.extract('css', 'css!postcss') },
+            { test: /\.scss$/, loader: ExtractTextPlugin.extract('css', 'css!postcss!sass') },
+            { test: /\.less$/, loader: ExtractTextPlugin.extract('css', 'css!postcss!less') },
+            {
+                test: /\.(png|jpg|ico|jpeg|gif)$/,
+                loader: 'url?limit=8192&name=images/[hash:8].[name].[ext]'
+            }
         ]
     },
     postcss: [
-        autoprefixer({ browsers: ['last 10 versions'] })//调用autoprefixer插件,css3自动补全
+        autoprefixer({ browsers: ['last 10 versions'] }) //调用autoprefixer插件,css3自动补全
     ],
 
     devServer: {
@@ -63,19 +77,19 @@ let config = {
     plugins: [
         new ExtractTextPlugin('[name].css'),
         new webpack.DefinePlugin({
-            "process.env": {
-                NODE_ENV: JSON.stringify("development")
+            'process.env': {
+                NODE_ENV: JSON.stringify('development')
             }
         })
     ],
-     externals: {
-        'react-router': {
+    externals: {
+        'react-router-bak': {
             amd: 'react-router',
             root: 'ReactRouter',
             commonjs: 'react-router',
             commonjs2: 'react-router'
         },
-        "react": {
+        react: {
             amd: 'react',
             root: 'React',
             commonjs: 'react',
@@ -97,17 +111,17 @@ let config = {
     resolve: {
         extensions: ['', '.js', '.jsx'],
         alias: {
-          components: srcPath+'/components',
-          images: srcPath+'/images',
-          mock: srcPath+'/mock',
-          skin:srcPath+'/skin',
-          utils:srcPath+'/utils',
+            components: srcPath + '/components',
+            images: srcPath + '/images',
+            mock: srcPath + '/mock',
+            skin: srcPath + '/skin',
+            utils: srcPath + '/utils',
+            config: srcPath + '/config'
         }
-      }    
-
-}
+    }
+};
 
 module.exports = {
-    entryObj:entryObj,
-    config:config
+    entryObj: entryObj,
+    config: config
 };

@@ -2,19 +2,23 @@ import { useState, useEffect } from 'react';
 let APP = () => {
     const [time, setTime] = useState(new Date().getTime());
     useEffect(() => {
-        let timer = setTimeout(function() {
-            setTime(new Date().getTime());
-        }, 0);
+        
         console.log('初始渲染!');
         return function() {
-            clearTimeout(timer);
+           // clearTimeout(timer);
             console.log('被卸载了!');
         };
-    }, []);
+    });
     return (
         <div>
             <div>
                 <span>当前时间: {time}</span>
+                <button
+                    onClick={() => {
+                        setTime(33333333333333);
+                    }}>
+                    reset
+                </button>
             </div>
         </div>
     );

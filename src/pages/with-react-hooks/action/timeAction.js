@@ -22,7 +22,8 @@ const addTime = () => {
     };
 };
 
-const fetchTime = async () => { //异步处理  返回的是一个promise对象 通过then接收action
+const fetchTime = async () => {
+    //异步处理  返回的是一个promise对象 通过then接收action
     let response = await fetch('http://localhost:9991/mock/count.json');
     let listData = await response.json();
     return getTime(listData.count);
