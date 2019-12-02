@@ -1,21 +1,22 @@
 /*
  * @Author: zhang dajia * @Date: 2018-11-05 14:16:25
  * @Last Modified by: zhang dajia
- * @Last Modified time: 2019-11-22 18:49:42
+ * @Last Modified time: 2019-11-29 17:55:56
  * @Last  description: hmbird-router
  */
 import Router from 'koa-router';
 import { readClientPages } from '../pageInit';
 import fs from 'fs';
 import path from 'path';
-import { parse as parseUrl } from 'url';
 import send from 'koa-send';
 import { sendHTML } from './send-html';
 import { parseQuery } from './parse-query';
 import { renderServerStatic } from './render-server-static';
-const clientPath = path.join(process.cwd() + '/dist/client');
-import { getConfig } from './utils';
+const publicPath = path.join(process.cwd() + '/dist/client');
+const pagePath = path.join(process.cwd() + '/src/pages');
 
+import { getConfig } from './utils';
+import WathchPage from './watch';
 function normalizePagePath(page) {
     // If the page is `/` we need to append `/index`, otherwise the returned directory root will be bundles instead of pages
     // Resolve on anything that doesn't start with `/`
@@ -30,17 +31,22 @@ function normalizePagePath(page) {
     return page;
 }
 class RegisterClientPages {
-    constructor(app) {
+    constructor(app, dev) {
         this.router = new Router();
         this.app = app;
+        this.dev = dev || process.env.NODE_ENV !== 'production';
         this.config = getConfig(app);
         this.registerPages();
         this.serverStatic();
+        this.watchPage();
+    }
+    watchPage() {
+        this.dev && new WathchPage(this.app);
     }
     async registerPages() {
         let pages = await readClientPages();
         pages.forEach(page => {
-            let pageMain = path.join(clientPath, normalizePagePath(`${page}/${page}.js`));
+            let pageMain = path.join(pagePath, normalizePagePath(`${page}/${page}.js`));
             if (
                 fs.existsSync(pageMain) //是否存在入口文件
             ) {
@@ -52,21 +58,23 @@ class RegisterClientPages {
     }
     serverStatic() {
         this.app.use(async (ctx, next) => {
-            let { req, res } = ctx;
+            let staticStatus, stats;
+            let urlpath = path.join(publicPath, normalizePagePath(ctx.path));
             try {
-                await send(ctx, ctx.path, { root: clientPath });
+                stats = fs.statSync(urlpath);
             } catch (err) {
-                if (err.statusCode === 404 || err.code == 'ENOENT') {
-                    this.render404(ctx, parseUrl(req.url));
-                } else if (err.statusCode === 412) {
-                    res.statusCode = 412;
-                    return this.renderError(ctx, parseUrl(req.url), err);
-                } else {
-                    throw err;
+                return next();
+            }
+            if (stats && stats.isFile()) {
+                try {
+                    staticStatus = await send(ctx, ctx.path, { root: publicPath });
+                } catch (err) {
+                    return next();
                 }
             }
-
-            await next();
+            if (staticStatus == undefined) {
+                await next();
+            }
         });
     }
     pushRouter(page) {
@@ -76,7 +84,6 @@ class RegisterClientPages {
             let parseQ = parseQuery(ctx);
             let pageName = parseQ.pathname.replace(/^\//, '').split('/')[0];
             ctx.hmbirdconfig = this.config;
-            console.log(this.config);
             if (pageName == page) {
                 ctx.params.pagename = page;
                 ctx.params.query = parseQ.query;

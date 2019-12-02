@@ -75,7 +75,11 @@ export const renderServerDynamic = async ctx => {
         App = require(pagefile);
     } catch (error) {
         // eslint-disable-next-line no-console
-        console.log('require error....' + error, pagename);
+        console.warn(
+            'place move  windows/location object into React componentDidMount(){} ',
+            pagename
+        );
+        console.warn(error.stack);
     }
     let props = await loadGetInitialProps(App, ctx);
     let Html = '';
@@ -123,7 +127,7 @@ export const renderServerStatic = async ctx => {
         }
 
         let viewUrl = `${outputPath}/${pageName}.html`;
-        if (ssrCache) {
+        if (!ssrCache) {
             resolve(await renderServerDynamic(ctx));
         } else {
             fs.readFile(viewUrl, 'utf8', async (err, data) => {

@@ -1,0 +1,3 @@
+module.exports = {
+    ident: 'postcss'
+};

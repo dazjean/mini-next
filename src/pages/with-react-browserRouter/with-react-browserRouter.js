@@ -8,11 +8,11 @@ import ReactDom from 'react-dom';
 import App from './app';
 
 let inBrowser = typeof window !== 'undefined';
-console.log('当前环境是：' + process.env.NODE_ENV);
-let ReactRender = process.env.NODE_ENV == 'development' ? ReactDom.render : ReactDom.hydrate;
+console.log('当前环234境1是：' + process.env.NODE_ENV);
+let ReactRender = ReactDom.hydrate;
 inBrowser &&
     ReactRender(
-        <Router basename="/hmbird_router/with-react-browserRouter">
+        <Router basename="/with-react-browserRouter">
             <App />
         </Router>,
         document.getElementById('app')

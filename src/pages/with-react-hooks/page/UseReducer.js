@@ -10,7 +10,7 @@ function Clock() {
     };
     return (
         <div>
-            Seconds: {reduxState.time}
+            Seco24nds: {reduxState.time}
             <button
                 onClick={async () => {
                     //initState();//异步获取请求
