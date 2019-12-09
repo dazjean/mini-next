@@ -4,5 +4,5 @@ var optimist = require('optimist');
 var cateName = optimist.argv.cate || 0; //0 来源entry构建
 let { getProconfig } = require('./hmbird/lib/webpack/proconfig');
 
-let config = getProconfig(cateName);
+let config = getProconfig(cateName, true);
 module.exports = config;

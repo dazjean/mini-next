@@ -8,7 +8,7 @@ var dev = process.env.NODE_ENV !== 'production';
 function getBaseconfig(pageName, isServer = false) {
     let entryObj = getEntry(pageName);
     let config = {
-        devtool: 'cheap-module-eval-source-map',
+        devtool: dev ? 'cheap-module-eval-source-map' : false,
         mode: 'development',
         entry: {
             ...entryObj

@@ -31,7 +31,7 @@ const writeFile = async (path, Content) => {
  * @param  {string} page html文件名称
  * @return {promise}
  */
-const render = pagename => {
+export const render = pagename => {
     return new Promise((resolve, reject) => {
         let viewUrl = `${clientPath}/${pagename}/${pagename}.html`;
         fs.readFile(viewUrl, 'utf8', (err, data) => {
@@ -120,14 +120,14 @@ export const renderServerDynamic = async ctx => {
  */
 export const renderServerStatic = async ctx => {
     let pageName = ctx.params.pagename;
-    let { ssrCache, ssrIngore } = ctx.hmbirdconfig;
+    let { ssrCache, ssrIngore, ssr, statiPages } = ctx.hmbirdconfig;
     return new Promise(async resolve => {
-        if (ssrIngore.test(pageName)) {
+        if (!ssr || (ssrIngore && ssrIngore.test(pageName))) {
             return resolve(await render(pageName));
         }
 
         let viewUrl = `${outputPath}/${pageName}.html`;
-        if (!ssrCache) {
+        if (!ssrCache && statiPages.indexOf(pageName) == -1) {
             resolve(await renderServerDynamic(ctx));
         } else {
             fs.readFile(viewUrl, 'utf8', async (err, data) => {
