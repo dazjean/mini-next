@@ -1,7 +1,7 @@
 /*
  * @Author: zhang dajia * @Date: 2018-11-05 14:16:25
  * @Last Modified by: zhang dajia
- * @Last Modified time: 2019-11-29 17:55:56
+ * @Last Modified time: 2019-12-09 12:42:48
  * @Last  description: hmbird-router
  */
 import Router from 'koa-router';
@@ -79,10 +79,17 @@ class RegisterClientPages {
     }
     pushRouter(page) {
         var rePath = new RegExp('^/' + page + '(/?.*)'); // re为/^\d+bl$
+        let { prefixUrl } = this.config;
+        if (prefixUrl != '') {
+            rePath = new RegExp('^/' + prefixUrl + '/' + page + '(/?.*)'); // re为/^\d+bl$
+        }
         console.log('register router:' + rePath);
         this.router.get(rePath, async (ctx, next) => {
             let parseQ = parseQuery(ctx);
-            let pageName = parseQ.pathname.replace(/^\//, '').split('/')[0];
+            let pageName = parseQ.pathname
+                .replace('/' + prefixUrl, '')
+                .replace(/^\//, '')
+                .split('/')[0];
             ctx.hmbirdconfig = this.config;
             if (pageName == page) {
                 ctx.params.pagename = page;
