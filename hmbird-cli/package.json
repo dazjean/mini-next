@@ -1,6 +1,6 @@
 {
   "name": "hmbird-cli",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "HMbird是一个基于React16+   ReactRouter4.0  koa2.0搭建的一个node服务端渲染框架",
   "main": "command.js",
   "scripts": {

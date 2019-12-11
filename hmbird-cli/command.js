@@ -7,9 +7,12 @@ const inquirer = require('inquirer'); //通用的命令行用户界面集合，�
 const ora = require('ora'); //下载过程久的话，可以用于显示下载中的动画效果。
 const chalk = require('chalk'); //可以给终端的字体加上颜色
 const symbols = require('log-symbols'); //可以在终端上显示出 √ 或 × 等的图标。
-const { output } = require('./../hmbird/lib/output');
-const { build } = require('./../hmbird/lib/build');
-const { dev } = require('./../hmbird/lib/dev');
+// const { output } = require('./../hmbird/lib/output');
+// const { build } = require('./../hmbird/lib/build');
+// const { dev } = require('./../hmbird/lib/dev');
+const { output } = require('hmbird/lib/output');
+const { build } = require('hmbird/lib/build');
+const { dev } = require('hmbird/lib/dev');
 
 commander
     .version('1.0.0')
