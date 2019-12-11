@@ -1,7 +1,7 @@
 {
   "name": "hmbird-ssr",
   "version": "2.0.0",
-  "description": "{{description}}",
+  "description": "HMbird零成本升级react服务端渲染方案,支持静态导出,cdn部署,前后端同构,自定义路由前缀,自定义webpack,服务端渲染缓存",
   "main": "webpack.config.js",
   "scripts": {
     "output": "node hmbird/lib/build.js --cate",
@@ -9,22 +9,20 @@
     "build": "webpack --config webpack.config_build.js -p  --cate",
     "build:server": "babel server --out-dir dist/server  --copy-files",
     "start": "node server/start.js",
-    "start:server": "npm run build:server && NODE_ENV=production node server/app.js",
     "arthur-start": "pm2 start server/app.js --name=hmbirdSsrService",
     "arthur-stop": "pm2 stop hmbirdSsrService",
     "arthur": "npm run build:server",
     "lint:server": "eslint server",
-    "lint": "eslint src/pages --fix && eslint src/components --fix && eslint hmbird/src --fix",
-    "format": "prettier --write   src/pages && prettier --write   src/components"
+    "lint": "eslint src/pages --fix && eslint src/components --fix && eslint hmbird/src --fix"
   },
   "pre-commit": [
     "lint"
   ],
   "repository": {
     "type": "git",
-    "url": "{{url}}"
+    "url": "git@github.com:dazjean/hmbird-template.git"
   },
-  "author": "{{author}}",
+  "author": "zhangjiajia",
   "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.7.4",
