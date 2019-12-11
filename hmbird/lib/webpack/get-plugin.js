@@ -53,7 +53,7 @@ function getPlugin(entryObj) {
         }
     });
     !isServer && webpackPlugin.push(new OpenBrowserPlugin({
-        url: 'http://localhost:9990'
+        url: 'http://localhost:8080'
     }));
     !isServer && webpackPlugin.push(new webpack.HotModuleReplacementPlugin()), webpackPlugin.push(new ExtractTextPlugin('[name].css'));
     webpackPlugin.push(new webpack.DefinePlugin({

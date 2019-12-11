@@ -15,7 +15,7 @@ const { build } = require('hmbird/lib/build');
 const { dev } = require('hmbird/lib/dev');
 
 commander
-    .version('1.0.0')
+    .version('1.0.6')
     .option('-i, --init [name]', '初始化项目工程,会创建一个[name]项目')
     .option(
         '-u, --update',
@@ -54,7 +54,7 @@ commander.command('init <name>').action(name => {
                 const spinner = ora('正在下载模板...');
                 spinner.start();
                 download(
-                    'direct:https://github.com/dazjean/hmbird-ssr.git#master',
+                    'direct:https://github.com/dazjean/hmbird-template.git#master',
                     name,
                     { clone: true },
                     err => {
@@ -120,7 +120,7 @@ commander.command('update').action(() => {
             const spinner = ora('正在更新模板...');
             spinner.start();
             download(
-                'direct:https://github.com/dazjean/hmbird-ssr/archive/master.zip',
+                'direct:https://github.com/dazjean/hmbird-template/archive/master.zip',
                 name,
                 err => {
                     if (err) {
