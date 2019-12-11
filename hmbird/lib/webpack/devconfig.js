@@ -1,12 +1,15 @@
+'use strict';
+
 // var HTMLWebpackPlugin = require('html-webpack-plugin');
 // var fs = require('fs');
-var { getBaseconfig } = require('./baseconfig');
+var _require = require('./baseconfig'),
+    getBaseconfig = _require.getBaseconfig;
 
 function getDevconfig(pageName, isServer) {
-    let config = getBaseconfig(pageName, isServer);
+    var config = getBaseconfig(pageName, isServer);
     return config;
 }
 
 module.exports = {
-    getDevconfig
+    getDevconfig: getDevconfig
 };

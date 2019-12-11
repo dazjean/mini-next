@@ -2,15 +2,15 @@
  * @Author: zhang dajia
  * @Date: 2018-12-22 17:10:16
  * @Last Modified by: zhang dajia
- * @Last Modified time: 2019-12-09 11:04:04
+ * @Last Modified time: 2019-12-10 11:06:19
  * 服务端渲染解析工具类
  */
 const React = require('react');
 import ReactDOMServer from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom';
 const getStream = require('get-stream');
-import { loadGetInitialProps } from './lib/get-static-props';
-import { render } from './lib/render-server-static';
+import { loadGetInitialProps } from './get-static-props';
+import { render } from './render-server-static';
 
 /**
  * Router类型页面渲染解析

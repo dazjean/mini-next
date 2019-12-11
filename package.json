@@ -1,10 +1,10 @@
 {
   "name": "hmbird-ssr",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "{{description}}",
   "main": "webpack.config.js",
   "scripts": {
-    "output": "node hmbird/build.js --cate",
+    "output": "node hmbird/lib/build.js --cate",
     "dev": "webpack-dev-server  --progress --colors --cate",
     "build": "webpack --config webpack.config_build.js -p  --cate",
     "build:server": "babel server --out-dir dist/server  --copy-files",
@@ -14,7 +14,7 @@
     "arthur-stop": "pm2 stop hmbirdSsrService",
     "arthur": "npm run build:server",
     "lint:server": "eslint server",
-    "lint": "eslint src/pages --fix && eslint src/components --fix",
+    "lint": "eslint src/pages --fix && eslint src/components --fix && eslint hmbird/src --fix",
     "format": "prettier --write   src/pages && prettier --write   src/components"
   },
   "pre-commit": [
@@ -76,24 +76,25 @@
     "webpack-dev-middleware": "^3.7.2",
     "webpack-dev-server": "^3.7.2",
     "webpack-hot-middleware": "^2.25.0",
-    "webpack-node-externals": "^1.7.2"
+    "webpack-node-externals": "^1.7.2",
+    "koa-send": "^5.0.0",
+    "watchpack": "^1.6.0",
+    "react-router-dom": "^4.3.1",
+    "react-dom": "^16.8.1",
+    "react": "^16.8.1",
+    "get-stream": "^4.1.0"
   },
   "dependencies": {
     "classnames": "^2.2.5",
     "es6-promise": "^4.2.8",
-    "get-stream": "^4.1.0",
     "history": "^4.7.2",
     "isomorphic-fetch": "^2.2.1",
     "koa": "^2.6.1",
-    "koa-body": "^2.3.0",
-    "koa-bodyparser": "^4.2.1",
     "koa-router": "^7.4.0",
-    "koa-send": "^5.0.0",
     "koa-static": "^5.0.0",
     "react": "^16.8.1",
     "react-dom": "^16.8.1",
     "react-redux": "^5.0.6",
-    "react-router-dom": "^4.3.1",
-    "watchpack": "^1.6.0"
+    "react-router-dom": "^4.3.1"
   }
 }

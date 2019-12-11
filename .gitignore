@@ -2,9 +2,10 @@
 .project
 .DS_Store
 dist
-node_modules
+*node_modules
 npm-debug.log
 package-lock.json
 */**/.DS_Store
 build_server
 _output
+hmbird/lib

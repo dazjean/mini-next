@@ -3,14 +3,11 @@
  * @Author: zhang dajia
  * @Date: 2018-12-22 16:42:09
  * @Last Modified by: zhang dajia
- * @Last Modified time: 2019-11-21 15:23:30
+ * @Last Modified time: 2019-12-10 16:23:38
  * 服务端渲染静态资源页面导出入口
  */
 const path = require('path');
 const fs = require('fs');
-const optimist = require('optimist');
-let cateName = optimist.argv.cate;
-console.log(`构建静态资源页面：${cateName}`);
 let OutputPath = path.join(process.cwd() + '/_output');
 const clientPath = path.join(process.cwd() + '/dist/client');
 
@@ -36,8 +33,12 @@ const writeFileHander = (name, Content) => {
         }
     });
 };
-const init = async () => {
-    if (cateName == true) {
+export const output = async cateName => {
+    if (cateName) {
+        const pageInstance = require(clientPath + '/' + cateName + '/' + cateName + '.js');
+        let Content = await RenderServer.renderServerDynamic(cateName, pageInstance);
+        writeFileHander(cateName, Content);
+    } else {
         //构建导出当前项目所有页面
         const PageComponent = await require('./pageInit').getPageComponent(); //初始化ssr页面入口文件导入配置
         for (const pageName in PageComponent) {
@@ -48,13 +49,6 @@ const init = async () => {
                 writeFileHander(pageName, Content);
             }
         }
-    } else {
-        //const pageInstance = PageComponent[cateName];
-        const pageInstance = require(clientPath + '/' + cateName + '/' + cateName + '.js');
-        let Content = await RenderServer.renderServerDynamic(cateName, pageInstance);
-        writeFileHander(cateName, Content);
     }
-
     console.log('..................初始化');
 };
-init();

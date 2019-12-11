@@ -1,11 +1,11 @@
 /* * @Author: zhang dajia * @Date: 2018-11-05 14:16:55
  * @Last Modified by: zhang dajia
- * @Last Modified time: 2019-12-09 11:28:36
+ * @Last Modified time: 2019-12-10 11:09:21
  * @Last  description: undefined
  */
 const Koa = require('koa');
 const path = require('path');
-const Hmbird = require('../hmbird/lib/router');
+const Hmbird = require('../hmbird/src/router');
 const koaStatic = require('koa-static');
 
 const app = new Koa();
