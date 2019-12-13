@@ -119,6 +119,12 @@ function getBaseconfig(pageName) {
                 root: 'ReactDOM',
                 commonjs: 'react-dom',
                 commonjs2: 'react-dom'
+            },
+            'isomorphic-fetch': {
+                root: 'isomorphic-fetch',
+                commonjs2: 'isomorphic-fetch',
+                commonjs: 'isomorphic-fetch',
+                amd: 'isomorphic-fetch'
             }
         },
         resolve: {

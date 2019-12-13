@@ -44,11 +44,11 @@ var Webpack = function () {
     function Webpack(pages, app) {
         (0, _classCallCheck3.default)(this, Webpack);
 
-        var pageName = pages.join(',');
+        this.pageName = pages;
         this.app = app;
-        this.config = this.getWebpackConfig(pageName, true);
+        this.config = this.getWebpackConfig(this.pageName, true);
         this.Compiler = (0, _webpack2.default)(this.config);
-        this.run(pageName);
+        //this.run(pageName);
         //this.hotReload();
     }
 
@@ -64,16 +64,17 @@ var Webpack = function () {
     }, {
         key: 'run',
         value: function () {
-            var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(pagename) {
-                var callback, pagefile;
+            var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee() {
+                var pagename, callback, pagefile;
                 return _regenerator2.default.wrap(function _callee$(_context) {
                     while (1) {
                         switch (_context.prev = _context.next) {
                             case 0:
-                                _context.next = 2;
+                                pagename = this.pageName;
+                                _context.next = 3;
                                 return this.compilerRun();
 
-                            case 2:
+                            case 3:
                                 callback = _context.sent;
 
                                 if (callback === true) {
@@ -81,8 +82,9 @@ var Webpack = function () {
 
                                     this.clearRequireCache(pagefile);
                                 }
+                                return _context.abrupt('return', true);
 
-                            case 4:
+                            case 6:
                             case 'end':
                                 return _context.stop();
                         }
@@ -90,7 +92,7 @@ var Webpack = function () {
                 }, _callee, this);
             }));
 
-            function run(_x) {
+            function run() {
                 return _ref.apply(this, arguments);
             }
 

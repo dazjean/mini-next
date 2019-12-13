@@ -1,6 +1,6 @@
 {
   "name": "hmbird",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "HMbird零成本升级react服务端渲染方案,支持静态导出,cdn部署,前后端同构,自定义路由前缀,自定义webpack,服务端渲染缓存",
   "main": "lib/router.js",
   "directories": {
@@ -76,8 +76,6 @@
     "koa-send": "^5.0.0",
     "watchpack": "^1.6.0",
     "react-router-dom": "^4.3.1",
-    "react-dom": "^16.8.1",
-    "react": "^16.8.1",
     "get-stream": "^4.1.0"
   },
   "author": "zhangjiajia04",

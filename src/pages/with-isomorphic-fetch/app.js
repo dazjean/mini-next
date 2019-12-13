@@ -21,10 +21,15 @@ class App extends Component {
     render() {
         return (
             <div className="demo">
-                state:{this.state.userAgent}
+                s1tate:{this.state.userAgent}
                 propts:{JSON.stringify(this.props)}
             </div>
         );
+    }
+    async componentDidMount() {
+        const res = await fetch('http://localhost:8001/test.json');
+        const json = await res.json();
+        this.setState({ userAgent: json.text });
     }
 }
 module.exports = App;

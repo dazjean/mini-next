@@ -1,3 +1,12 @@
+## 如何使用
+```
+npm -i hmbird -g
+hmbird init yourprojectName
+cd yourprojectName
+npm install 
+npm start
+```
+
 ### 基于koa
 ```js
 // app.js

@@ -1,16 +1,11 @@
 import React, { useReducer } from 'react';
 import TimeReducer from './../reducer/timeReducer';
-import { getTime, resetTime, addTime, fetchTime } from './../action/timeAction';
+import { resetTime, addTime, fetchTime } from './../action/timeAction';
 function Clock() {
     const [reduxState, dispatch] = useReducer(TimeReducer, { time: 100000 });
-    let initState = async () => {
-        let response = await fetch('http://localhost:9991/mock/count.json');
-        let listData = await response.json();
-        dispatch(getTime(listData.count));
-    };
     return (
         <div>
-            Seco24nds: {reduxState.time}
+            Seco24ndsdfdsfdsf: {reduxState.time}
             <button
                 onClick={async () => {
                     //initState();//异步获取请求

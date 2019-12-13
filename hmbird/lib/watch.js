@@ -89,7 +89,8 @@ var WatchPages = function () {
                                 wp.watch([], listOfDirectories, Date.now() - 10000);
                                 wp.on('aggregated', function (knownFiles) {
                                     // changes: an array of all changed files
-                                    var dynamicRoutedPages = [];
+                                    console.log('watch ....');
+                                    //let dynamicRoutedPages = [];
                                     var _iteratorNormalCompletion = true;
                                     var _didIteratorError = false;
                                     var _iteratorError = undefined;
@@ -100,8 +101,8 @@ var WatchPages = function () {
 
                                             var pageName = '/' + _path2.default.relative(pagesDir, fileName).replace(/\\+/g, '/');
                                             pageName = pageName.replace(/^\//, '');
-
-                                            dynamicRoutedPages.push(pageName);
+                                            //dynamicRoutedPages.push(pageName);
+                                            new _run2.default(pageName, App).run();
                                         }
                                     } catch (err) {
                                         _didIteratorError = true;
@@ -117,9 +118,6 @@ var WatchPages = function () {
                                             }
                                         }
                                     }
-
-                                    console.log('watch ....');
-                                    new _run2.default(dynamicRoutedPages, App);
                                 });
 
                             case 8:

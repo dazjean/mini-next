@@ -45,6 +45,10 @@ var _path2 = _interopRequireDefault(_path);
 
 var _getStaticProps = require('./get-static-props');
 
+var _run = require('./webpack/run');
+
+var _run2 = _interopRequireDefault(_run);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var outputPath = _path2.default.join(process.cwd() + '/_output');
@@ -119,37 +123,75 @@ var writeFileHander = function writeFileHander(name, Content) {
     });
 };
 
+var checkDistJsmodules = function () {
+    var _ref2 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(pagename) {
+        var jspath, compiler;
+        return _regenerator2.default.wrap(function _callee2$(_context2) {
+            while (1) {
+                switch (_context2.prev = _context2.next) {
+                    case 0:
+                        jspath = clientPath + '/' + pagename + '/' + pagename + '.js';
+
+                        if (_fs2.default.existsSync(jspath)) {
+                            _context2.next = 5;
+                            break;
+                        }
+
+                        compiler = new _run2.default(pagename);
+                        _context2.next = 5;
+                        return compiler.run();
+
+                    case 5:
+                        return _context2.abrupt('return', jspath);
+
+                    case 6:
+                    case 'end':
+                        return _context2.stop();
+                }
+            }
+        }, _callee2, undefined);
+    }));
+
+    return function checkDistJsmodules(_x3) {
+        return _ref2.apply(this, arguments);
+    };
+}();
+
 /**
  * Router类型页面渲染解析
  * @param {*} ctx
  * @param {*} next
  */
 var renderServerDynamic = exports.renderServerDynamic = function () {
-    var _ref2 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(ctx) {
-        var context, _ctx$params, pagename, pathname, query, App, pagefile, props, Html, Htmlstream, locationUrl, data, document;
+    var _ref3 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee3(ctx) {
+        var context, _ctx$params, pagename, pathname, query, App, jspath, props, Html, Htmlstream, locationUrl, data, document;
 
-        return _regenerator2.default.wrap(function _callee2$(_context2) {
+        return _regenerator2.default.wrap(function _callee3$(_context3) {
             while (1) {
-                switch (_context2.prev = _context2.next) {
+                switch (_context3.prev = _context3.next) {
                     case 0:
                         context = {};
                         _ctx$params = ctx.params, pagename = _ctx$params.pagename, pathname = _ctx$params.pathname, query = _ctx$params.query;
                         App = {};
-                        pagefile = clientPath + '/' + pagename + '/' + pagename + '.js';
+                        _context3.next = 5;
+                        return checkDistJsmodules(pagename);
+
+                    case 5:
+                        jspath = _context3.sent;
 
                         try {
                             // eslint-disable-next-line no-undef
-                            App = require(pagefile);
+                            App = require(jspath);
                         } catch (error) {
                             // eslint-disable-next-line no-console
                             console.warn('place move  windows/location object into React componentDidMount(){} ', pagename);
                             console.warn(error.stack);
                         }
-                        _context2.next = 7;
+                        _context3.next = 9;
                         return (0, _getStaticProps.loadGetInitialProps)(App, ctx);
 
-                    case 7:
-                        props = _context2.sent;
+                    case 9:
+                        props = _context3.sent;
                         Html = '';
                         Htmlstream = '';
                         locationUrl = ctx.request.url.split(pagename)[1];
@@ -161,11 +203,11 @@ var renderServerDynamic = exports.renderServerDynamic = function () {
                                 _react2.default.createElement(App, (0, _extends3.default)({ pathname: pathname, query: query }, props))
                             ));
                         } catch (error) {
-                            console.warn('服务端渲染异常，降级使用客户端渲染！');
+                            console.warn('服务端渲染异常，降级使用客户端渲染！' + error);
                         }
 
                         if (!context.url) {
-                            _context2.next = 17;
+                            _context3.next = 19;
                             break;
                         }
 
@@ -173,47 +215,47 @@ var renderServerDynamic = exports.renderServerDynamic = function () {
                             Location: context.url
                         });
                         ctx.response.end();
-                        _context2.next = 32;
+                        _context3.next = 34;
                         break;
-
-                    case 17:
-                        _context2.next = 19;
-                        return render(pagename);
 
                     case 19:
-                        data = _context2.sent;
-                        _context2.prev = 20;
-                        _context2.next = 23;
+                        _context3.next = 21;
+                        return render(pagename);
+
+                    case 21:
+                        data = _context3.sent;
+                        _context3.prev = 22;
+                        _context3.next = 25;
                         return (0, _getStream2.default)(Htmlstream);
 
-                    case 23:
-                        Html = _context2.sent;
-                        _context2.next = 29;
+                    case 25:
+                        Html = _context3.sent;
+                        _context3.next = 31;
                         break;
 
-                    case 26:
-                        _context2.prev = 26;
-                        _context2.t0 = _context2['catch'](20);
+                    case 28:
+                        _context3.prev = 28;
+                        _context3.t0 = _context3['catch'](22);
 
-                        console.warn('流转化字符串异常，降级使用客户端渲染！');
+                        console.warn('流转化字符串异常，降级使用客户端渲染！' + _context3.t0);
 
-                    case 29:
+                    case 31:
                         // 把渲染后的 React HTML 插入到 div 中
                         document = data.replace(/<div id="app"><\/div>/, '<div id="app">' + Html + '</div>');
 
                         writeFileHander(outputPath + '/' + pagename + '.html', document); //缓存本地
-                        return _context2.abrupt('return', document);
+                        return _context3.abrupt('return', document);
 
-                    case 32:
+                    case 34:
                     case 'end':
-                        return _context2.stop();
+                        return _context3.stop();
                 }
             }
-        }, _callee2, undefined, [[20, 26]]);
+        }, _callee3, undefined, [[22, 28]]);
     }));
 
-    return function renderServerDynamic(_x3) {
-        return _ref2.apply(this, arguments);
+    return function renderServerDynamic(_x4) {
+        return _ref3.apply(this, arguments);
     };
 }();
 
@@ -222,74 +264,74 @@ var renderServerDynamic = exports.renderServerDynamic = function () {
  * @param {*} ctx
  */
 var renderServerStatic = exports.renderServerStatic = function () {
-    var _ref3 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee5(ctx) {
+    var _ref4 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee6(ctx) {
         var pageName, _ctx$hmbirdconfig, ssrCache, ssrIngore, ssr, statiPages;
 
-        return _regenerator2.default.wrap(function _callee5$(_context5) {
+        return _regenerator2.default.wrap(function _callee6$(_context6) {
             while (1) {
-                switch (_context5.prev = _context5.next) {
+                switch (_context6.prev = _context6.next) {
                     case 0:
                         pageName = ctx.params.pagename;
                         _ctx$hmbirdconfig = ctx.hmbirdconfig, ssrCache = _ctx$hmbirdconfig.ssrCache, ssrIngore = _ctx$hmbirdconfig.ssrIngore, ssr = _ctx$hmbirdconfig.ssr, statiPages = _ctx$hmbirdconfig.statiPages;
-                        return _context5.abrupt('return', new _promise2.default(function () {
-                            var _ref4 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee4(resolve) {
+                        return _context6.abrupt('return', new _promise2.default(function () {
+                            var _ref5 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee5(resolve) {
                                 var viewUrl;
-                                return _regenerator2.default.wrap(function _callee4$(_context4) {
+                                return _regenerator2.default.wrap(function _callee5$(_context5) {
                                     while (1) {
-                                        switch (_context4.prev = _context4.next) {
+                                        switch (_context5.prev = _context5.next) {
                                             case 0:
                                                 if (!(!ssr || ssrIngore && ssrIngore.test(pageName))) {
-                                                    _context4.next = 6;
+                                                    _context5.next = 6;
                                                     break;
                                                 }
 
-                                                _context4.t0 = resolve;
-                                                _context4.next = 4;
+                                                _context5.t0 = resolve;
+                                                _context5.next = 4;
                                                 return render(pageName);
 
                                             case 4:
-                                                _context4.t1 = _context4.sent;
-                                                return _context4.abrupt('return', (0, _context4.t0)(_context4.t1));
+                                                _context5.t1 = _context5.sent;
+                                                return _context5.abrupt('return', (0, _context5.t0)(_context5.t1));
 
                                             case 6:
                                                 viewUrl = outputPath + '/' + pageName + '.html';
 
                                                 if (!(!ssrCache && statiPages.indexOf(pageName) == -1)) {
-                                                    _context4.next = 15;
+                                                    _context5.next = 15;
                                                     break;
                                                 }
 
-                                                _context4.t2 = resolve;
-                                                _context4.next = 11;
+                                                _context5.t2 = resolve;
+                                                _context5.next = 11;
                                                 return renderServerDynamic(ctx);
 
                                             case 11:
-                                                _context4.t3 = _context4.sent;
-                                                (0, _context4.t2)(_context4.t3);
-                                                _context4.next = 16;
+                                                _context5.t3 = _context5.sent;
+                                                (0, _context5.t2)(_context5.t3);
+                                                _context5.next = 16;
                                                 break;
 
                                             case 15:
                                                 _fs2.default.readFile(viewUrl, 'utf8', function () {
-                                                    var _ref5 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee3(err, data) {
-                                                        return _regenerator2.default.wrap(function _callee3$(_context3) {
+                                                    var _ref6 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee4(err, data) {
+                                                        return _regenerator2.default.wrap(function _callee4$(_context4) {
                                                             while (1) {
-                                                                switch (_context3.prev = _context3.next) {
+                                                                switch (_context4.prev = _context4.next) {
                                                                     case 0:
                                                                         if (!err) {
-                                                                            _context3.next = 9;
+                                                                            _context4.next = 9;
                                                                             break;
                                                                         }
 
                                                                         console.log('Immediate preparation static.....' + pageName);
-                                                                        _context3.t0 = resolve;
-                                                                        _context3.next = 5;
+                                                                        _context4.t0 = resolve;
+                                                                        _context4.next = 5;
                                                                         return renderServerDynamic(ctx);
 
                                                                     case 5:
-                                                                        _context3.t1 = _context3.sent;
-                                                                        (0, _context3.t0)(_context3.t1);
-                                                                        _context3.next = 11;
+                                                                        _context4.t1 = _context4.sent;
+                                                                        (0, _context4.t0)(_context4.t1);
+                                                                        _context4.next = 11;
                                                                         break;
 
                                                                     case 9:
@@ -298,39 +340,39 @@ var renderServerStatic = exports.renderServerStatic = function () {
 
                                                                     case 11:
                                                                     case 'end':
-                                                                        return _context3.stop();
+                                                                        return _context4.stop();
                                                                 }
                                                             }
-                                                        }, _callee3, undefined);
+                                                        }, _callee4, undefined);
                                                     }));
 
-                                                    return function (_x6, _x7) {
-                                                        return _ref5.apply(this, arguments);
+                                                    return function (_x7, _x8) {
+                                                        return _ref6.apply(this, arguments);
                                                     };
                                                 }());
 
                                             case 16:
                                             case 'end':
-                                                return _context4.stop();
+                                                return _context5.stop();
                                         }
                                     }
-                                }, _callee4, undefined);
+                                }, _callee5, undefined);
                             }));
 
-                            return function (_x5) {
-                                return _ref4.apply(this, arguments);
+                            return function (_x6) {
+                                return _ref5.apply(this, arguments);
                             };
                         }()));
 
                     case 3:
                     case 'end':
-                        return _context5.stop();
+                        return _context6.stop();
                 }
             }
-        }, _callee5, undefined);
+        }, _callee6, undefined);
     }));
 
-    return function renderServerStatic(_x4) {
-        return _ref3.apply(this, arguments);
+    return function renderServerStatic(_x5) {
+        return _ref4.apply(this, arguments);
     };
 }();

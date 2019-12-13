@@ -38,15 +38,14 @@ class WatchPages {
         wp.watch([], listOfDirectories, Date.now() - 10000);
         wp.on('aggregated', function(knownFiles) {
             // changes: an array of all changed files
-            let dynamicRoutedPages = [];
+            console.log('watch ....');
+            //let dynamicRoutedPages = [];
             for (const fileName of knownFiles) {
                 let pageName = '/' + path.relative(pagesDir, fileName).replace(/\\+/g, '/');
                 pageName = pageName.replace(/^\//, '');
-
-                dynamicRoutedPages.push(pageName);
+                //dynamicRoutedPages.push(pageName);
+                new webPack(pageName, App).run();
             }
-            console.log('watch ....');
-            new webPack(dynamicRoutedPages, App);
         });
     }
     stopWatch() {

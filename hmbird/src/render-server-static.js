@@ -5,6 +5,8 @@ import { StaticRouter } from 'react-router-dom';
 import getStream from 'get-stream';
 import path from 'path';
 import { loadGetInitialProps } from './get-static-props';
+import webPack from './webpack/run';
+
 const outputPath = path.join(process.cwd() + '/_output');
 const clientPath = path.join(process.cwd() + '/dist/client');
 
@@ -60,6 +62,16 @@ const writeFileHander = (name, Content) => {
     });
 };
 
+const checkDistJsmodules = async pagename => {
+    let jspath = clientPath + '/' + pagename + '/' + pagename + '.js';
+    if (!fs.existsSync(jspath)) {
+        let compiler = new webPack(pagename);
+        await compiler.run();
+        // to npm run build jsmodules
+    }
+    return jspath;
+};
+
 /**
  * Router类型页面渲染解析
  * @param {*} ctx
@@ -69,10 +81,10 @@ export const renderServerDynamic = async ctx => {
     const context = {};
     var { pagename, pathname, query } = ctx.params;
     let App = {};
-    let pagefile = clientPath + '/' + pagename + '/' + pagename + '.js';
+    let jspath = await checkDistJsmodules(pagename);
     try {
         // eslint-disable-next-line no-undef
-        App = require(pagefile);
+        App = require(jspath);
     } catch (error) {
         // eslint-disable-next-line no-console
         console.warn(
@@ -92,7 +104,7 @@ export const renderServerDynamic = async ctx => {
             </StaticRouter>
         );
     } catch (error) {
-        console.warn('服务端渲染异常，降级使用客户端渲染！');
+        console.warn('服务端渲染异常，降级使用客户端渲染！' + error);
     }
     if (context.url) {
         ctx.response.writeHead(301, {
@@ -105,7 +117,7 @@ export const renderServerDynamic = async ctx => {
         try {
             Html = await getStream(Htmlstream);
         } catch (error) {
-            console.warn('流转化字符串异常，降级使用客户端渲染！');
+            console.warn('流转化字符串异常，降级使用客户端渲染！' + error);
         }
         // 把渲染后的 React HTML 插入到 div 中
         let document = data.replace(/<div id="app"><\/div>/, `<div id="app">${Html}</div>`);

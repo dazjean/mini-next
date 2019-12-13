@@ -7,11 +7,11 @@ const clientPath = path.join(process.cwd() + '/dist/client');
 
 class Webpack {
     constructor(pages, app) {
-        let pageName = pages.join(',');
+        this.pageName = pages;
         this.app = app;
-        this.config = this.getWebpackConfig(pageName, true);
+        this.config = this.getWebpackConfig(this.pageName, true);
         this.Compiler = webpack(this.config);
-        this.run(pageName);
+        //this.run(pageName);
         //this.hotReload();
     }
     getWebpackConfig(pageName, dev) {
@@ -21,12 +21,14 @@ class Webpack {
             return getProconfig(pageName, true);
         }
     }
-    async run(pagename) {
+    async run() {
+        let pagename = this.pageName;
         let callback = await this.compilerRun();
         if (callback === true) {
             let pagefile = clientPath + '/' + pagename + '/' + pagename + '.js';
             this.clearRequireCache(pagefile);
         }
+        return true;
     }
 
     compilerRun() {
