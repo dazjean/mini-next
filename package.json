@@ -1,6 +1,6 @@
 {
-  "name": "mini-next-ssr",
-  "version": "2.0.0",
+  "name": "mini-next",
+  "version": "2.0.1",
   "description": "mini-next零成本升级react服务端渲染方案,支持静态导出,cdn部署,前后端同构,自定义路由前缀,自定义webpack,服务端渲染缓存",
   "main": "webpack.config.js",
   "scripts": {
@@ -20,11 +20,25 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git@github.com:dazjean/mini-next-template.git"
+    "url": "git@github.com:dazjean/mini-next.git"
   },
   "author": "zhangjiajia",
   "license": "MIT",
-  "devDependencies": {
+  "dependencies": {
+    "@babel/runtime": "^7.7.7",
+    "classnames": "^2.2.5",
+    "core-js": "^3.6.2",
+    "es6-promise": "^4.2.8",
+    "history": "^4.7.2",
+    "isomorphic-fetch": "^2.2.1",
+    "koa": "^2.6.1",
+    "koa-router": "^7.4.0",
+    "koa-static": "^5.0.0",
+    "react": "^16.8.1",
+    "react-dom": "^16.8.1",
+    "react-redux": "^5.0.6",
+    "react-router-dom": "^4.3.1",
+    "regenerator-runtime": "^0.13.3",
     "@babel/cli": "^7.7.7",
     "@babel/core": "^7.7.7",
     "@babel/plugin-transform-modules-commonjs": "^7.7.5",
@@ -79,22 +93,7 @@
     "webpack-dev-middleware": "^3.7.2",
     "webpack-dev-server": "^3.7.2",
     "webpack-hot-middleware": "^2.25.0",
-    "webpack-node-externals": "^1.7.2"
-  },
-  "dependencies": {
-    "@babel/runtime": "^7.7.7",
-    "classnames": "^2.2.5",
-    "core-js": "^3.6.2",
-    "es6-promise": "^4.2.8",
-    "history": "^4.7.2",
-    "isomorphic-fetch": "^2.2.1",
-    "koa": "^2.6.1",
-    "koa-router": "^7.4.0",
-    "koa-static": "^5.0.0",
-    "react": "^16.8.1",
-    "react-dom": "^16.8.1",
-    "react-redux": "^5.0.6",
-    "react-router-dom": "^4.3.1",
-    "regenerator-runtime": "^0.13.3"
+    "webpack-node-externals": "^1.7.2",
+    "commander": "^2.19.0"
   }
 }
