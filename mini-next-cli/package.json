@@ -1,11 +1,10 @@
 {
   "name": "mini-next-cli",
-  "version": "0.0.1",
+  "version": "2.0.0",
   "description": "mini-next是一个基于React16+   ReactRouter4.0  koa2.0搭建的一个node服务端渲染框架",
   "main": "command.js",
   "scripts": {
     "test": "node command.js --help",
-    "pub": "npm login --registry http://ires.58corp.com/repository/npm/ && npm publish --registry http://ires.58corp.com/repository/npm/"
   },
   "keywords": [
     "React",
@@ -18,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:dazjean/mini-next-ssr.git"
+    "url": "git@github.com:dazjean/mini-next.git"
   },
   "author": "zhangdajia",
   "license": "MIT",

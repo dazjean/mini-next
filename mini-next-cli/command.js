@@ -9,7 +9,7 @@ const chalk = require('chalk'); //可以给终端的字体加上颜色
 const symbols = require('log-symbols'); //可以在终端上显示出 √ 或 × 等的图标。
 
 commander
-    .version('0.0.1')
+    .version('2.0.0')
     .option('-i, --init [name]', '初始化项目工程,会创建一个[name]项目')
     .option(
         '-u, --update',
@@ -44,7 +44,7 @@ commander.command('init <name>').action(name => {
                 const spinner = ora('正在下载模板...');
                 spinner.start();
                 download(
-                    'direct:http://igit.58corp.com/che-node/mini-next-template.git#master',
+                    'direct:https://github.com/dazjean/mini-next-template.git#master',
                     name,
                     { clone: true },
                     err => {
@@ -110,7 +110,7 @@ commander.command('update').action(() => {
             const spinner = ora('正在更新模板...');
             spinner.start();
             download(
-                'direct:http://igit.58corp.com/che-node/mini-next-template/-/archive/master/mini-next-template-master.zip',
+                'direct:https://github.com/dazjean/mini-next-template/-/archive/master/mini-next-template-master.zip',
                 name,
                 err => {
                     if (err) {
