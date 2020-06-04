@@ -5,13 +5,13 @@
  */
 const Koa = require('koa');
 const path = require('path');
-const Hmbird = require('../hmbird/src/router');
+const miniNext = require('../mini-next/src/router');
 const koaStatic = require('koa-static');
 
 const app = new Koa();
 app.use(koaStatic(path.resolve(__dirname, './../public')));
 
-new Hmbird(app);
+new miniNext(app);
 
 app.listen(8001);
 

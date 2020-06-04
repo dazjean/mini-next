@@ -1,7 +1,7 @@
 ## 如何使用
 ```
-npm -i hmbird -g
-hmbird init yourprojectName
+npm -i mini-next -g
+mini-next init yourprojectName
 cd yourprojectName
 npm install 
 npm start
@@ -10,24 +10,24 @@ npm start
 ### 基于koa
 ```js
 // app.js
-import Hmbird from 'hmbird';
+import miniNext from 'mini-next';
 import koa from 'koa';
 const app = new koa();
-new Hmbird(app);
+new miniNext(app);
 app.listen(8001);
 ```
 
 ### cli 命令
 ```sh  
-  hmbird dev [page]  // 客户端启动
-  hmbird build [page] // 生成环境代码构建
-  hmbird output [page] // 静态资源导出 默认输出目录_output 
+  mini-next dev [page]  // 客户端启动
+  mini-next build [page] // 生成环境代码构建
+  mini-next output [page] // 静态资源导出 默认输出目录.mini-next
 ```
 
 
 ## 高级配置
 ```js
-// config/hmbird.config.js
+// config/mini-next.config.js
 module.exports = {
     prefixCDN:'/',
     prefixRouter: '', //页面路由前缀 默认/pagename  添加后前缀后访问方式为 /${prefixRouter}/pagename
@@ -74,6 +74,9 @@ module.exports = App;
 
 
 ##  待办
- - 服务端渲染开发环境热启动
- - 服务端渲染模式初始化props如何在客户端渲染时保持 数据注水？
- - 客户端渲染时query参数作为props如何实现？ 
+ - 服务端渲染模式初始化props如何在客户端渲染时保持 数据注水 【完成】
+ - 客户端渲染时query参数作为props实现 【完成】
+ - 服务端渲染开发环境热启动 【完成，热加载客户端代码】
+ - dll公共模块构建，代码切割 【未开始】
+ - index.d.ts支持ts中使用 && wf-node集成例子 【未开始】
+ - 云平台环境hmbrid 命令提示找不到

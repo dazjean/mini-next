@@ -1,11 +1,6 @@
-.idea
-.project
-.DS_Store
+node_modules
 dist
-*node_modules
-npm-debug.log
+.vscode
+.mini-next
+mini-next/lib
 package-lock.json
-*/**/.DS_Store
-build_server
-_output
-hmbird/lib
