@@ -7,12 +7,12 @@ npm install mini-next-cli -g
 
 ```
 
-# 初始化mini-next-ssr项目
+# 初始化mini-next项目
 ```
 mini-next init yourproject
 ```
 
-# 更新已有mini-next-ssr项目
+# 更新已有mini-next项目
 > 更新项目会覆盖原始文件，如果对原始文件做过定制，请做好备份！,更新时可新建分支后进行update,然后再和已有项目进行合并
 ```
 cd yourproject
