@@ -32,7 +32,7 @@ function serverPropsInject(cateName) {
         //创建临时文件
         let data = fs.readFileSync(path.join(__dirname, '..', 'template.js'), 'utf8');
         data = data.replace('$injectApp$', `require('../src/pages/${cateName}/${cateName}.js')`);
-        data = data.replace('____miniNext_DATA__pathname', cateName);
+        data = data.replace('__miniNext_DATA__pathname', cateName);
         let exists = fs.existsSync(outputPath);
         if (!exists) {
             fs.mkdirSync(outputPath);
