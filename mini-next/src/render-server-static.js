@@ -75,13 +75,13 @@ const writeFileHander = (name, Content) => {
 
 export const checkDistJsmodules = async pagename => {
     let jspath = clientPath + '/server/' + pagename + '/' + pagename + '.js';
-    let jsClientpath = clientPath + '/client/' + pagename + '/' + pagename + '.js';
+    let jsClientdir = clientPath + '/client/' + pagename;
     if (!fs.existsSync(jspath) || dev) {
         //服务端代码打包
         let compiler = new webPack(pagename, null, true);
         await compiler.run();
     }
-    if (!fs.existsSync(jsClientpath)) {
+    if (!fs.existsSync(jsClientdir)) {
         //客户端代码打包
         let compiler = new webPack(pagename);
         await compiler.run();
