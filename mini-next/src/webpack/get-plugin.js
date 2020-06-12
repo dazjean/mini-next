@@ -57,7 +57,7 @@ function getPlugin(entryObj, isServer = false) {
     // !isServer && webpackPlugin.push(new webpack.HotModuleReplacementPlugin()),
     webpackPlugin.push(
         new ExtractTextPlugin({
-            filename: dev ? '[name].css' : `[name]_v${moment().format('YYYYMMDDHHmmss')}.css`
+            filename: dev ? '[name].css' : `[name].css?v=${moment().format('YYYYMMDDHHmmss')}`
         })
     );
     webpackPlugin.push(
