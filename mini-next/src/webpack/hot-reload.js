@@ -1,7 +1,7 @@
 import { devMiddleware, hotMiddleware } from 'koa-webpack-middleware';
 import webpack from 'webpack';
 const { getBaseconfig } = require('./baseconfig.js');
-const webpackConfig = getBaseconfig(0, true, true);
+const webpackConfig = getBaseconfig(process.argv.splice(2)[0] || 0, true, true);
 class HotReload {
     constructor(app) {
         this.app = app;

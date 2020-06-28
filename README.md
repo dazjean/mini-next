@@ -4,7 +4,7 @@ npm -i mini-next -g
 mini-next init yourprojectName
 cd yourprojectName
 npm install 
-npm start
+npm start [page] //多个页面以逗号分隔
 ```
 
 ### 基于koa
@@ -77,6 +77,6 @@ module.exports = App;
  - 服务端渲染模式初始化props如何在客户端渲染时保持 数据注水 【完成】
  - 客户端渲染时query参数作为props实现 【完成】
  - 服务端渲染开发环境热启动 【完成，热加载客户端代码】
- - dll公共模块构建，代码切割 【未开始】
+ - dll公共模块构建，代码切割 【完成】
  - index.d.ts支持ts中使用 && wf-node集成例子 【未开始】
- - 云平台环境hmbrid 命令提示找不到
+ - 云平台环境hmbrid 命令提示找不到【未开始】
