@@ -1,6 +1,6 @@
 ## 如何使用
 ```
-npm -i mini-next -g
+npm -i mini-next-cli -g
 mini-next init yourprojectName
 cd yourprojectName
 npm install 
