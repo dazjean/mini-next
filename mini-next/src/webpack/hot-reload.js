@@ -1,11 +1,11 @@
 import { devMiddleware, hotMiddleware } from 'koa-webpack-middleware';
 import webpack from 'webpack';
 const { getBaseconfig } = require('./baseconfig.js');
-const webpackConfig = getBaseconfig(process.argv.splice(2)[0] || 0, true, true);
 class HotReload {
     constructor(app) {
         this.app = app;
-        this.complier = webpack(webpackConfig);
+        this.webpackConfig = getBaseconfig(process.argv.splice(2)[0] || 0, true, true);
+        this.complier = webpack(this.webpackConfig);
         this.webpackDevMiddleware();
         this.webpackHotMiddleware();
     }
@@ -18,7 +18,7 @@ class HotReload {
     }
     webpackDevMiddleware() {
         let _devMiddleware = devMiddleware(this.complier, {
-            publicPath: webpackConfig.output.publicPath,
+            publicPath: this.webpackConfig.output.publicPath,
             quiet: true //向控制台显示任何内容
         });
         this.app.use(_devMiddleware);
