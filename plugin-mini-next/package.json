@@ -1,0 +1,41 @@
+{
+  "name": "@umajs/plugin-mini-next",
+  "version": "0.0.1",
+  "description": "",
+  "author": "",
+  "main": "lib/index.js",
+  "license": "ISC",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib",
+    "index.d.ts"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git@igit.58corp.com:node/uma.git"
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepublish": "npm run build",
+    "app": "ts-node-dev tests/app.ts"
+  },
+  "dependencies": {
+    "mini-next": "^2.0.7"
+  },
+  "devDependencies": {
+    "@babel/register": "^7.11.5",
+    "@types/koa": "^2.0.48",
+    "@types/koa-views": "^2.0.3",
+    "@types/shelljs": "^0.8.7",
+    "@umajs/core": "^0.1.0",
+    "@umajs/router": "^0.1.0",
+    "koa": "^2.11.0",
+    "shelljs": "^0.8.3",
+    "ts-node": "^8.10.2",
+    "ts-node-dev": "^1.0.0-pre.44",
+    "typescript": "^3.9.7"
+  }
+}
