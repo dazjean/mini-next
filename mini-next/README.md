@@ -37,3 +37,16 @@
 npm run build with-react // 必须先执行构建输出 静态资源目录存放于 dist/client/with-react目录下
 npm run output with-react   // 最终输出的html资源存放于 .mini-next目录下
 ```
+
+## SEO优化
+在src或者src/pagename下创建TDK.js文件用于动态配置html的header
+```
+module.exports = async(ctx) =>{
+    return {
+        title: "测试title",  //页面标题
+        keywords: "测试，key，words",  //对应meta中的name和content
+        description: "描述",
+        headContent: ``  //优先级最高，直接覆盖head（headContent会直接覆盖title前面的部分包括title，所以引用的外部资源需注意）
+    }
+}
+```

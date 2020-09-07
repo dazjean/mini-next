@@ -9,6 +9,7 @@ import webPack from './webpack/run';
 
 const outputPath = path.join(process.cwd() + '/.mini-next');
 const clientPath = path.join(process.cwd() + '/dist');
+const TDKPath = path.join(process.cwd() + '/src');
 const dev = process.env.NODE_ENV !== 'production';
 /**
  * 写入文件,存在则覆盖
@@ -72,7 +73,10 @@ const writeFileHander = (name, Content) => {
         }
     });
 };
-
+/**
+ * 
+ * @param {*} pagename 
+ */
 export const checkDistJsmodules = async pagename => {
     let jspath = clientPath + '/server/' + pagename + '/' + pagename + '.js';
     let jsClientdir = clientPath + '/client/' + pagename;
@@ -119,7 +123,7 @@ export const renderServerDynamic = async ctx => {
     try {
         Htmlstream = ReactDOMServer.renderToNodeStream(
             <StaticRouter location={locationUrl || '/'} context={context}>
-                <App pathname={pathname} query={query} {...props} />
+                <App pageName={pagename} pathName={pathname} query={query} {...props} />
             </StaticRouter>
         );
     } catch (error) {
@@ -155,12 +159,13 @@ export const renderServerDynamic = async ctx => {
              <script>var __miniNext_DATA__ = 
                 {
                     serverProps:${JSON.stringify(props)},
-                    pathname:"${pathname}",
+                    pageName: "${pagename}",
+                    pathName:"${pathname}",
                     query:${JSON.stringify(query)}
                 }
              </script>`
         );
-        return document;
+        return await renderTDK(document,pagename,ctx);
     }
 };
 
@@ -193,4 +198,74 @@ export const renderServerStatic = async ctx => {
             }
         }
     });
+};
+/**
+ * TDK解析 seo优化
+ * @param {*} document 
+ * @param {*} pagename 
+ * @param {*} ctx 
+ */
+export const renderTDK = async ( document, pagename, ctx ) => {
+    //获取TDK路径
+    let path = "";
+    let pageTDKPath = TDKPath + '/pages/' + pagename + '/' + 'TDK.js';
+    let defaultTDKPath = TDKPath +  '/' + 'TDK.js'
+    if (fs.existsSync(pageTDKPath)) {
+        path = pageTDKPath;
+    }
+    else if (fs.existsSync(defaultTDKPath)) {
+        path = defaultTDKPath;
+    }
+    else {
+        return document;
+    }
+    let fun = null;
+    //执行TDK.js拿到结果
+    try {
+        if (dev) {
+            delete require.cache[require.resolve(path)];
+        }
+        fun = require(path);
+        if(typeof fun == "function") {
+            let res =await fun(ctx);
+            //解析结果拿到最终模板
+            if(res.headContent) {
+                document = document.replace(
+                    /<head>[\s\S]*<\/title>/,
+                    `<head>
+                        ${res.headContent}
+                    `);
+            }
+            else {
+                let resStr = ""
+                for(let key in res) {
+                    if(key == "title") {
+                        resStr = `<title>${res[key]}</title>`
+                        document = document.replace(/<title>.*<\/title>/,resStr);
+                    }
+                    else {
+                        let reg = new RegExp(`<meta\\s*name\\s*=\\s*["']\\s*${key}.*`);
+                        resStr = `<meta name="${key}" content="${res[key]}">`
+                        if(document.match(reg)) {
+                            //替换
+                            document = document.replace(reg,resStr);
+                        }
+                        else {
+                            //添加
+                            document = document.replace("<title>",`<meta name="${key}" content="${res[key]}">\r\n    <title>`)
+                        }
+                    }
+                }
+            }
+            
+        }
+    } catch (error) {
+        // eslint-disable-next-line no-console
+        console.warn(
+            'please check TDK.js in',
+            "/src or /src/" + pagename
+        );
+        console.warn(error.stack);
+    }
+    return document;
 };
