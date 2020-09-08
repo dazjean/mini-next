@@ -39,7 +39,13 @@ npm run output with-react   // 最终输出的html资源存放于 .mini-next目�
 ```
 
 ## SEO优化
-在src或者src/pagename下创建TDK.js文件用于动态配置html的header
+1.在入口js为App添加方法getInitialTDK
+static async getInitialTDK({ req }) {
+        return {
+             title: "getInitialTDK"
+        };
+    }
+2.在src或者src/pagename下创建TDK.js文件用于动态配置html的header
 ```
 module.exports = async(ctx) =>{
     return {
@@ -49,4 +55,6 @@ module.exports = async(ctx) =>{
         headContent: ``  //优先级最高，直接覆盖head（headContent会直接覆盖title前面的部分包括title，所以引用的外部资源需注意）
     }
 }
+3.优先级
+getInitialTDK函数 > src/[pageName]/TDK.js > src/TDK.js
 ```

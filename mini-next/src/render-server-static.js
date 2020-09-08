@@ -74,8 +74,8 @@ const writeFileHander = (name, Content) => {
     });
 };
 /**
- * 
- * @param {*} pagename 
+ *
+ * @param {*} pagename
  */
 export const checkDistJsmodules = async pagename => {
     let jspath = clientPath + '/server/' + pagename + '/' + pagename + '.js';
@@ -165,7 +165,7 @@ export const renderServerDynamic = async ctx => {
                 }
              </script>`
         );
-        return await renderTDK(document,pagename,ctx);
+        return await renderTDK(document, pagename, ctx, App);
     }
 };
 
@@ -201,70 +201,73 @@ export const renderServerStatic = async ctx => {
 };
 /**
  * TDK解析 seo优化
- * @param {*} document 
- * @param {*} pagename 
- * @param {*} ctx 
+ * @param {*} document
+ * @param {*} pagename
+ * @param {*} ctx
  */
-export const renderTDK = async ( document, pagename, ctx ) => {
-    //获取TDK路径
-    let path = "";
+export const renderTDK = async (document, pagename, ctx, App) => {
     let pageTDKPath = TDKPath + '/pages/' + pagename + '/' + 'TDK.js';
-    let defaultTDKPath = TDKPath +  '/' + 'TDK.js'
-    if (fs.existsSync(pageTDKPath)) {
-        path = pageTDKPath;
-    }
-    else if (fs.existsSync(defaultTDKPath)) {
-        path = defaultTDKPath;
-    }
-    else {
-        return document;
-    }
-    let fun = null;
-    //执行TDK.js拿到结果
+    let defaultTDKPath = TDKPath + '/' + 'TDK.js';
+    let getInitialTDK = null;
     try {
-        if (dev) {
-            delete require.cache[require.resolve(path)];
+        //获取getInitialTDK函数
+        if(App.getInitialTDK) {
+            getInitialTDK =  App.getInitialTDK;
         }
-        fun = require(path);
-        if(typeof fun == "function") {
-            let res =await fun(ctx);
+        else if (fs.existsSync(pageTDKPath)) {
+            if (dev) {
+                delete require.cache[require.resolve(pageTDKPath)];
+            }
+            getInitialTDK = require(pageTDKPath);
+        } else if (fs.existsSync(defaultTDKPath)) {
+            if (dev) {
+                delete require.cache[require.resolve(defaultTDKPath)];
+            }
+            getInitialTDK = require(defaultTDKPath);
+        } else {
+            return document;
+        }
+        //执行getInitialTDK拿到结果
+        if (typeof getInitialTDK == 'function') {
+            let res = await getInitialTDK(
+                ctx,
+                (ctx.params && ctx.params.query) || null,
+                (ctx.params && ctx.params.pathname) || null
+            );
             //解析结果拿到最终模板
-            if(res.headContent) {
+            if (res.headContent) {
                 document = document.replace(
                     /<head>[\s\S]*<\/title>/,
                     `<head>
                         ${res.headContent}
-                    `);
-            }
-            else {
-                let resStr = ""
-                for(let key in res) {
-                    if(key == "title") {
-                        resStr = `<title>${res[key]}</title>`
-                        document = document.replace(/<title>.*<\/title>/,resStr);
-                    }
-                    else {
+                    `
+                );
+            } else {
+                let resStr = '';
+                for (let key in res) {
+                    if (key == 'title') {
+                        resStr = `<title>${res[key]}</title>`;
+                        document = document.replace(/<title>.*<\/title>/, resStr);
+                    } else {
                         let reg = new RegExp(`<meta\\s*name\\s*=\\s*["']\\s*${key}.*`);
-                        resStr = `<meta name="${key}" content="${res[key]}">`
-                        if(document.match(reg)) {
+                        resStr = `<meta name="${key}" content="${res[key]}">`;
+                        if (document.match(reg)) {
                             //替换
-                            document = document.replace(reg,resStr);
-                        }
-                        else {
+                            document = document.replace(reg, resStr);
+                        } else {
                             //添加
-                            document = document.replace("<title>",`<meta name="${key}" content="${res[key]}">\r\n    <title>`)
+                            document = document.replace(
+                                '<title>',
+                                `<meta name="${key}" content="${res[key]}">\r\n    <title>`
+                            );
                         }
                     }
                 }
             }
-            
         }
     } catch (error) {
         // eslint-disable-next-line no-console
-        console.warn(
-            'please check TDK.js in',
-            "/src or /src/" + pagename
-        );
+        console.warn(`please check getInitialTDK in /src/${pagename}/${pagename}.js or TDK.js in/src or /src/`);
         console.warn(error.stack);
     }
     return document;
