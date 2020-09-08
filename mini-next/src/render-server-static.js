@@ -211,10 +211,9 @@ export const renderTDK = async (document, pagename, ctx, App) => {
     let getInitialTDK = null;
     try {
         //获取getInitialTDK函数
-        if(App.getInitialTDK) {
-            getInitialTDK =  App.getInitialTDK;
-        }
-        else if (fs.existsSync(pageTDKPath)) {
+        if (App.getInitialTDK) {
+            getInitialTDK = App.getInitialTDK;
+        } else if (fs.existsSync(pageTDKPath)) {
             if (dev) {
                 delete require.cache[require.resolve(pageTDKPath)];
             }
@@ -267,7 +266,9 @@ export const renderTDK = async (document, pagename, ctx, App) => {
         }
     } catch (error) {
         // eslint-disable-next-line no-console
-        console.warn(`please check getInitialTDK in /src/${pagename}/${pagename}.js or TDK.js in/src or /src/`);
+        console.warn(
+            `please check getInitialTDK in /src/${pagename}/${pagename}.js or TDK.js in/src or /src/`
+        );
         console.warn(error.stack);
     }
     return document;

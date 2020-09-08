@@ -37,9 +37,9 @@ class RegisterClientPages {
         this.app = app;
         this.dev = dev && process.env.NODE_ENV !== 'production';
         this.config = getConfig(app);
-        this.hotReload();
         this.registerPages();
         this.serverStatic();
+        this.hotReload();
     }
     async registerPages() {
         let pages = await readClientPages();
