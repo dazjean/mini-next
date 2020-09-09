@@ -37,10 +37,23 @@ class RegisterClientPages {
         this.app = app;
         this.dev = dev && process.env.NODE_ENV !== 'production';
         this.config = getConfig(app);
+        this.redirect();
+        this.hotReload();
         this.registerPages();
         this.serverStatic();
-        this.hotReload();
     }
+
+    redirect(){
+        if(this.dev) {
+            this.app.use(async (ctx, next) => {
+                if(ctx.path == '/index'){
+                    return ctx.redirect('/index/index');
+                }
+                await next();
+            });
+        }
+    }
+
     async registerPages() {
         let pages = await readClientPages();
         pages.forEach(page => {
