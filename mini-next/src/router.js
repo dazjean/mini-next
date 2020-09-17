@@ -48,6 +48,9 @@ class RegisterClientPages {
             if (
                 fs.existsSync(pageMain) //是否存在入口文件
             ) {
+                if(this.dev && page=="index") {
+                    console.warn("Pagename is best not to call index, Otherwise, there will be unexpected situations");
+                }
                 this.pushRouter(page);
             }
         });

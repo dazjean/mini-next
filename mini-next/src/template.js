@@ -14,7 +14,8 @@ inBrowser &&
         <Router basename="/__miniNext_DATA__pathname">
             <App
                 {...window.__miniNext_DATA__.serverProps}
-                pathname={window.__miniNext_DATA__.pathname || ''}
+                pathName={window.__miniNext_DATA__.pathName || ''}
+                pageName={window.__miniNext_DATA__.pageName || ''}
                 query={window.__miniNext_DATA__.query || ''}
             />
         </Router>,
