@@ -63,7 +63,12 @@ class RegisterClientPages {
         this.app.use(async (ctx, next) => {
             let staticStatus;
             try {
-                staticStatus = await send(ctx, ctx.path, { root: publicPath });
+                staticStatus = await send(ctx, ctx.path, { 
+                    root: publicPath,
+                    setHeaders: function(res,path,stats) {
+                        res.setHeader('Cache-Control', ['max-age=2592000']);
+                    }
+                 });
             } catch (err) {
                 return next();
             }
