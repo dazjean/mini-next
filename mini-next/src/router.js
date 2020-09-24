@@ -64,7 +64,7 @@ class RegisterClientPages {
                 staticStatus = await send(ctx, ctx.path, { 
                     root: publicPath,
                     setHeaders: function(res,path,stats) {
-                        res.setHeader('Cache-Control', ['max-age=15552000']);
+                        res.setHeader('Cache-Control', ['max-age=2592000']);
                     }
                  });
             } catch (err) {
