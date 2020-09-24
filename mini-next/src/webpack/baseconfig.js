@@ -78,7 +78,8 @@ function getBaseconfig(pageName, isServer = false, hotReload = false) {
                             loader: 'css-loader',
                             options: {
                                 url: true,
-                                minimize: false
+                                minimize: false,
+                                modules: true
                             }
                         },
                         {
