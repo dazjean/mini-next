@@ -67,6 +67,7 @@ class APP extends Component {
         return (
             <div>
                 <h1>with-react-router4</h1>
+                <img src={require('images/with-react/timeico.png')} />
                 <Switch>
                     <Route exact path="/" component={Home} />
                     <Route exact path="/about" component={About} />

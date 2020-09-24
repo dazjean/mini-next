@@ -7,6 +7,7 @@ var { getEntry } = require('./getEntry');
 var { getPlugin } = require('./get-plugin');
 var { prefixCDN } = require('../utils').getConfig();
 const clientPath = path.join(process.cwd() + '/dist/client');
+const combineConfig = require('./combineConfig');
 function getBaseconfig(pageName, isServer = false, hotReload = false) {
     var dev = process.env.NODE_ENV !== 'production';
     let entryObj = getEntry(pageName);
@@ -41,16 +42,16 @@ function getBaseconfig(pageName, isServer = false, hotReload = false) {
             rules: [
                 {
                     test: /js$/,
-                    loader: 'babel-loader',
+                    use: ['babel-loader'],
                     exclude: /node_modules/
                 },
                 {
                     test: /jsx$/,
-                    loader: 'babel-loader',
+                    use: ['babel-loader'],
                     exclude: /node_modules/
                 },
                 {
-                    test: /(\.scss|\.css)$/,
+                    test: /\.css$/,
                     use: [
                         'css-hot-loader',
                         ExtractTextPlugin.loader,
@@ -63,6 +64,20 @@ function getBaseconfig(pageName, isServer = false, hotReload = false) {
                         },
                         {
                             loader: 'postcss-loader'
+                        }
+                    ]
+                },
+                {
+                    test: /\.scss$/,
+                    use: [
+                        'css-hot-loader',
+                        ExtractTextPlugin.loader,
+                        {
+                            loader: 'css-loader',
+                            options: {
+                                url: true,
+                                minimize: false
+                            }
                         },
                         {
                             loader: 'sass-loader'
@@ -89,12 +104,16 @@ function getBaseconfig(pageName, isServer = false, hotReload = false) {
                 },
                 {
                     test: /\.(png|jpg|jpeg|gif)$/,
-                    loader: 'url-loader',
-                    options: {
-                        name: '[hash:8].[name].[ext]',
-                        limit: 8192,
-                        outputPath: 'images/'
-                    }
+                    use: [
+                        {
+                            loader: 'url-loader',
+                            options: {
+                                name: '[hash:8].[name].[ext]',
+                                limit: 8192,
+                                outputPath: 'images/'
+                            }
+                        }
+                    ]
                 }
             ]
         },
@@ -104,18 +123,6 @@ function getBaseconfig(pageName, isServer = false, hotReload = false) {
             hot: true
         },
         plugins: pluginsObj,
-        // optimization: {
-        //     splitChunks: {
-        //         cacheGroups: {
-        //             commons: {
-        //                 test: /[\\/]node_modules[\\/]/,
-        //                 name: 'vendors',
-        //                 filename: '[name]',
-        //                 chunks: 'all'
-        //             }
-        //         }
-        //     }
-        // },
         externals: {
             'isomorphic-fetch': {
                 root: 'isomorphic-fetch',
@@ -136,7 +143,7 @@ function getBaseconfig(pageName, isServer = false, hotReload = false) {
             }
         }
     };
-    return config;
+    return combineConfig(config);
 }
 module.exports = {
     getBaseconfig

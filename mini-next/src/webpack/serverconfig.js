@@ -2,6 +2,7 @@ const path = require('path');
 var srcPath = path.join(process.cwd() + '/src');
 var { getEntry } = require('./getEntry');
 const clientPath = path.join(process.cwd() + '/dist/server');
+const combineConfig = require('./combineConfig');
 function getServerconfig(pageName) {
     let entryObj = getEntry(pageName);
     let config = {
@@ -22,16 +23,24 @@ function getServerconfig(pageName) {
             rules: [
                 {
                     test: /js$/,
-                    loader: 'babel-loader',
+                    use: ['babel-loader'],
                     exclude: /node_modules/
                 },
                 {
                     test: /jsx$/,
-                    loader: 'babel-loader',
+                    use: ['babel-loader'],
                     exclude: /node_modules/
                 },
                 {
-                    test: /(\.scss|\.css)$/,
+                    test: /\.css$/,
+                    use: [
+                        {
+                            loader: 'css-loader'
+                        }
+                    ]
+                },
+                {
+                    test: /\.scss$/,
                     use: [
                         {
                             loader: 'css-loader'
@@ -54,12 +63,16 @@ function getServerconfig(pageName) {
                 },
                 {
                     test: /\.(png|jpg|jpeg|gif)$/,
-                    loader: 'url-loader',
-                    options: {
-                        name: '[hash:8].[name].[ext]',
-                        limit: 8192,
-                        outputPath: 'images/'
-                    }
+                    use: [
+                        {
+                            loader: 'url-loader',
+                            options: {
+                                name: '[hash:8].[name].[ext]',
+                                limit: 8192,
+                                outputPath: 'images/'
+                            }
+                        }
+                    ]
                 }
             ]
         },
@@ -95,6 +108,6 @@ function getServerconfig(pageName) {
             }
         }
     };
-    return config;
+    return combineConfig(config, true);
 }
 module.exports = getServerconfig;
