@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const userWebpackConfigPath = path.join(process.cwd() + '/config/mini-next.webpack.js');
+const userWebpackConfigPath = path.join(process.cwd() + '/config/mini-next.config.js');
 var ExtractTextPlugin = require('mini-css-extract-plugin'); //css单独打包
 function mergeLoader(before, item, cssLoader = false, server = false) {
     if (item && item.length) {
@@ -17,7 +17,8 @@ module.exports = function(config, server) {
     }
     let res = JSON.parse(JSON.stringify(config));
     delete require.cache[require.resolve(userWebpackConfigPath)];
-    const userConfig = require(userWebpackConfigPath);
+    const userConfig = require(userWebpackConfigPath).webpack;
+    if(!userConfig) return config;
     let defaultLoader = config.module.rules;
     //添加loader
     Object.entries(userConfig.loader).map(([key, item]) => {
