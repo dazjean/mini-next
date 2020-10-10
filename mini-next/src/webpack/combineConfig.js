@@ -47,12 +47,16 @@ module.exports = function(config, server) {
     config.externals = userConfig.externals
         ? Object.assign(config.externals, userConfig.externals)
         : config.externals;
-    //添加resolve 合并去重
+    //添加extensions 合并去重
     config.resolve.extensions =
         userConfig.extensions && userConfig.extensions.length
             ? Array.from(new Set([...config.resolve.extensions, ...userConfig.extensions]))
             : config.resolve.extensions;
     //添加alias 覆盖
-    config.resolve.alias = userConfig.alias ? userConfig.alias : config.resolve.alias;
+    config.resolve.alias = userConfig.alias || config.resolve.alias;
+    //添加devServer 覆盖
+    config.devServer = userConfig.devServer || config.devServer;
+    //添加plugin 合并
+    config.plugins = userConfig.plugins?config.plugins.concat(userConfig.plugins):config.plugins;
     return config;
 };
