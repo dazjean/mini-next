@@ -24,7 +24,8 @@ class WatchPages {
         watcher.on('change', fileName => {
             let pageName = '/' + path.relative(pagesDir, fileName).replace(/\\+/g, '/');
             pageName = pageName.replace(/^\//, '').split('/')[0];
-            new webPack(pageName, App).run();
+            new webPack(pageName, App).run(); // 更新客户端入口文件
+            new webPack(pageName, null, true).run(); // 更新服务端入口文件
         });
     }
 }

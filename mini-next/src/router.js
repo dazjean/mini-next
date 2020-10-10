@@ -48,8 +48,10 @@ class RegisterClientPages {
             if (
                 fs.existsSync(pageMain) //是否存在入口文件
             ) {
-                if(this.dev && page=="index") {
-                    console.warn("Pagename is best not to call index, Otherwise, there will be unexpected situations");
+                if (this.dev && page == 'index') {
+                    console.warn(
+                        'Pagename is best not to call index, Otherwise, there will be unexpected situations'
+                    );
                 }
                 this.pushRouter(page);
             }
@@ -61,12 +63,12 @@ class RegisterClientPages {
         this.app.use(async (ctx, next) => {
             let staticStatus;
             try {
-                staticStatus = await send(ctx, ctx.path, { 
+                staticStatus = await send(ctx, ctx.path, {
                     root: publicPath,
-                    setHeaders: function(res,path,stats) {
+                    setHeaders: function(res, path, stats) {
                         res.setHeader('Cache-Control', ['max-age=2592000']);
                     }
-                 });
+                });
             } catch (err) {
                 return next();
             }

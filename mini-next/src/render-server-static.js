@@ -2,7 +2,7 @@ import React from 'react';
 import fs from 'fs';
 import ReactDOMServer from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom';
-import getStream from 'get-stream';
+// import getStream from 'get-stream';
 import path from 'path';
 import { loadGetInitialProps } from './get-static-props';
 import webPack from './webpack/run';
@@ -80,7 +80,7 @@ const writeFileHander = (name, Content) => {
 export const checkDistJsmodules = async pagename => {
     let jspath = clientPath + '/server/' + pagename + '/' + pagename + '.js';
     let jsClientdir = clientPath + '/client/' + pagename;
-    if (!fs.existsSync(jspath) || dev) {
+    if (!fs.existsSync(jspath)) {
         //服务端代码打包
         let compiler = new webPack(pagename, null, true);
         await compiler.run();
@@ -118,10 +118,10 @@ export const renderServerDynamic = async ctx => {
     }
     let props = await loadGetInitialProps(App, ctx);
     let Html = '';
-    let Htmlstream = '';
+    // let Htmlstream = ''; 使用renderToNodeStream暂时没有多大的效益 当前方案得修改替换基础模板 后续通过stream替换基础模板内容？
     let locationUrl = ctx.request.url.split(pagename)[1];
     try {
-        Htmlstream = ReactDOMServer.renderToNodeStream(
+        Html = ReactDOMServer.renderToString(
             <StaticRouter location={locationUrl || '/'} context={context}>
                 <App pageName={pagename} pathName={pathname} query={query} {...props} />
             </StaticRouter>
@@ -137,11 +137,11 @@ export const renderServerDynamic = async ctx => {
     } else {
         // 加载 index.html 的内容
         let data = await render(pagename);
-        try {
-            Html = await getStream(Htmlstream);
-        } catch (error) {
-            console.warn('流转化字符串异常，降级使用客户端渲染！' + error);
-        }
+        // try {
+        //     Html = await getStream(Htmlstream);
+        // } catch (error) {
+        //     console.warn('流转化字符串异常，降级使用客户端渲染！' + error);
+        // }
         //进行xss过滤
         for (let key in query) {
             if (query[key] instanceof Array) {
