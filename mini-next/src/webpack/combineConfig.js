@@ -57,6 +57,8 @@ module.exports = function(config, server) {
     //添加devServer 覆盖
     config.devServer = userConfig.devServer || config.devServer;
     //添加plugin 合并
-    config.plugins = userConfig.plugins?config.plugins.concat(userConfig.plugins):config.plugins;
+    config.plugins = userConfig.plugins
+        ? config.plugins.concat(userConfig.plugins)
+        : config.plugins;
     return config;
 };
