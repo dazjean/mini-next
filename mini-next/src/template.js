@@ -3,11 +3,17 @@ import React from 'react';
 import ReactDom from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { hot } from 'react-hot-loader/root';
-let App = $injectApp$;
+const App = $injectApp$;
 
-var inBrowser = typeof window !== 'undefined';
+const inBrowser = typeof window !== 'undefined';
 if (inBrowser) {
     window.__miniNext_DATA__ = window.__miniNext_DATA__ || {};
+    const root = document.getElementById('app');
+    if (!root) {
+        let rootDom = document.createElement('div');
+        rootDom.id = 'app';
+        document.body.appendChild(rootDom);
+    }
 }
 inBrowser &&
     ReactDom.hydrate(

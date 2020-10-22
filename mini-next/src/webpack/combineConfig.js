@@ -18,7 +18,7 @@ module.exports = function(config, server) {
     let res = JSON.parse(JSON.stringify(config));
     delete require.cache[require.resolve(userWebpackConfigPath)];
     const userConfig = require(userWebpackConfigPath).webpack;
-    if(!userConfig) return config;
+    if (!userConfig) return config;
     let defaultLoader = config.module.rules;
     //添加loader
     Object.entries(userConfig.loader).map(([key, item]) => {

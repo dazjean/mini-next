@@ -1,11 +1,12 @@
-var HTMLWebpackPlugin = require('html-webpack-plugin');
-var ExtractTextPlugin = require('mini-css-extract-plugin'); //css单独打包
+const HTMLWebpackPlugin = require('html-webpack-plugin');
+const ExtractTextPlugin = require('mini-css-extract-plugin'); //css单独打包
 const moment = require('moment');
-var OpenBrowserPlugin = require('open-browser-webpack-plugin');
-var webpack = require('webpack');
+const OpenBrowserPlugin = require('open-browser-webpack-plugin');
+const webpack = require('webpack');
 const AutoDllPlugin = require('autodll-webpack-plugin');
+const path = require('path');
+const fs = require('fs');
 
-var fs = require('fs');
 function getPlugin(entryObj, isServer = false) {
     var dev = process.env.NODE_ENV !== 'production';
     var pages = Object.keys(entryObj);
@@ -22,7 +23,7 @@ function getPlugin(entryObj, isServer = false) {
             title: entryName,
             inject: true, //js插入的位置，true/'head'/'body'/false
             hash: dev ? true : false, //为静态资源生成hash值
-            favicon: 'src/favicon.ico', //favicon路径，通过webpack引入同时可以生成hash值
+            // favicon: 'src/favicon.ico', //favicon路径，通过webpack引入同时可以生成hash值
             chunks: [pathname], //需要引入的chunk，不配置就会引入所有页面的资源
             minify: {
                 //压缩HTML文件
@@ -31,11 +32,19 @@ function getPlugin(entryObj, isServer = false) {
             }
         };
         var defineConf = Object.assign({}, conf, { template: 'src/template.html' });
-        var exists = fs.existsSync(template_local);
+        var existsTemplate = fs.existsSync('src/template.html');
         if (exists) {
             webpackPlugin.push(new HTMLWebpackPlugin(conf));
-        } else {
+        } else if (existsTemplate) {
             webpackPlugin.push(new HTMLWebpackPlugin(defineConf));
+        } else {
+            webpackPlugin.push(
+                new HTMLWebpackPlugin(
+                    Object.assign({}, conf, {
+                        template: path.join(__dirname, './template.html')
+                    })
+                )
+            );
         }
         webpackPlugin.push(
             new AutoDllPlugin({
