@@ -44,7 +44,7 @@ commander.command('init <name>').action(name => {
                 const spinner = ora('正在下载模板...');
                 spinner.start();
                 download(
-                    'direct:https://github.com/dazjean/mini-next-template.git#master',
+                    'direct:https://github.com/escfe/mini-next-demo.git#master',
                     name,
                     { clone: true },
                     err => {
@@ -110,7 +110,7 @@ commander.command('update').action(() => {
             const spinner = ora('正在更新模板...');
             spinner.start();
             download(
-                'direct:https://github.com/dazjean/mini-next-template/-/archive/master/mini-next-template-master.zip',
+                'direct:https://github.com/escfe/mini-next-demo/archive/master.zip',
                 name,
                 err => {
                     if (err) {
