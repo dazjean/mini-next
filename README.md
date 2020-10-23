@@ -302,4 +302,3 @@ module.exports = {
     ssrIngore: null or new RegExp() // 指定某一个或者多个page项目不采用服务端渲染 
 }
 ```
-prefixCDN: 设置成这的时候，生成环境构建时npm run build会自动在引用js,css,img前缀前添加cdn地址
