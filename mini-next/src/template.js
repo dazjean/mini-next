@@ -3,7 +3,8 @@ import React from 'react';
 import ReactDom from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { hot } from 'react-hot-loader/root';
-const App = $injectApp$;
+let App = $injectApp$;
+App = App.default ? App.default : App;
 
 const inBrowser = typeof window !== 'undefined';
 if (inBrowser) {
