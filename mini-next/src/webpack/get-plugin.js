@@ -32,6 +32,7 @@ function getPlugin(entryObj, isServer = false) {
             }
         };
         var defineConf = Object.assign({}, conf, { template: 'src/template.html' });
+        var exists = fs.existsSync(template_local);
         var existsTemplate = fs.existsSync('src/template.html');
         if (exists) {
             webpackPlugin.push(new HTMLWebpackPlugin(conf));
