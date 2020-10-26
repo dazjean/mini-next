@@ -13,17 +13,31 @@ commander
 
 // 静态资源导出
 commander.command('output [page]').action((page = true) => {
-    process.env.NODE_ENV = 'production';
+    if(page=='true'){
+        process.env.NODE_ENV = 'production';
+    }else if (page == 'false'){
+        process.env.NODE_ENV = 'development';
+    }
     output(page);
 });
 
 // 生成环境构建
 commander.command('build [page]').action((page = true) => {
+    if(page=='true'){
+        process.env.NODE_ENV = 'production';
+    }else if (page == 'false'){
+        process.env.NODE_ENV = 'development';
+    }
     build(page);
 });
 
 // 开发环境启动
 commander.command('dev [page]').action((page = true) => {
+    if(page=='true'){
+        process.env.NODE_ENV = 'production';
+    }else if (page == 'false'){
+        process.env.NODE_ENV = 'development';
+    }
     dev(page);
 });
 

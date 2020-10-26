@@ -1,16 +1,14 @@
 const path = require('path');
-var srcPath = path.join(process.cwd() + '/src');
-var { getEntry } = require('./getEntry');
 const clientPath = path.join(process.cwd() + '/dist/server');
+const { getBaseconfig } = require('./baseconfig');
 const combineConfig = require('./combineConfig');
+
 function getServerconfig(pageName) {
-    let entryObj = getEntry(pageName);
+    let baseConfig = getBaseconfig(pageName, true);
     let config = {
         devtool: false,
         mode: 'production',
-        entry: {
-            ...entryObj
-        }, //类别入口文件
+        entry: baseConfig.entry, //类别入口文件
         output: {
             publicPath: '/',
             libraryTarget: 'umd',
@@ -18,64 +16,7 @@ function getServerconfig(pageName) {
             filename: '[name].js', //打包后输出文件的文件名
             path: clientPath //打包后的文件存放的地方
         },
-        plugins: [],
-        module: {
-            rules: [
-                {
-                    test: /js$/,
-                    use: ['babel-loader'],
-                    exclude: /node_modules/
-                },
-                {
-                    test: /jsx$/,
-                    use: ['babel-loader'],
-                    exclude: /node_modules/
-                },
-                {
-                    test: /\.css$/,
-                    use: [
-                        {
-                            loader: 'css-loader'
-                        }
-                    ]
-                },
-                {
-                    test: /\.scss$/,
-                    use: [
-                        {
-                            loader: 'css-loader'
-                        },
-                        {
-                            loader: 'sass-loader'
-                        }
-                    ]
-                },
-                {
-                    test: /\.less$/,
-                    use: [
-                        {
-                            loader: 'css-loader'
-                        },
-                        {
-                            loader: 'less-loader'
-                        }
-                    ]
-                },
-                {
-                    test: /\.(png|jpg|jpeg|gif)$/,
-                    use: [
-                        {
-                            loader: 'url-loader',
-                            options: {
-                                name: '[hash:8].[name].[ext]',
-                                limit: 8192,
-                                outputPath: 'images/'
-                            }
-                        }
-                    ]
-                }
-            ]
-        },
+        module: baseConfig.module,
         externals: {
             react: {
                 amd: 'react',
@@ -88,25 +29,9 @@ function getServerconfig(pageName) {
                 root: 'ReactDOM',
                 commonjs: 'react-dom',
                 commonjs2: 'react-dom'
-            },
-            'isomorphic-fetch': {
-                root: 'isomorphic-fetch',
-                commonjs2: 'isomorphic-fetch',
-                commonjs: 'isomorphic-fetch',
-                amd: 'isomorphic-fetch'
             }
         },
-        resolve: {
-            extensions: ['.js', '.css', '.scss', '.jsx'],
-            alias: {
-                components: srcPath + '/components',
-                images: srcPath + '/images',
-                mock: srcPath + '/mock',
-                skin: srcPath + '/skin',
-                utils: srcPath + '/utils',
-                config: srcPath + '/config'
-            }
-        }
+        resolve: baseConfig.resolve
     };
     return combineConfig(config, true);
 }

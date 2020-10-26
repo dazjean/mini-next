@@ -3,13 +3,12 @@
  * @Author: zhang dajia
  * @Date: 2018-12-22 16:42:09
  * @Last Modified by: zhang dajia
- * @Last Modified time: 2019-12-10 16:23:38
+ * @Last Modified time: 2020-10-26 19:15:53
  * 服务端渲染静态资源页面导出入口
  */
 const path = require('path');
 const fs = require('fs');
 let OutputPath = path.join(process.cwd() + '/.mini-next');
-const clientPath = path.join(process.cwd() + '/dist/client');
 
 const RenderServer = require('./renderServer');
 const writeFile = (name, Content) => {

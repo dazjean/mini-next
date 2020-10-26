@@ -1,14 +1,14 @@
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('mini-css-extract-plugin'); //css单独打包
 const moment = require('moment');
-const OpenBrowserPlugin = require('open-browser-webpack-plugin');
+// const OpenBrowserPlugin = require('open-browser-webpack-plugin');
 const webpack = require('webpack');
 const AutoDllPlugin = require('autodll-webpack-plugin');
 const path = require('path');
 const fs = require('fs');
+const dev = process.env.NODE_ENV !== 'production';
 
 function getPlugin(entryObj, isServer = false) {
-    var dev = process.env.NODE_ENV !== 'production';
     var pages = Object.keys(entryObj);
     let webpackPlugin = [];
     pages.forEach(function(pathname) {
@@ -58,12 +58,12 @@ function getPlugin(entryObj, isServer = false) {
             })
         );
     });
-    !isServer &&
-        webpackPlugin.push(
-            new OpenBrowserPlugin({
-                url: 'http://localhost:8080'
-            })
-        );
+    // isServer &&
+    // webpackPlugin.push(
+    //     new OpenBrowserPlugin({
+    //         url: 'http://localhost:8001/'
+    //     })
+    // );
     // !isServer && webpackPlugin.push(new webpack.HotModuleReplacementPlugin()),
     webpackPlugin.push(
         new ExtractTextPlugin({

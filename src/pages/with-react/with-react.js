@@ -15,7 +15,7 @@ class App extends Component {
                 <span>
                     <img src={require('images/with-react/addressIcon.jpg')} />
                 </span>
-                hello HMbird-ssr,I`m a static page server！
+                hello mini-next!
             </div>
         );
     }

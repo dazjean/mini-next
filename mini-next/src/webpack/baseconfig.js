@@ -1,15 +1,16 @@
 const path = require('path');
 const webpack = require('webpack');
-var ExtractTextPlugin = require('mini-css-extract-plugin'); //css单独打包
+const ExtractTextPlugin = require('mini-css-extract-plugin'); //css单独打包
 const moment = require('moment');
-var srcPath = path.join(process.cwd() + '/src');
-var { getEntry } = require('./getEntry');
-var { getPlugin } = require('./get-plugin');
-var { prefixCDN } = require('../utils').getConfig();
+const srcPath = path.join(process.cwd() + '/src');
+const { getEntry } = require('./getEntry');
+const { getPlugin } = require('./get-plugin');
+const { prefixCDN } = require('../utils').getConfig();
 const clientPath = path.join(process.cwd() + '/dist/client');
 const combineConfig = require('./combineConfig');
+const dev = process.env.NODE_ENV !== 'production';
+
 function getBaseconfig(pageName, isServer = false, hotReload = false) {
-    var dev = process.env.NODE_ENV !== 'production';
     let entryObj = getEntry(pageName);
     let tempObj = {};
     let pluginsObj = [];
@@ -25,6 +26,11 @@ function getBaseconfig(pageName, isServer = false, hotReload = false) {
         tempObj = entryObj;
         pluginsObj = [...getPlugin(entryObj, isServer)];
     }
+
+    const possLoader = {
+        loader: 'postcss-loader'
+    };
+
     let config = {
         devtool: dev ? 'cheap-module-eval-source-map' : false,
         mode: dev ? 'development' : 'production',
@@ -41,12 +47,22 @@ function getBaseconfig(pageName, isServer = false, hotReload = false) {
         module: {
             rules: [
                 {
-                    test: /js$/,
+                    test: /.js$/,
                     use: ['babel-loader'],
                     exclude: /node_modules/
                 },
                 {
-                    test: /jsx$/,
+                    test: /.jsx$/,
+                    use: ['babel-loader'],
+                    exclude: /node_modules/
+                },
+                {
+                    test: /.ts$/,
+                    use: ['babel-loader'],
+                    exclude: /node_modules/
+                },
+                {
+                    test: /.tsx$/,
                     use: ['babel-loader'],
                     exclude: /node_modules/
                 },
@@ -63,8 +79,9 @@ function getBaseconfig(pageName, isServer = false, hotReload = false) {
                             }
                         },
                         {
-                            loader: 'postcss-loader'
-                        }
+                            loader: 'sass-loader' // 兼容历史方案，老版本css和scss一样的配置
+                        },
+                        possLoader
                     ]
                 },
                 {
@@ -81,7 +98,8 @@ function getBaseconfig(pageName, isServer = false, hotReload = false) {
                         },
                         {
                             loader: 'sass-loader'
-                        }
+                        },
+                        possLoader
                     ]
                 },
                 {
@@ -99,7 +117,8 @@ function getBaseconfig(pageName, isServer = false, hotReload = false) {
                         },
                         {
                             loader: 'less-loader'
-                        }
+                        },
+                        possLoader
                     ]
                 },
                 {
@@ -121,18 +140,12 @@ function getBaseconfig(pageName, isServer = false, hotReload = false) {
             contentBase: srcPath, //本地服务器所加载的页面所在的目录
             port: 8080,
             hot: true
+            // open:true,
+            // openPage:"_home/_home.html"
         },
         plugins: pluginsObj,
-        externals: {
-            'isomorphic-fetch': {
-                root: 'isomorphic-fetch',
-                commonjs2: 'isomorphic-fetch',
-                commonjs: 'isomorphic-fetch',
-                amd: 'isomorphic-fetch'
-            }
-        },
         resolve: {
-            extensions: ['.js', '.css', '.scss', '.jsx'],
+            extensions: ['.js', '.jsx', '.ts', '.tsx', '.css', '.scss', '.less'],
             alias: {
                 components: srcPath + '/components',
                 images: srcPath + '/images',

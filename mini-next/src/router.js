@@ -1,7 +1,7 @@
 /*
  * @Author: zhang dajia * @Date: 2018-11-05 14:16:25
  * @Last Modified by: zhang dajia
- * @Last Modified time: 2019-12-10 11:11:08
+ * @Last Modified time: 2020-10-26 19:23:31
  * @Last  description: mini-next-router
  */
 import Router from 'koa-router';
@@ -43,10 +43,17 @@ class RegisterClientPages {
     }
     async registerPages() {
         let pages = await readClientPages();
+        let hasHome = false;
         pages.forEach(page => {
-            let pageMain = path.join(pagePath, normalizePagePath(`${page}/${page}.js`));
+            let pageMain1 = path.join(pagePath, normalizePagePath(`${page}/${page}.js`));
+            let pageMain2 = path.join(pagePath, normalizePagePath(`${page}/${page}.jsx`));
+            let pageMain3 = path.join(pagePath, normalizePagePath(`${page}/${page}.tsx`));
+            let pageMain4 = path.join(pagePath, normalizePagePath(`${page}/${page}.ts`));
             if (
-                fs.existsSync(pageMain) //是否存在入口文件
+                fs.existsSync(pageMain1) ||
+                fs.existsSync(pageMain2) ||
+                fs.existsSync(pageMain3) ||
+                fs.existsSync(pageMain4) //是否存在入口文件
             ) {
                 if (this.dev && page == 'index') {
                     console.warn(
@@ -54,6 +61,10 @@ class RegisterClientPages {
                     );
                 }
                 this.pushRouter(page);
+                if (page === '_home') {
+                    this.homeRouter(page);
+                    hasHome = true;
+                }
             }
         });
         this.app.use(this.router.routes());
@@ -77,13 +88,31 @@ class RegisterClientPages {
             }
         });
     }
+    homeRouter(homePage) {
+        this.app.use(async (ctx, next) => {
+            if (ctx.path === '/') {
+                let parseQ = parseQuery(ctx);
+                ctx.miniNextConfig = this.config;
+                if (!ctx.params) {
+                    ctx.params = {};
+                }
+                ctx.params.pagename = homePage;
+                ctx.params.query = parseQ.query;
+                ctx.params.pathname = '/';
+                let document = await renderServerStatic(ctx);
+                this.renderHtml(ctx, document);
+            } else {
+                await next();
+            }
+        });
+    }
     pushRouter(page) {
         var rePath = new RegExp('^/' + page + '(/?.*)'); // re为/^\d+bl$
         let { prefixRouter } = this.config;
         if (prefixRouter != '') {
             rePath = new RegExp('^/' + prefixRouter + '/' + page + '(/?.*)'); // re为/^\d+bl$
         }
-        console.log('register router:' + rePath);
+        console.log(`${rePath}---->${pagePath}/${page}/${page}`);
         this.router.get(rePath, async (ctx, next) => {
             let parseQ = parseQuery(ctx);
             let pageName = parseQ.pathname
@@ -105,6 +134,7 @@ class RegisterClientPages {
             }
         });
     }
+    renderPage() {}
     render404(ctx, path) {
         ctx.body = 'not found:' + path.pathname;
     }

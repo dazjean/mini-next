@@ -23,7 +23,7 @@ const writeFile = async (path, Content) => {
                 resolve(false);
             } else {
                 resolve(true);
-                console.log(`${path}----Cache in server`);
+                console.log(`${path} SSR static resource HTML cache successful`);
             }
         });
     });
@@ -178,20 +178,24 @@ export const renderServerStatic = async ctx => {
     let { ssrCache, ssrIngore, ssr, statiPages } = ctx.miniNextConfig;
     return new Promise(async resolve => {
         if (!ssr || (ssrIngore && ssrIngore.test(pageName))) {
+            // 客户端渲染模式
             return resolve(await render(pageName));
         }
 
         let viewUrl = `${outputPath}/${pageName}.html`;
-        if (!ssrCache && statiPages.indexOf(pageName) == -1) {
-            console.log('init page....' + pageName);
+        if (dev || (!ssrCache && statiPages.indexOf(pageName) == -1)) {
+            // ssr无缓存模式，适用每次请求都是动态渲染页面场景
+            console.log(`Accessing ${ctx.path} page in no cache mode......`);
             resolve(await renderServerDynamic(ctx));
         } else {
             if (fs.existsSync(viewUrl)) {
-                console.log('static page ssr....' + pageName);
+                // ssr缓存模式，执行一次ssr 第二次直接返回缓存后的html静态资源
+                console.log(`Accessing ${ctx.path} page in cache mode......`);
                 let rs = fs.createReadStream(viewUrl, 'utf-8');
                 resolve(rs);
             } else {
-                console.log('Immediate preparation static.....' + pageName);
+                // ssr缓存模式,首次执行
+                console.log(`First accessing ${ctx.path} page in no cache mode......`);
                 let document = await renderServerDynamic(ctx);
                 resolve(document);
                 writeFileHander(outputPath + '/' + pageName + '.html', document); //缓存本地

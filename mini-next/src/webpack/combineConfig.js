@@ -15,7 +15,6 @@ module.exports = function(config, server) {
     if (!fs.existsSync(userWebpackConfigPath)) {
         return config;
     }
-    let res = JSON.parse(JSON.stringify(config));
     delete require.cache[require.resolve(userWebpackConfigPath)];
     const userConfig = require(userWebpackConfigPath).webpack;
     if (!userConfig) return config;
@@ -29,24 +28,30 @@ module.exports = function(config, server) {
             case 'jsx':
                 mergeLoader(defaultLoader[1], item);
                 break;
+            case 'ts':
+                mergeLoader(defaultLoader[2], item);
+                break;
+            case 'tsx':
+                mergeLoader(defaultLoader[3], item);
+                break;
             case 'css':
-                mergeLoader(defaultLoader[2], item, true, server);
-                break;
-            case 'scss':
-                mergeLoader(defaultLoader[3], item, true, server);
-                break;
-            case 'less':
                 mergeLoader(defaultLoader[4], item, true, server);
                 break;
+            case 'scss':
+                mergeLoader(defaultLoader[5], item, true, server);
+                break;
+            case 'less':
+                mergeLoader(defaultLoader[6], item, true, server);
+                break;
             case 'img':
-                mergeLoader(defaultLoader[5], item);
+                mergeLoader(defaultLoader[7], item);
                 break;
             default:
         }
     });
     //添加externals 合并
     config.externals = userConfig.externals
-        ? Object.assign(config.externals, userConfig.externals)
+        ? Object.assign(config.externals || {}, userConfig.externals)
         : config.externals;
     //添加extensions 合并去重
     config.resolve.extensions =
