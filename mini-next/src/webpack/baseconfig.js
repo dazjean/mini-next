@@ -28,7 +28,10 @@ function getBaseconfig(pageName, isServer = false, hotReload = false) {
     }
 
     const possLoader = {
-        loader: 'postcss-loader'
+        loader: 'postcss-loader',
+        options: {
+            plugins: [require('autoprefixer')({ browsers: ['last 2 versions'] })]
+        }
     };
 
     let config = {

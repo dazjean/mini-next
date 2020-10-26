@@ -16,7 +16,73 @@ function getServerconfig(pageName) {
             filename: '[name].js', //打包后输出文件的文件名
             path: clientPath //打包后的文件存放的地方
         },
-        module: baseConfig.module,
+        module: {
+            rules: [
+                {
+                    test: /js$/,
+                    use: ['babel-loader'],
+                    exclude: /node_modules/
+                },
+                {
+                    test: /jsx$/,
+                    use: ['babel-loader'],
+                    exclude: /node_modules/
+                },
+                {
+                    test: /ts$/,
+                    use: ['babel-loader'],
+                    exclude: /node_modules/
+                },
+                {
+                    test: /tsx$/,
+                    use: ['babel-loader'],
+                    exclude: /node_modules/
+                },
+                {
+                    test: /\.css$/,
+                    use: [
+                        {
+                            loader: 'css-loader'
+                        }
+                    ]
+                },
+                {
+                    test: /\.scss$/,
+                    use: [
+                        {
+                            loader: 'css-loader'
+                        },
+                        {
+                            loader: 'sass-loader'
+                        }
+                    ]
+                },
+                {
+                    test: /\.less$/,
+                    use: [
+                        {
+                            loader: 'css-loader'
+                        },
+                        {
+                            loader: 'less-loader'
+                        }
+                    ]
+                },
+                {
+                    test: /\.(png|jpg|jpeg|gif)$/,
+                    use: [
+                        {
+                            loader: 'url-loader',
+                            options: {
+                                name: '[hash:8].[name].[ext]',
+                                limit: 8192,
+                                outputPath: 'images/'
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
         externals: {
             react: {
                 amd: 'react',

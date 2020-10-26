@@ -24,9 +24,6 @@ function getEntry(cateName) {
             if (serverPropsInject(cateNameArray[i])) setEntry(fileName);
         }
     }
-    if (!hasHomeEntry) {
-        entryObj['_home/home'] = path.resolve(__dirname, './_home.js');
-    }
     return entryObj;
 }
 function serverPropsInject(cateName) {
