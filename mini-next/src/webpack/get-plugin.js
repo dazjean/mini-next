@@ -14,8 +14,7 @@ function getPlugin(entryObj, isServer = false) {
     pages.forEach(function(pathname) {
         var htmlName = entryObj[pathname];
         var entryName = pathname.split('/')[0];
-        var template_local = htmlName
-            .replace('.js', '.html')
+        var template_local = (htmlName+'.html')
             .replace('.mini-next', 'src/pages/' + entryName);
         var conf = {
             filename: entryName + '/' + entryName + '.html', //生成的html存放路径，相对于path

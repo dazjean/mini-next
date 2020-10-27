@@ -81,10 +81,10 @@ function getBaseconfig(pageName, isServer = false, hotReload = false) {
                                 minimize: false
                             }
                         },
+                        possLoader,
                         {
                             loader: 'sass-loader' // 兼容历史方案，老版本css和scss一样的配置
-                        },
-                        possLoader
+                        }
                     ]
                 },
                 {
@@ -99,10 +99,10 @@ function getBaseconfig(pageName, isServer = false, hotReload = false) {
                                 minimize: false
                             }
                         },
+                        possLoader,
                         {
                             loader: 'sass-loader'
-                        },
-                        possLoader
+                        }
                     ]
                 },
                 {
@@ -118,10 +118,11 @@ function getBaseconfig(pageName, isServer = false, hotReload = false) {
                                 modules: true
                             }
                         },
+                        possLoader,
                         {
                             loader: 'less-loader'
-                        },
-                        possLoader
+                        }
+                        
                     ]
                 },
                 {
