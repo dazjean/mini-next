@@ -122,7 +122,6 @@ function getBaseconfig(pageName, isServer = false, hotReload = false) {
                         {
                             loader: 'less-loader'
                         }
-                        
                     ]
                 },
                 {
