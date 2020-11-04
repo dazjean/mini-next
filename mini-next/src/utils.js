@@ -2,6 +2,9 @@ import fs from 'fs';
 import path from 'path';
 const configPath = path.resolve(process.cwd(), './config/mini-next.config.js');
 const defaultConfig = {
+    cssModule: false,
+    lessModule: false,
+    scssModule: false,
     prefixCDN: '/', // 构建后静态资源CDN地址前缀
     prefixRouter: '', // 页面路由前缀 默认/pagename  添加后前缀后访问方式为 /prefixUrl/pagename
     ssr: true, // 是否采用服务端渲染

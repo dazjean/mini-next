@@ -5,7 +5,7 @@ const moment = require('moment');
 const srcPath = path.join(process.cwd() + '/src');
 const { getEntry } = require('./getEntry');
 const { getPlugin } = require('./get-plugin');
-const { prefixCDN } = require('../utils').getConfig();
+const { prefixCDN, cssModule, lessModule, scssModule } = require('../utils').getConfig();
 const clientPath = path.join(process.cwd() + '/dist/client');
 const combineConfig = require('./combineConfig');
 const dev = process.env.NODE_ENV !== 'production';
@@ -30,7 +30,12 @@ function getBaseconfig(pageName, isServer = false, hotReload = false) {
     const possLoader = {
         loader: 'postcss-loader',
         options: {
-            plugins: [require('autoprefixer')({ browsers: ['last 2 versions'] })]
+            postcssOptions: {
+                plugins: [
+                    require('autoprefixer')({ overrideBrowserslist: ['last 2 versions'] }),
+                    !dev ? require('cssnano') : null
+                ]
+            }
         }
     };
 
@@ -78,7 +83,7 @@ function getBaseconfig(pageName, isServer = false, hotReload = false) {
                             loader: 'css-loader',
                             options: {
                                 url: true,
-                                minimize: false
+                                modules: cssModule
                             }
                         },
                         possLoader,
@@ -96,7 +101,7 @@ function getBaseconfig(pageName, isServer = false, hotReload = false) {
                             loader: 'css-loader',
                             options: {
                                 url: true,
-                                minimize: false
+                                modules: scssModule
                             }
                         },
                         possLoader,
@@ -114,8 +119,7 @@ function getBaseconfig(pageName, isServer = false, hotReload = false) {
                             loader: 'css-loader',
                             options: {
                                 url: true,
-                                minimize: false,
-                                modules: true
+                                modules: lessModule
                             }
                         },
                         possLoader,
