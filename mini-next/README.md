@@ -2,7 +2,7 @@ mini-next是一个基于React16+   ReactRouter4.0  koa2.0搭建的一个服务�
 
 # 初衷
 - 统一团队React工程配置，无需单独额外配置，开箱即用
-- 统一管理React,webpack,bable版本
+- 统一管理React,webpack,babel版本
 - 更好的用户体验，SEO支持
 - 相比业内实现，快速支持已有项目进行服务端渲染
 
