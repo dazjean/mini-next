@@ -151,6 +151,14 @@ function getBaseconfig(pageName, isServer = false, hotReload = false) {
             // openPage:"_home/_home.html"
         },
         plugins: pluginsObj,
+        externals: {
+            'isomorphic-fetch': {
+                root: 'isomorphic-fetch',
+                commonjs2: 'isomorphic-fetch',
+                commonjs: 'isomorphic-fetch',
+                amd: 'isomorphic-fetch'
+            }
+        },
         resolve: {
             extensions: ['.js', '.jsx', '.ts', '.tsx', '.css', '.scss', '.less'],
             alias: {
