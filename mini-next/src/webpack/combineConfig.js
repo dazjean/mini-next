@@ -20,35 +20,36 @@ module.exports = function(config, server) {
     if (!userConfig) return config;
     let defaultLoader = config.module.rules;
     //添加loader
-    Object.entries(userConfig.loader).map(([key, item]) => {
-        switch (key) {
-            case 'js':
-                mergeLoader(defaultLoader[0], item);
-                break;
-            case 'jsx':
-                mergeLoader(defaultLoader[1], item);
-                break;
-            case 'ts':
-                mergeLoader(defaultLoader[2], item);
-                break;
-            case 'tsx':
-                mergeLoader(defaultLoader[3], item);
-                break;
-            case 'css':
-                mergeLoader(defaultLoader[4], item, true, server);
-                break;
-            case 'scss':
-                mergeLoader(defaultLoader[5], item, true, server);
-                break;
-            case 'less':
-                mergeLoader(defaultLoader[6], item, true, server);
-                break;
-            case 'img':
-                mergeLoader(defaultLoader[7], item);
-                break;
-            default:
-        }
-    });
+    userConfig.loader &&
+        Object.entries(userConfig.loader).map(([key, item]) => {
+            switch (key) {
+                case 'js':
+                    mergeLoader(defaultLoader[0], item);
+                    break;
+                case 'jsx':
+                    mergeLoader(defaultLoader[1], item);
+                    break;
+                case 'ts':
+                    mergeLoader(defaultLoader[2], item);
+                    break;
+                case 'tsx':
+                    mergeLoader(defaultLoader[3], item);
+                    break;
+                case 'css':
+                    mergeLoader(defaultLoader[4], item, true, server);
+                    break;
+                case 'scss':
+                    mergeLoader(defaultLoader[5], item, true, server);
+                    break;
+                case 'less':
+                    mergeLoader(defaultLoader[6], item, true, server);
+                    break;
+                case 'img':
+                    mergeLoader(defaultLoader[7], item);
+                    break;
+                default:
+            }
+        });
     //添加externals 合并
     config.externals = userConfig.externals
         ? Object.assign(config.externals || {}, userConfig.externals)
