@@ -10,7 +10,7 @@ function getEntry(cateName) {
         if (pageName === '_home') hasHomeEntry = true;
         entryObj[`${pageName}/${pageName}`] = `${outputPath}/${pageName}`;
     };
-    if (cateName == true || cateName == 0) {
+    if (cateName == true || cateName == 0 || typeof cateName == 'boolean') {
         fs.readdirSync(entryPath).forEach(function(cateName) {
             //cateName/cateName指定输出路径为entryname
             if (cateName != 'index.html' && cateName != '.DS_Store' && serverPropsInject(cateName))

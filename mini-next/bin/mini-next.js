@@ -25,8 +25,10 @@ commander.command('output [page]').action((page = true) => {
 commander.command('build [page]').action((page = true) => {
     if(page=='true'){
         process.env.NODE_ENV = 'production';
+        page = JSON.parse(page);
     }else if (page == 'false'){
         process.env.NODE_ENV = 'development';
+        page = JSON.parse(page);
     }
     build(page);
 });

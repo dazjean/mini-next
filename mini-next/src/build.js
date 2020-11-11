@@ -1,20 +1,9 @@
-const webpack = require('webpack');
-import { getProconfig } from './webpack/proconfig';
-// import { getDevconfig } from './devconfig';
+import webPack from './webpack/run';
+import { getConfig } from './utils';
+const dev = process.env.NODE_ENV !== 'production';
 
 export const build = (pageName = true) => {
-    let config = getProconfig(pageName, true);
-    webpack(config).run((err, stats) => {
-        if (err) {
-            console.error(err);
-        }
-        const info = stats.toJson();
-        if (stats.hasErrors()) {
-            console.error(info.errors);
-        }
-        //处理代码编译中产生的warning
-        if (stats.hasWarnings()) {
-            console.warn(info.warnings);
-        }
-    });
+    const config = getConfig();
+    new webPack(pageName, dev, false).run(); // 客户端代码编译
+    config.ssr && new webPack(pageName, dev, true).run(); // 服务端代码编译
 };

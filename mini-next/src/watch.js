@@ -26,7 +26,7 @@ export default class WatchPages {
             let beginTime = new Date().getTime();
             let pageName = '/' + path.relative(pagesDir, fileName).replace(/\\+/g, '/');
             pageName = pageName.replace(/^\//, '').split('/')[0];
-            new webPack(pageName, null, true).run(); // 更新服务端入口文件
+            new webPack(pageName, true, true).run(); // 更新服务端入口文件
             console.log('webpack built success in ' + (new Date().getTime() - beginTime) + 'ms');
         });
     }

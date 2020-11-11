@@ -2,20 +2,16 @@ import webpack from 'webpack';
 import { getProconfig } from './proconfig';
 import { getDevconfig } from './devconfig';
 import serverConfig from './serverconfig';
-import HotReload from './hot-reload';
 import path from 'path';
 const clientPath = path.join(process.cwd() + '/dist/client');
 
 class Webpack {
-    constructor(pages, app, buildserver = false) {
+    constructor(pages, dev = true, buildserver = false) {
         this.pageName = pages;
-        this.app = app;
         this.config = buildserver
             ? serverConfig(this.pageName)
-            : this.getWebpackConfig(this.pageName, true);
+            : this.getWebpackConfig(this.pageName, dev);
         this.Compiler = webpack(this.config);
-        //this.run(pageName);
-        //this.hotReload();
     }
     getWebpackConfig(pageName, dev) {
         if (dev) {
@@ -36,21 +32,37 @@ class Webpack {
 
     compilerRun() {
         return new Promise((resove, reject) => {
-            //this.hotReload(Compiler);
             this.Compiler.run((err, stats) => {
                 if (err) {
-                    reject(err.stack);
+                    if (err.details) {
+                        console.error(err.details);
+                    }
+                    reject(err.stack || err);
                 }
+
+                console.log(
+                    stats.toString({
+                        chunks: false, // 使构建过程更静默无输出
+                        entrypoints: true,
+                        publicPath: true,
+                        performance: true,
+                        env: true,
+                        depth: true,
+                        colors: true // 在控制台展示颜色
+                    })
+                );
+
                 const info = stats.toJson();
                 if (stats.hasErrors()) {
-                    console.error(info.errors);
+                    console.error('编译错误!!!', info.errors.join());
                     reject(info.errors);
                     return;
                 }
                 //处理代码编译中产生的warning
                 if (stats.hasWarnings()) {
-                    console.warn(info.warnings);
+                    console.warn('编译警告!!!', info.warnings.join());
                 }
+
                 resove(true);
             });
         });
@@ -63,9 +75,6 @@ class Webpack {
             })
         );
         console.log('compiler....ok!');
-    }
-    hotReload(compiler) {
-        new HotReload(this.app, compiler || this.Compiler);
     }
     clearRequireCache(moduleFilename) {
         delete require.cache[moduleFilename];

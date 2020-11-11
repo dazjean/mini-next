@@ -82,12 +82,12 @@ export const checkDistJsmodules = async pagename => {
     let jsClientdir = clientPath + '/client/' + pagename;
     if (!fs.existsSync(jspath)) {
         //服务端代码打包
-        let compiler = new webPack(pagename, null, true);
+        let compiler = new webPack(pagename, dev, true);
         await compiler.run();
     }
     if (!fs.existsSync(jsClientdir)) {
         //客户端代码打包
-        let compiler = new webPack(pagename);
+        let compiler = new webPack(pagename, dev);
         await compiler.run();
     }
     return jspath;
