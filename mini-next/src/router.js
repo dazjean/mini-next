@@ -1,7 +1,7 @@
 /*
  * @Author: zhang dajia * @Date: 2018-11-05 14:16:25
  * @Last Modified by: zhang dajia
- * @Last Modified time: 2020-10-26 19:23:31
+ * @Last Modified time: 2020-11-12 19:44:37
  * @Last  description: mini-next-router
  */
 import Router from 'koa-router';
@@ -17,7 +17,7 @@ import WatchPage from './watch';
 const publicPath = path.join(process.cwd() + '/dist/client');
 const pagePath = path.join(process.cwd() + '/src/pages');
 
-import { getConfig } from './utils';
+import help, { getConfig } from './utils';
 function normalizePagePath(page) {
     // If the page is `/` we need to append `/index`, otherwise the returned directory root will be bundles instead of pages
     // Resolve on anything that doesn't start with `/`
@@ -35,7 +35,7 @@ class RegisterClientPages {
     constructor(app, dev = true) {
         this.router = new Router();
         this.app = app;
-        this.dev = dev && process.env.NODE_ENV !== 'production';
+        this.dev = dev && help.isDev();
         this.config = getConfig(app);
         this.hotReload();
         this.registerPages();

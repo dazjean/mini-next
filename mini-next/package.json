@@ -1,6 +1,6 @@
 {
   "name": "mini-next",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "mini-next是一个近乎零成本升级react服务端渲染的框架,支持静态导出,cdn部署,前后端同构,自定义路由前缀,自定义webpack,服务端渲染缓存",
   "main": "lib/router.js",
   "directories": {

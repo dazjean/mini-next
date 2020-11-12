@@ -5,10 +5,11 @@ const moment = require('moment');
 const srcPath = path.join(process.cwd() + '/src');
 const { getEntry } = require('./getEntry');
 const { getPlugin } = require('./get-plugin');
-const { prefixCDN, cssModule, lessModule, scssModule } = require('../utils').getConfig();
 const clientPath = path.join(process.cwd() + '/dist/client');
 const combineConfig = require('./combineConfig');
-const dev = process.env.NODE_ENV !== 'production';
+
+import help, { getConfig } from '../utils';
+const { prefixCDN, cssModule, lessModule, scssModule } = getConfig();
 
 function getBaseconfig(pageName, isServer = false, hotReload = false) {
     let entryObj = getEntry(pageName);
@@ -33,23 +34,23 @@ function getBaseconfig(pageName, isServer = false, hotReload = false) {
             postcssOptions: {
                 plugins: [
                     require('autoprefixer')({ overrideBrowserslist: ['last 2 versions'] }),
-                    !dev ? require('cssnano') : null
+                    !help.isDev() ? require('cssnano') : null
                 ]
             }
         }
     };
 
     let config = {
-        devtool: dev ? 'cheap-module-eval-source-map' : false,
-        mode: dev ? 'development' : 'production',
+        devtool: help.isDev() ? 'cheap-module-eval-source-map' : false,
+        mode: help.isDev() ? 'development' : 'production',
         entry: {
             ...tempObj
         }, //类别入口文件
         output: {
-            publicPath: !dev ? prefixCDN : '/',
+            publicPath: !help.isDev() ? prefixCDN : '/',
             libraryTarget: 'umd',
             globalObject: 'this', //webpack4之后如果umd构建在浏览器和node环境中均可使用需要设置成this
-            filename: dev ? '[name].js' : `[name].js?v=${moment().format('YYYYMMDDHHmmss')}`, //打包后输出文件的文件名
+            filename: help.isDev() ? '[name].js' : `[name].js?v=${moment().format('YYYYMMDDHHmmss')}`, //打包后输出文件的文件名
             path: clientPath //打包后的文件存放的地方
         },
         module: {

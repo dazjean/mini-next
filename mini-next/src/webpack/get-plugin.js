@@ -6,7 +6,7 @@ const webpack = require('webpack');
 const AutoDllPlugin = require('autodll-webpack-plugin');
 const path = require('path');
 const fs = require('fs');
-const dev = process.env.NODE_ENV !== 'production';
+import help from '../utils';
 
 function getPlugin(entryObj, isServer = false) {
     var pages = Object.keys(entryObj);
@@ -20,7 +20,7 @@ function getPlugin(entryObj, isServer = false) {
             template: template_local, //html模板路径
             title: entryName,
             inject: true, //js插入的位置，true/'head'/'body'/false
-            hash: dev ? true : false, //为静态资源生成hash值
+            hash: help.isDev() ? true : false, //为静态资源生成hash值
             // favicon: 'src/favicon.ico', //favicon路径，通过webpack引入同时可以生成hash值
             chunks: [pathname], //需要引入的chunk，不配置就会引入所有页面的资源
             minify: {
@@ -65,13 +65,13 @@ function getPlugin(entryObj, isServer = false) {
     // !isServer && webpackPlugin.push(new webpack.HotModuleReplacementPlugin()),
     webpackPlugin.push(
         new ExtractTextPlugin({
-            filename: dev ? '[name].css' : `[name].css?v=${moment().format('YYYYMMDDHHmmss')}`
+            filename: help.isDev() ? '[name].css' : `[name].css?v=${moment().format('YYYYMMDDHHmmss')}`
         })
     );
     webpackPlugin.push(
         new webpack.DefinePlugin({
             'process.env': {
-                NODE_ENV: JSON.stringify(dev ? 'development' : 'production')
+                NODE_ENV: JSON.stringify(help.isDev() ? 'development' : 'production')
             }
         })
     );

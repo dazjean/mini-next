@@ -36,3 +36,11 @@ export function getConfig(App) {
         return defaultConfig;
     }
 }
+
+export default {
+    isDev:function(){
+        const NODE_ENV = process.env&&process.env.NODE_ENV || 'development'
+
+        return NODE_ENV.trim() !== 'production';
+    }
+}

@@ -6,7 +6,7 @@
   "scripts": {
     "output": "node mini-next/bin/mini-next.js output",
     "dev": "node mini-next/bin/mini-next.js dev",
-    "build": "node mini-next/bin/mini-next.js build",
+    "build": "node mini-next/bin/mini-next.js build true",
     "start": "node server/start.js",
     "lint": "eslint src/pages --fix && eslint src/components --fix && eslint mini-next/src --fix"
   },

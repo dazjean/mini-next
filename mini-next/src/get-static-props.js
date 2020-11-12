@@ -1,4 +1,4 @@
-import { isResSent } from './utils';
+import help, { isResSent } from './utils';
 
 export function getDisplayName(Component) {
     return typeof Component === 'string'
@@ -6,7 +6,7 @@ export function getDisplayName(Component) {
         : Component.displayName || Component.name || 'Unknown';
 }
 export async function loadGetInitialProps(App, ctx) {
-    if (process.env.NODE_ENV !== 'production') {
+    if (help.isDev()) {
         if (App.prototype && App.prototype.getInitialProps) {
             const message = `"${getDisplayName(
                 App
@@ -46,7 +46,7 @@ export async function loadGetInitialProps(App, ctx) {
         throw new Error(message);
     }
 
-    if (process.env.NODE_ENV !== 'production') {
+    if (help.isDev()) {
         if (Object.keys(props).length === 0 && !ctx.ctx) {
             console.warn(
                 `${getDisplayName(

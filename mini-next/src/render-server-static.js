@@ -6,11 +6,12 @@ import { StaticRouter } from 'react-router-dom';
 import path from 'path';
 import { loadGetInitialProps } from './get-static-props';
 import webPack from './webpack/run';
+import help from './utils';
+
 
 const outputPath = path.join(process.cwd() + '/.mini-next');
 const clientPath = path.join(process.cwd() + '/dist');
 const TDKPath = path.join(process.cwd() + '/src');
-const dev = process.env.NODE_ENV !== 'production';
 /**
  * 写入文件,存在则覆盖
  * @param {*} path 文件名称
@@ -82,12 +83,12 @@ export const checkDistJsmodules = async pagename => {
     let jsClientdir = clientPath + '/client/' + pagename;
     if (!fs.existsSync(jspath)) {
         //服务端代码打包
-        let compiler = new webPack(pagename, dev, true);
+        let compiler = new webPack(pagename, help.isDev(), true);
         await compiler.run();
     }
     if (!fs.existsSync(jsClientdir)) {
         //客户端代码打包
-        let compiler = new webPack(pagename, dev);
+        let compiler = new webPack(pagename, help.isDev());
         await compiler.run();
     }
     return jspath;
@@ -104,7 +105,7 @@ export const renderServerDynamic = async ctx => {
     let jspath = await checkDistJsmodules(pagename);
     try {
         // eslint-disable-next-line no-undef
-        if (dev) {
+        if (help.isDev()) {
             delete require.cache[require.resolve(jspath)];
         }
         App = require(jspath);
@@ -183,7 +184,7 @@ export const renderServerStatic = async ctx => {
         }
 
         let viewUrl = `${outputPath}/${pageName}.html`;
-        if (dev || (!ssrCache && statiPages.indexOf(pageName) == -1)) {
+        if (help.isDev() || (!ssrCache && statiPages.indexOf(pageName) == -1)) {
             // ssr无缓存模式，适用每次请求都是动态渲染页面场景
             console.log(`Accessing ${ctx.path} page in no cache mode......`);
             resolve(await renderServerDynamic(ctx));
@@ -218,12 +219,12 @@ export const renderTDK = async (document, pagename, ctx, App) => {
         if (App.getInitialTDK) {
             getInitialTDK = App.getInitialTDK;
         } else if (fs.existsSync(pageTDKPath)) {
-            if (dev) {
+            if (help.isDev()) {
                 delete require.cache[require.resolve(pageTDKPath)];
             }
             getInitialTDK = require(pageTDKPath);
         } else if (fs.existsSync(defaultTDKPath)) {
-            if (dev) {
+            if (help.isDev()) {
                 delete require.cache[require.resolve(defaultTDKPath)];
             }
             getInitialTDK = require(defaultTDKPath);
