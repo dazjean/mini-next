@@ -50,7 +50,9 @@ function getBaseconfig(pageName, isServer = false, hotReload = false) {
             publicPath: !help.isDev() ? prefixCDN : '/',
             libraryTarget: 'umd',
             globalObject: 'this', //webpack4之后如果umd构建在浏览器和node环境中均可使用需要设置成this
-            filename: help.isDev() ? '[name].js' : `[name].js?v=${moment().format('YYYYMMDDHHmmss')}`, //打包后输出文件的文件名
+            filename: help.isDev()
+                ? '[name].js'
+                : `[name].js?v=${moment().format('YYYYMMDDHHmmss')}`, //打包后输出文件的文件名
             path: clientPath //打包后的文件存放的地方
         },
         module: {

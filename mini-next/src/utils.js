@@ -38,9 +38,9 @@ export function getConfig(App) {
 }
 
 export default {
-    isDev:function(){
-        const NODE_ENV = process.env&&process.env.NODE_ENV || 'development'
+    isDev: function() {
+        const NODE_ENV = (process.env && process.env.NODE_ENV) || 'development';
 
         return NODE_ENV.trim() !== 'production';
     }
-}
+};

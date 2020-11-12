@@ -8,7 +8,6 @@ import { loadGetInitialProps } from './get-static-props';
 import webPack from './webpack/run';
 import help from './utils';
 
-
 const outputPath = path.join(process.cwd() + '/.mini-next');
 const clientPath = path.join(process.cwd() + '/dist');
 const TDKPath = path.join(process.cwd() + '/src');

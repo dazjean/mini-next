@@ -1,5 +1,5 @@
 import webPack from './webpack/run';
-import help, { getConfig }  from './utils';
+import help, { getConfig } from './utils';
 
 export const build = (pageName = true) => {
     const dev = help.isDev();
