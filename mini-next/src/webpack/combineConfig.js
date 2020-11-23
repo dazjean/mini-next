@@ -2,6 +2,20 @@ const fs = require('fs');
 const path = require('path');
 const userWebpackConfigPath = path.join(process.cwd() + '/config/mini-next.config.js');
 var ExtractTextPlugin = require('mini-css-extract-plugin'); //css单独打包
+const loaderDefaultArr = [
+    '.js',
+    '.jsx',
+    '.ts',
+    '.tsx',
+    '.css',
+    '.scss',
+    '.less',
+    '.png',
+    '.jpg',
+    '.jpeg',
+    '.gif',
+    '.svg'
+];
 function mergeLoader(before, item, cssLoader = false, server = false) {
     if (item && item.length) {
         if (cssLoader && !server) {
@@ -46,6 +60,15 @@ module.exports = function(config, server) {
                     break;
                 case 'img':
                     mergeLoader(defaultLoader[7], item);
+                    break;
+                case 'other':
+                    //没有默认loader的文件添加
+                    item.length &&
+                        item.map(loader => {
+                            !loaderDefaultArr.some(loaderDefault =>
+                                loaderDefault.match(loader.test)
+                            ) && defaultLoader.push(loader);
+                        });
                     break;
                 default:
             }

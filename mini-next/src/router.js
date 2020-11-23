@@ -17,7 +17,7 @@ import WatchPage from './watch';
 const publicPath = path.join(process.cwd() + '/dist/client');
 const pagePath = path.join(process.cwd() + '/src/pages');
 
-import help, { getConfig } from './utils';
+import help, { getConfig, getOtherConfig } from './utils';
 function normalizePagePath(page) {
     // If the page is `/` we need to append `/index`, otherwise the returned directory root will be bundles instead of pages
     // Resolve on anything that doesn't start with `/`
@@ -37,6 +37,7 @@ class RegisterClientPages {
         this.app = app;
         this.dev = dev && help.isDev();
         this.config = getConfig(app);
+        this.otherConfig = getOtherConfig();
         this.hotReload();
         this.registerPages();
         this.serverStatic();
@@ -93,6 +94,7 @@ class RegisterClientPages {
             if (ctx.path === '/') {
                 let parseQ = parseQuery(ctx);
                 ctx.miniNextConfig = this.config;
+                ctx.otherConfig = this.otherConfig;
                 if (!ctx.params) {
                     ctx.params = {};
                 }
@@ -120,6 +122,7 @@ class RegisterClientPages {
                 .replace(/^\//, '')
                 .split('/')[0];
             ctx.miniNextConfig = this.config;
+            ctx.otherConfig = this.otherConfig;
             if (pageName == page) {
                 ctx.params.pagename = page;
                 ctx.params.query = parseQ.query;

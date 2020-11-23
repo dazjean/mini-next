@@ -161,7 +161,9 @@ export const renderServerDynamic = async ctx => {
                     serverProps:${JSON.stringify(props)},
                     pageName: "${pagename}",
                     pathName:"${pathname}",
-                    query:${JSON.stringify(query)}
+                    query:${JSON.stringify(query)},
+                    config:${JSON.stringify(ctx.otherConfig)},
+                    miniNextConfig:${JSON.stringify(ctx.miniNextConfig)}
                 }
              </script>`
         );
