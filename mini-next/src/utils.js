@@ -47,6 +47,8 @@ export function getOtherConfig() {
     if (fs.existsSync(otherConfigPath)) {
         let configModule = require(otherConfigPath);
         return configModule;
+    } else {
+        return {};
     }
 }
 
