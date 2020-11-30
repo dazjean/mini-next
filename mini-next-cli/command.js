@@ -7,14 +7,14 @@ const inquirer = require('inquirer'); //通用的命令行用户界面集合，�
 const ora = require('ora'); //下载过程久的话，可以用于显示下载中的动画效果。
 const chalk = require('chalk'); //可以给终端的字体加上颜色
 const symbols = require('log-symbols'); //可以在终端上显示出 √ 或 × 等的图标。
-
+const PackageJson = require('./package.json');
 commander
-    .version('2.0.0')
+    .version(PackageJson.version)
     .option('-i, --init [name]', '初始化项目工程,会创建一个[name]项目')
     .option(
         '-u, --update',
         '升级脚手架,请cd到项目跟目录下执行 mini-next update命令;注意！！！升级会导致项目package.json文件夹重置,请提前备份！'
-    )
+    );
 if (commander.init) {
     console.log('初始化项目,在当前文件夹下将会创建一个mini-next工程', commander.init);
 }
@@ -138,6 +138,5 @@ commander.command('update').action(() => {
             );
         });
 });
-
 
 commander.parse(process.argv);
