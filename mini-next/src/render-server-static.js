@@ -7,7 +7,7 @@ import path from 'path';
 import { loadGetInitialProps } from './get-static-props';
 import webPack from './webpack/run';
 import help from './utils';
-
+import Logger from './log';
 const outputPath = path.join(process.cwd() + '/.mini-next');
 const clientPath = path.join(process.cwd() + '/dist');
 const TDKPath = path.join(process.cwd() + '/src');
@@ -23,7 +23,7 @@ const writeFile = async (path, Content) => {
                 resolve(false);
             } else {
                 resolve(true);
-                console.log(`${path} SSR static resource HTML cache successful`);
+                Logger.info(`[miniNext]:${path} SSR static resource HTML cache successful.`);
             }
         });
     });
@@ -65,7 +65,7 @@ const writeFileHander = (name, Content) => {
         } else {
             fs.mkdir(outputPath, err => {
                 if (err) {
-                    console.log(err.stack);
+                    Logger.error(`[miniNext]:${err.stack}`);
                 } else {
                     writeFile(name, Content);
                 }
@@ -110,11 +110,11 @@ export const renderServerDynamic = async ctx => {
         App = require(jspath);
     } catch (error) {
         // eslint-disable-next-line no-console
-        console.warn(
+        Logger.error(
             'place move  windows/location object into React componentDidMount(){} ',
             pagename
         );
-        console.warn(error.stack);
+        Logger.error(error.stack);
     }
     let props = await loadGetInitialProps(App, ctx);
     let Html = '';
@@ -127,7 +127,7 @@ export const renderServerDynamic = async ctx => {
             </StaticRouter>
         );
     } catch (error) {
-        console.warn('服务端渲染异常，降级使用客户端渲染！' + error);
+        Logger.warn('服务端渲染异常，降级使用客户端渲染！' + error);
     }
     if (context.url) {
         ctx.response.writeHead(301, {
@@ -137,11 +137,6 @@ export const renderServerDynamic = async ctx => {
     } else {
         // 加载 index.html 的内容
         let data = await render(pagename);
-        // try {
-        //     Html = await getStream(Htmlstream);
-        // } catch (error) {
-        //     console.warn('流转化字符串异常，降级使用客户端渲染！' + error);
-        // }
         //进行xss过滤
         for (let key in query) {
             if (query[key] instanceof Array) {
@@ -185,20 +180,22 @@ export const renderServerStatic = async ctx => {
         let viewUrl = `${outputPath}/${pageName}.html`;
         if (help.isDev() || (!ssrCache && statiPages.indexOf(pageName) == -1)) {
             // ssr无缓存模式，适用每次请求都是动态渲染页面场景
-            console.log(`Accessing ${ctx.path} page in no cache mode......`);
+            Logger.info(`[miniNext]: ${ctx.path} route uses SSR mode to access.`);
             resolve(await renderServerDynamic(ctx));
         } else {
             if (fs.existsSync(viewUrl)) {
                 // ssr缓存模式，执行一次ssr 第二次直接返回缓存后的html静态资源
-                console.log(`Accessing ${ctx.path} page in cache mode......`);
+                Logger.info(`[miniNext]: ${ctx.path} route is accessed by SSR cache mode.`);
                 let rs = fs.createReadStream(viewUrl, 'utf-8');
                 resolve(rs);
             } else {
                 // ssr缓存模式,首次执行
-                console.log(`First accessing ${ctx.path} page in no cache mode......`);
+                Logger.info(`[miniNext]: ${ctx.path} route uses SSR mode for the first time.`);
                 let document = await renderServerDynamic(ctx);
                 resolve(document);
-                writeFileHander(outputPath + '/' + pageName + '.html', document); //缓存本地
+                process.nextTick(() => {
+                    writeFileHander(outputPath + '/' + pageName + '.html', document); //异步写入服务器缓存目录
+                });
             }
         }
     });
@@ -270,10 +267,10 @@ export const renderTDK = async (document, pagename, ctx, App) => {
         }
     } catch (error) {
         // eslint-disable-next-line no-console
-        console.warn(
+        Logger.error(
             `please check getInitialTDK in /src/${pagename}/${pagename}.js or TDK.js in/src or /src/`
         );
-        console.warn(error.stack);
+        Logger.error(error.stack);
     }
     return document;
 };

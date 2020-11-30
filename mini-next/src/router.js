@@ -1,7 +1,7 @@
 /*
  * @Author: zhang dajia * @Date: 2018-11-05 14:16:25
  * @Last Modified by: zhang dajia
- * @Last Modified time: 2020-11-12 19:44:37
+ * @Last Modified time: 2020-11-30 12:06:57
  * @Last  description: mini-next-router
  */
 import Router from 'koa-router';
@@ -18,6 +18,8 @@ const publicPath = path.join(process.cwd() + '/dist/client');
 const pagePath = path.join(process.cwd() + '/src/pages');
 
 import help, { getConfig } from './utils';
+import Logger from './log';
+
 function normalizePagePath(page) {
     // If the page is `/` we need to append `/index`, otherwise the returned directory root will be bundles instead of pages
     // Resolve on anything that doesn't start with `/`
@@ -56,7 +58,7 @@ class RegisterClientPages {
                 fs.existsSync(pageMain4) //是否存在入口文件
             ) {
                 if (this.dev && page == 'index') {
-                    console.warn(
+                    Logger.warn(
                         'Pagename is best not to call index, Otherwise, there will be unexpected situations'
                     );
                 }
@@ -76,7 +78,7 @@ class RegisterClientPages {
             try {
                 staticStatus = await send(ctx, ctx.path, {
                     root: publicPath,
-                    setHeaders: function(res, path, stats) {
+                    setHeaders: function(res) {
                         res.setHeader('Cache-Control', ['max-age=2592000']);
                     }
                 });
@@ -112,7 +114,7 @@ class RegisterClientPages {
         if (prefixRouter != '') {
             rePath = new RegExp('^/' + prefixRouter + '/' + page + '(/?.*)'); // re为/^\d+bl$
         }
-        console.log(`${rePath}---->${pagePath}/${page}/${page}`);
+        Logger.info(`${rePath}---->/${page}/${page}`);
         this.router.get(rePath, async (ctx, next) => {
             let parseQ = parseQuery(ctx);
             let pageName = parseQ.pathname

@@ -3,4 +3,5 @@ dist
 .vscode
 .mini-next
 mini-next/lib
+logs
 package-lock.json

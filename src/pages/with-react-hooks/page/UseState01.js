@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 let APP = initProps => {
-    const [count, setCount] = useState(initProps.count);
+    const [count, setCount] = useState(initProps.count || 0);
     return (
         <div>
             <div>

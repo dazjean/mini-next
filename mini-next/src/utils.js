@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 const configPath = path.resolve(process.cwd(), './config/mini-next.config.js');
 const defaultConfig = {
+    logger: true, // 是否开启日志记录 默认路径根目录下logs
     cssModule: false,
     lessModule: false,
     scssModule: false,

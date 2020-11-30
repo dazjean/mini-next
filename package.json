@@ -1,6 +1,6 @@
 {
   "name": "mini-next",
-  "version": "2.2.0",
+  "version": "2.2.4",
   "description": "mini-next零成本升级react服务端渲染方案,支持静态导出,cdn部署,前后端同构,自定义路由前缀,自定义webpack,服务端渲染缓存",
   "main": "mini-next",
   "scripts": {
@@ -31,6 +31,7 @@
     "@babel/register": "^7.7.7",
     "@babel/runtime": "^7.7.7",
     "@types/react": "^16.9.53",
+    "@umajs/logger": "^0.1.1",
     "autodll-webpack-plugin": "^0.4.2",
     "autoprefixer": "^9.7.3",
     "babel-eslint": "^10.0.1",

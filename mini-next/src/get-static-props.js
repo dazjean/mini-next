@@ -1,4 +1,5 @@
 import help, { isResSent } from './utils';
+import Logger from './log';
 
 export function getDisplayName(Component) {
     return typeof Component === 'string'
@@ -48,7 +49,7 @@ export async function loadGetInitialProps(App, ctx) {
 
     if (help.isDev()) {
         if (Object.keys(props).length === 0 && !ctx.ctx) {
-            console.warn(
+            Logger.warn(
                 `${getDisplayName(
                     App
                 )} returned an empty object from \`getInitialProps\`. This de-optimizes and prevents automatic static optimization`
