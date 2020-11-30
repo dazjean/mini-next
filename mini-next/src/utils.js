@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 const configPath = path.resolve(process.cwd(), './config/mini-next.config.js');
+const otherConfigPath = path.resolve(process.cwd(), './config/config.js');
 const defaultConfig = {
     logger: true, // 是否开启日志记录 默认路径根目录下logs
     cssModule: false,
@@ -27,7 +28,10 @@ function normalizeConfig(App, config) {
     }
     return config;
 }
-
+/**
+ * 获取项目mini-next.config.js配置
+ * @param {*} App
+ */
 export function getConfig(App) {
     if (fs.existsSync(configPath)) {
         let configModule = require(configPath);
@@ -35,6 +39,17 @@ export function getConfig(App) {
         return Object.assign({}, defaultConfig, useConfig);
     } else {
         return defaultConfig;
+    }
+}
+/**
+ * 获取额外的config.js配置
+ */
+export function getOtherConfig() {
+    if (fs.existsSync(otherConfigPath)) {
+        let configModule = require(otherConfigPath);
+        return configModule;
+    } else {
+        return {};
     }
 }
 

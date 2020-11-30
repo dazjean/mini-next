@@ -1,7 +1,7 @@
 /*
  * @Author: zhang dajia * @Date: 2018-11-05 14:16:25
  * @Last Modified by: zhang dajia
- * @Last Modified time: 2020-11-30 12:06:57
+ * @Last Modified time: 2020-11-30 12:40:59
  * @Last  description: mini-next-router
  */
 import Router from 'koa-router';
@@ -17,9 +17,8 @@ import WatchPage from './watch';
 const publicPath = path.join(process.cwd() + '/dist/client');
 const pagePath = path.join(process.cwd() + '/src/pages');
 
-import help, { getConfig } from './utils';
 import Logger from './log';
-
+import help, { getConfig, getOtherConfig } from './utils';
 function normalizePagePath(page) {
     // If the page is `/` we need to append `/index`, otherwise the returned directory root will be bundles instead of pages
     // Resolve on anything that doesn't start with `/`
@@ -39,6 +38,7 @@ class RegisterClientPages {
         this.app = app;
         this.dev = dev && help.isDev();
         this.config = getConfig(app);
+        this.otherConfig = getOtherConfig();
         this.hotReload();
         this.registerPages();
         this.serverStatic();
@@ -95,6 +95,7 @@ class RegisterClientPages {
             if (ctx.path === '/') {
                 let parseQ = parseQuery(ctx);
                 ctx.miniNextConfig = this.config;
+                ctx.otherConfig = this.otherConfig;
                 if (!ctx.params) {
                     ctx.params = {};
                 }
@@ -122,6 +123,7 @@ class RegisterClientPages {
                 .replace(/^\//, '')
                 .split('/')[0];
             ctx.miniNextConfig = this.config;
+            ctx.otherConfig = this.otherConfig;
             if (pageName == page) {
                 ctx.params.pagename = page;
                 ctx.params.query = parseQ.query;
