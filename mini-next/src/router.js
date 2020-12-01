@@ -1,7 +1,7 @@
 /*
  * @Author: zhang dajia * @Date: 2018-11-05 14:16:25
  * @Last Modified by: zhang dajia
- * @Last Modified time: 2020-11-30 12:40:59
+ * @Last Modified time: 2020-12-01 19:53:25
  * @Last  description: mini-next-router
  */
 import Router from 'koa-router';
@@ -115,7 +115,7 @@ class RegisterClientPages {
         if (prefixRouter != '') {
             rePath = new RegExp('^/' + prefixRouter + '/' + page + '(/?.*)'); // re为/^\d+bl$
         }
-        Logger.info(`${rePath}---->/${page}/${page}`);
+        Logger.info(`[miniNext]: ${rePath}---->/${page}/${page}`);
         this.router.get(rePath, async (ctx, next) => {
             let parseQ = parseQuery(ctx);
             let pageName = parseQ.pathname
