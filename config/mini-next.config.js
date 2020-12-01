@@ -1,5 +1,5 @@
 module.exports = {
-    logger: false,
+    logger: true,
     prefixCDN: '/',
     prefixUrl: '',
     ssr: true, // 是否全局关闭服务端渲染

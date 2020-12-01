@@ -1,8 +1,5 @@
 #!/usr/bin/env node
 var commander = require('commander'); //可以自动的解析命令和参数，用于处理用户输入的命令
-const { output } = require('../lib/output');
-const { build } = require('../lib/build');
-const { dev } = require('../lib/dev');
 
 commander
     .version('0.0.1')
@@ -13,9 +10,10 @@ commander
 
 // 静态资源导出
 commander.command('output [page]').action((page = true) => {
-    if(page=='true'){
+    const { output } = require('../lib/output');
+    if (page == 'true') {
         process.env.NODE_ENV = 'production';
-    }else if (page == 'false'){
+    } else if (page == 'false') {
         process.env.NODE_ENV = 'development';
     }
     output(page);
@@ -23,10 +21,11 @@ commander.command('output [page]').action((page = true) => {
 
 // 生成环境构建
 commander.command('build [page]').action((page = true) => {
-    if(page=='true'){
+    const { build } = require('../lib/build');
+    if (page == 'true') {
         process.env.NODE_ENV = 'production';
         page = JSON.parse(page);
-    }else if (page == 'false'){
+    } else if (page == 'false') {
         process.env.NODE_ENV = 'development';
         page = JSON.parse(page);
     }
@@ -35,9 +34,10 @@ commander.command('build [page]').action((page = true) => {
 
 // 开发环境启动
 commander.command('dev [page]').action((page = true) => {
-    if(page=='true'){
+    const { dev } = require('../lib/dev');
+    if (page == 'true') {
         process.env.NODE_ENV = 'production';
-    }else if (page == 'false'){
+    } else if (page == 'false') {
         process.env.NODE_ENV = 'development';
     }
     dev(page);

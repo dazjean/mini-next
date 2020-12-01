@@ -7,11 +7,20 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "启动程序",
+            "name": "start",
             "skipFiles": [
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}/server/start.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "build",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/mini-next/bin/mini-next.js"
         }
     ]
 }
