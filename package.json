@@ -1,6 +1,6 @@
 {
   "name": "mini-next",
-  "version": "2.2.4",
+  "version": "2.2.8",
   "description": "mini-next零成本升级react服务端渲染方案,支持静态导出,cdn部署,前后端同构,自定义路由前缀,自定义webpack,服务端渲染缓存",
   "main": "mini-next",
   "scripts": {
@@ -44,6 +44,7 @@
     "core-js": "^3.6.2",
     "css-hot-loader": "^1.4.4",
     "css-loader": "^5.0.0",
+    "cssnano": "^4.1.10",
     "es6-promise": "^4.2.8",
     "eslint": "^4.7.0",
     "eslint-loader": "^1.9.0",

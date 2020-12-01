@@ -3,7 +3,7 @@ import path from 'path';
 import { getProconfig } from './proconfig';
 import { getDevconfig } from './devconfig';
 import serverConfig from './serverconfig';
-import Logger from './../log';
+// import Logger from './../log';
 
 const clientPath = path.join(process.cwd() + '/dist/client');
 
@@ -37,12 +37,12 @@ class Webpack {
             this.Compiler.run((err, stats) => {
                 if (err) {
                     if (err.details) {
-                        Logger.error(err.details);
+                        console.error(err.details);
                     }
                     reject(err.stack || err);
                 }
 
-                Logger.info(
+                console.info(
                     stats.toString({
                         chunks: false, // 使构建过程更静默无输出
                         entrypoints: true,
@@ -56,13 +56,13 @@ class Webpack {
 
                 const info = stats.toJson();
                 if (stats.hasErrors()) {
-                    Logger.error('[miniNext]:编译错误!!!', info.errors.join());
+                    console.error('[miniNext]:编译错误!!!', info.errors.join());
                     reject(info.errors);
                     return;
                 }
                 //处理代码编译中产生的warning
                 if (stats.hasWarnings()) {
-                    Logger.warn('[miniNext]:编译警告!!!', info.warnings.join());
+                    console.warn('[miniNext]:编译警告!!!', info.warnings.join());
                 }
 
                 resove(true);
@@ -70,13 +70,13 @@ class Webpack {
         });
     }
     webpackCallback(err, stats) {
-        Logger.info(
+        console.info(
             stats.toString({
                 chunks: false,
                 colors: true
             })
         );
-        Logger.info('[miniNext]:compiler....ok!');
+        console.info('[miniNext]:compiler....ok!');
     }
     clearRequireCache(moduleFilename) {
         delete require.cache[moduleFilename];
