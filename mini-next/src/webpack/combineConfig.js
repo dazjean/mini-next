@@ -1,7 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 const userWebpackConfigPath = path.join(process.cwd() + '/config/mini-next.config.js');
-var ExtractTextPlugin = require('mini-css-extract-plugin'); //css单独打包
 const loaderDefaultArr = [
     '.js',
     '.jsx',
@@ -16,12 +15,32 @@ const loaderDefaultArr = [
     '.gif',
     '.svg'
 ];
+function isSameLoader(loader1, loader2) {
+    const loader1Name = typeof loader1 === 'string' ? loader1 : loader1.loader;
+    const loader2Name = typeof loader2 === 'string' ? loader2 : loader2.loader;
+    return loader1Name === loader2Name;
+}
 function mergeLoader(before, item, cssLoader = false, server = false) {
     if (item && item.length) {
-        if (cssLoader && !server) {
-            before.use = ['css-hot-loader', ExtractTextPlugin.loader, ...item];
-        } else {
-            before.use = item;
+        //如果有则覆盖，没有则添加 双指针：一个beforeIndex指向原有默认配置，一个itemIndex指向用户配置
+        //1.loader相同 beforeIndex++ && itemIndex++,覆盖
+        //2.loader不相同 beforeIndex++,添加
+        const beforeLength = before.use.length,
+            itemLength = item.length;
+        let beforeIndex = 0,
+            itemIndex = 0;
+        while (beforeIndex < beforeLength && itemIndex < itemLength) {
+            if (isSameLoader(before.use[beforeIndex], item[itemIndex])) {
+                before.use[beforeIndex] = item[itemIndex];
+                beforeIndex++;
+                itemIndex++;
+            } else {
+                beforeIndex++;
+            }
+        }
+        if (itemIndex < itemLength) {
+            //用户配置
+            before.use.push(...item.slice(itemIndex));
         }
     }
 }
