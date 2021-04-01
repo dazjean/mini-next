@@ -23,7 +23,7 @@
     "rules": {
       "comma-dangle": 1,
       "quotes": [ 0, "single" ],
-      "no-undef": 1,
+      "no-undef":"error",
       "global-strict": 0,
       "no-extra-semi": 1,
       "no-underscore-dangle": 0,

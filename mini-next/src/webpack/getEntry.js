@@ -1,19 +1,17 @@
-const fs = require('fs');
-const path = require('path');
-const entryPath = path.join(process.cwd() + '/src/pages/');
-const outputPath = path.join(process.cwd() + '/.mini-next');
+import path from 'path';
+import fs from 'fs';
+import help, { getEntryDir, tempDir } from './../utils';
+const entryDir = getEntryDir();
 
 function getEntry(cateName) {
     var entryObj = {};
-    let hasHomeEntry = false;
     const setEntry = function(pageName) {
-        if (pageName === '_home') hasHomeEntry = true;
-        entryObj[`${pageName}/${pageName}`] = `${outputPath}/${pageName}`;
+        entryObj[`${pageName}/${pageName}`] = `${tempDir}/${pageName}`;
     };
     if (cateName == true || cateName == 0 || typeof cateName == 'boolean') {
-        fs.readdirSync(entryPath).forEach(function(cateName) {
+        fs.readdirSync(entryDir).forEach(function(cateName) {
             //cateName/cateName指定输出路径为entryname
-            if (cateName != 'index.html' && cateName != '.DS_Store' && serverPropsInject(cateName))
+            if (cateName != 'index.html' && cateName != '.DS_Store' && initPropsInject(cateName))
                 setEntry(cateName);
         });
     } else {
@@ -21,23 +19,27 @@ function getEntry(cateName) {
         var cateNameArray = cateName.split(',');
         for (var i = 0; i < cateNameArray.length; i++) {
             let fileName = cateNameArray[i];
-            if (serverPropsInject(cateNameArray[i])) setEntry(fileName);
+            if (initPropsInject(cateNameArray[i])) setEntry(fileName);
         }
     }
     return entryObj;
 }
-function serverPropsInject(cateName) {
+function initPropsInject(cateName) {
     try {
         //创建临时文件
+        let entryFile = help.getOptions('rootDir');
         let data = fs.readFileSync(path.join(__dirname, '..', 'template.js'), 'utf8');
-        data = data.replace('$injectApp$', `require('../src/pages/${cateName}/${cateName}')`);
+        data = data.replace(
+            '$injectApp$',
+            `require('../${entryFile}/pages/${cateName}/${cateName}')`
+        );
         data = data.replace('__miniNext_DATA__pathname', cateName);
-        let exists = fs.existsSync(outputPath);
+        let exists = fs.existsSync(tempDir);
         if (!exists) {
-            fs.mkdirSync(outputPath);
+            fs.mkdirSync(tempDir);
         }
-        if (!fs.existsSync(`${outputPath}/${cateName}.js`)) {
-            fs.writeFileSync(`${outputPath}/${cateName}.js`, data);
+        if (!fs.existsSync(`${tempDir}/${cateName}.js`)) {
+            fs.writeFileSync(`${tempDir}/${cateName}.js`, data);
         }
         return true;
     } catch (err) {

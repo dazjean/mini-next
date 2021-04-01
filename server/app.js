@@ -5,7 +5,7 @@
  */
 const Koa = require('koa');
 const path = require('path');
-const miniNext = require('../mini-next/src/router');
+const miniNext = require('../mini-next/src');
 const koaStatic = require('koa-static');
 
 const app = new Koa();

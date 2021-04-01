@@ -1,10 +1,12 @@
 import chokidar from 'chokidar';
 import path from 'path';
-import { readClientPages } from './pageInit';
+import { readEntryPages } from './pageInit';
 import webPack from './webpack/run';
 import Logger from './log';
 
-const pagesDir = path.join(process.cwd() + '/src/pages');
+const { getEntryDir } = require('./utils');
+
+const entryDir = getEntryDir();
 
 export default class WatchPages {
     constructor(app) {
@@ -13,9 +15,9 @@ export default class WatchPages {
     }
     async startWathc() {
         let listOfDirectories = [];
-        let Directories = await readClientPages();
+        let Directories = await readEntryPages();
         Directories.forEach(cateName => {
-            let pageMain = pagesDir + '/' + cateName;
+            let pageMain = entryDir + '/' + cateName;
             listOfDirectories.push(pageMain);
         });
         const watcher = chokidar.watch(listOfDirectories, {
@@ -24,7 +26,7 @@ export default class WatchPages {
         });
         watcher.on('change', async fileName => {
             let beginTime = new Date().getTime();
-            let pageName = '/' + path.relative(pagesDir, fileName).replace(/\\+/g, '/');
+            let pageName = '/' + path.relative(entryDir, fileName).replace(/\\+/g, '/');
             Logger.warn(
                 `[miniNext]:Listen to ${pageName} file change, will recompile webpack........`
             );

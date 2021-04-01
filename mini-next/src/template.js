@@ -3,6 +3,7 @@ import React from 'react';
 import ReactDom from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { hot } from 'react-hot-loader/root';
+// eslint-disable-next-line no-undef
 let App = $injectApp$;
 App = App.default ? App.default : App;
 
@@ -20,7 +21,7 @@ inBrowser &&
     ReactDom.hydrate(
         <Router basename="/__miniNext_DATA__pathname">
             <App
-                {...window.__miniNext_DATA__.serverProps}
+                {...window.__miniNext_DATA__.initProps}
                 pathName={window.__miniNext_DATA__.pathName || ''}
                 pageName={window.__miniNext_DATA__.pageName || ''}
                 query={window.__miniNext_DATA__.query || ''}

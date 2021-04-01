@@ -2,15 +2,14 @@ import React from 'react';
 import fs from 'fs';
 import ReactDOMServer from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom';
-// import getStream from 'get-stream';
 import path from 'path';
 import { loadGetInitialProps } from './get-static-props';
 import webPack from './webpack/run';
-import help from './utils';
+import help, { tempDir, clientDir, serverDir } from './utils';
 import Logger from './log';
-const outputPath = path.join(process.cwd() + '/.mini-next');
-const clientPath = path.join(process.cwd() + '/dist');
-const TDKPath = path.join(process.cwd() + '/src');
+const entryDir = help.getOptions('rootDir');
+const TDKPath = path.join(process.cwd() + `/${entryDir}`);
+
 /**
  * 写入文件,存在则覆盖
  * @param {*} path 文件名称
@@ -36,7 +35,7 @@ const writeFile = async (path, Content) => {
  */
 export const render = pagename => {
     return new Promise((resolve, reject) => {
-        let viewUrl = `${clientPath}/client/${pagename}/${pagename}.html`;
+        let viewUrl = `${clientDir}/${pagename}/${pagename}.html`;
         fs.readFile(viewUrl, 'utf8', (err, data) => {
             if (err) {
                 reject(err);
@@ -59,11 +58,11 @@ const filterXss = str => {
 };
 
 const writeFileHander = (name, Content) => {
-    fs.exists(outputPath, exists => {
+    fs.exists(tempDir, exists => {
         if (exists) {
             writeFile(name, Content);
         } else {
-            fs.mkdir(outputPath, err => {
+            fs.mkdir(tempDir, err => {
                 if (err) {
                     Logger.error(`[miniNext]:${err.stack}`);
                 } else {
@@ -78,8 +77,8 @@ const writeFileHander = (name, Content) => {
  * @param {*} pagename
  */
 export const checkDistJsmodules = async pagename => {
-    let jspath = clientPath + '/server/' + pagename + '/' + pagename + '.js';
-    let jsClientdir = clientPath + '/client/' + pagename;
+    let jspath = `${serverDir}/${pagename}/${pagename}.js`;
+    let jsClientdir = `${clientDir}/${pagename}`;
     if (!fs.existsSync(jspath)) {
         //服务端代码打包
         let compiler = new webPack(pagename, help.isDev(), true);
@@ -97,9 +96,9 @@ export const checkDistJsmodules = async pagename => {
  * @param {*} ctx
  * @param {*} next
  */
-export const renderServerDynamic = async ctx => {
+export const renderServerDynamic = async (ctx, initProps) => {
     const context = {};
-    var { pagename, pathname, query } = ctx.params;
+    var { pagename, pathname, query } = ctx._miniNext;
     let App = {};
     let jspath = await checkDistJsmodules(pagename);
     try {
@@ -117,6 +116,9 @@ export const renderServerDynamic = async ctx => {
         Logger.error(error.stack);
     }
     let props = await loadGetInitialProps(App, ctx);
+    if (typeof initProps === 'object') {
+        props = Object.assign(props, initProps);
+    }
     let Html = '';
     // let Htmlstream = ''; 使用renderToNodeStream暂时没有多大的效益 当前方案得修改替换基础模板 后续通过stream替换基础模板内容？
     let locationUrl = ctx.request.url.split(pagename)[1];
@@ -153,12 +155,12 @@ export const renderServerDynamic = async ctx => {
             `<div id="app">${Html}</div>
              <script>var __miniNext_DATA__ = 
                 {
-                    serverProps:${JSON.stringify(props)},
-                    pageName: "${pagename}",
-                    pathName:"${pathname}",
-                    query:${JSON.stringify(query)},
-                    config:${JSON.stringify(ctx.otherConfig)},
-                    miniNextConfig:${JSON.stringify(ctx.miniNextConfig)}
+                    initProps:${JSON.stringify(props)},
+                    page: "${pagename}",
+                    path:"${pathname}",
+                    query:${JSON.stringify(query || {})},
+                    config:${JSON.stringify(ctx._miniNextConfig || {})},
+                    options:${JSON.stringify(ctx._miniNextOptions || {})}
                 }
              </script>`
         );
@@ -170,20 +172,20 @@ export const renderServerDynamic = async ctx => {
  * 获取服务端渲染直出资源
  * @param {*} ctx
  */
-export const renderServerStatic = async ctx => {
-    let pageName = ctx.params.pagename;
-    let { ssrCache, ssrIngore, ssr, statiPages } = ctx.miniNextConfig;
+export const renderServerStatic = async (ctx, initProps) => {
+    let pageName = ctx._miniNext.pagename;
+    let { ssrCache, ssrIngore, ssr, statiPages } = ctx._miniNextOptions;
     return new Promise(async resolve => {
         if (!ssr || (ssrIngore && ssrIngore.test(pageName))) {
             // 客户端渲染模式
             return resolve(await render(pageName));
         }
 
-        let viewUrl = `${outputPath}/${pageName}.html`;
+        let viewUrl = `${tempDir}/${pageName}.html`;
         if (help.isDev() || (!ssrCache && statiPages.indexOf(pageName) == -1)) {
             // ssr无缓存模式，适用每次请求都是动态渲染页面场景
             Logger.info(`[miniNext]: ${ctx.path} route uses SSR mode to access.`);
-            resolve(await renderServerDynamic(ctx));
+            resolve(await renderServerDynamic(ctx, initProps));
         } else {
             if (fs.existsSync(viewUrl)) {
                 // ssr缓存模式，执行一次ssr 第二次直接返回缓存后的html静态资源
@@ -193,10 +195,10 @@ export const renderServerStatic = async ctx => {
             } else {
                 // ssr缓存模式,首次执行
                 Logger.info(`[miniNext]: ${ctx.path} route uses SSR mode for the first time.`);
-                let document = await renderServerDynamic(ctx);
+                let document = await renderServerDynamic(ctx, initProps);
                 resolve(document);
                 process.nextTick(() => {
-                    writeFileHander(outputPath + '/' + pageName + '.html', document); //异步写入服务器缓存目录
+                    writeFileHander(tempDir + '/' + pageName + '.html', document); //异步写入服务器缓存目录
                 });
             }
         }
@@ -233,8 +235,8 @@ export const renderTDK = async (document, pagename, ctx, App) => {
         if (typeof getInitialTDK == 'function') {
             let res = await getInitialTDK(
                 ctx,
-                (ctx.params && ctx.params.query) || null,
-                (ctx.params && ctx.params.pathname) || null
+                (ctx._miniNext && ctx._miniNext.query) || null,
+                (ctx._miniNext && ctx._miniNext.pathname) || null
             );
             //解析结果拿到最终模板
             if (res.headContent) {
@@ -270,7 +272,7 @@ export const renderTDK = async (document, pagename, ctx, App) => {
     } catch (error) {
         // eslint-disable-next-line no-console
         Logger.error(
-            `please check getInitialTDK in /src/${pagename}/${pagename}.js or TDK.js in/src or /src/`
+            `please check getInitialTDK in /${entryDir}/${pagename}/${pagename}.js or TDK.js in/${entryDir} or /${entryDir}/`
         );
         Logger.error(error.stack);
     }

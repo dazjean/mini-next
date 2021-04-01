@@ -1,6 +1,6 @@
 const Logger = require('@umajs/logger');
 const path = require('path');
-const { logger } = require('./../utils').getConfig();
+const { logger } = require('./../utils').getCoreConfig();
 const dir = path.join(process.cwd() + '/logs');
 if (logger) {
     Logger.default.init({

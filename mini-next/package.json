@@ -1,20 +1,20 @@
 {
   "name": "mini-next",
-  "version": "2.2.10",
+  "version": "3.0.0-beta1",
   "description": "mini-next是一个近乎零成本升级react服务端渲染的框架,支持静态导出,cdn部署,前后端同构,自定义路由前缀,自定义webpack,服务端渲染缓存",
-  "main": "lib/router.js",
-  "directories": {	
-    "lib": "lib"	
+  "main": "lib/index.js",
+  "directories": {
+    "lib": "lib"
   },
   "keywords": [
-    "ssr",	  
+    "ssr",
     "react",
     "next",
-    "mini-next"	
+    "mini-next"
   ],
-  "bin": {	
-    "mini-next": "./bin/mini-next.js",	
-    "miniNext": "./bin/mini-next.js"	
+  "bin": {
+    "mini-next": "./bin/mini-next.js",
+    "miniNext": "./bin/mini-next.js"
   },
   "scripts": {
     "build": "babel src --out-dir lib  --copy-files",

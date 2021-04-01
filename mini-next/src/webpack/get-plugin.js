@@ -1,27 +1,29 @@
+import help from '../utils';
+
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('mini-css-extract-plugin'); //css单独打包
 const moment = require('moment');
-// const OpenBrowserPlugin = require('open-browser-webpack-plugin');
 const webpack = require('webpack');
 const AutoDllPlugin = require('autodll-webpack-plugin');
 const path = require('path');
 const fs = require('fs');
-import help from '../utils';
-
-function getPlugin(entryObj, isServer = false) {
+const entryDir = help.getOptions('rootDir');
+function getPlugin(entryObj) {
     var pages = Object.keys(entryObj);
     let webpackPlugin = [];
     pages.forEach(function(pathname) {
         var htmlName = entryObj[pathname];
         var entryName = pathname.split('/')[0];
-        var template_local = (htmlName + '.html').replace('.mini-next', 'src/pages/' + entryName);
+        var template_local = (htmlName + '.html').replace(
+            '.mini-next',
+            `${entryDir}/pages/${entryName}`
+        );
         var conf = {
             filename: entryName + '/' + entryName + '.html', //生成的html存放路径，相对于path
             template: template_local, //html模板路径
             title: entryName,
             inject: true, //js插入的位置，true/'head'/'body'/false
             hash: help.isDev() ? true : false, //为静态资源生成hash值
-            // favicon: 'src/favicon.ico', //favicon路径，通过webpack引入同时可以生成hash值
             chunks: [pathname], //需要引入的chunk，不配置就会引入所有页面的资源
             minify: {
                 //压缩HTML文件
@@ -29,9 +31,10 @@ function getPlugin(entryObj, isServer = false) {
                 collapseWhitespace: false //删除空白符与换行符
             }
         };
-        var defineConf = Object.assign({}, conf, { template: 'src/template.html' });
+        const templateHtml = `${entryDir}/template.html`;
+        var defineConf = Object.assign({}, conf, { template: templateHtml });
         var exists = fs.existsSync(template_local);
-        var existsTemplate = fs.existsSync('src/template.html');
+        var existsTemplate = fs.existsSync(templateHtml);
         if (exists) {
             webpackPlugin.push(new HTMLWebpackPlugin(conf));
         } else if (existsTemplate) {

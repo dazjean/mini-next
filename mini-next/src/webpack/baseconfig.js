@@ -2,14 +2,15 @@ const path = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('mini-css-extract-plugin'); //css单独打包
 const moment = require('moment');
-const srcPath = path.join(process.cwd() + '/src');
 const { getEntry } = require('./getEntry');
 const { getPlugin } = require('./get-plugin');
 const clientPath = path.join(process.cwd() + '/dist/client');
 const combineConfig = require('./combineConfig');
 
-import help, { getConfig } from '../utils';
-const { prefixCDN, cssModule, lessModule, scssModule } = getConfig();
+import help, { getCoreConfig } from '../utils';
+const { prefixCDN, cssModule, lessModule, scssModule } = getCoreConfig();
+const rootDir = help.getOptions('rootDir');
+const srcPath = path.join(process.cwd() + `/${rootDir}`);
 
 function getBaseconfig(pageName, isServer = false, hotReload = false) {
     let entryObj = getEntry(pageName);

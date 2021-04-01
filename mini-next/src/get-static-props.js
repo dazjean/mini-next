@@ -32,8 +32,8 @@ export async function loadGetInitialProps(App, ctx) {
 
     const props = await App.getInitialProps(
         ctx,
-        (ctx.params && ctx.params.query) || null,
-        (ctx.params && ctx.params.pathname) || null
+        (ctx._miniNext && ctx._miniNext.query) || null,
+        (ctx._miniNext && ctx._miniNext.pathname) || null
     );
 
     if (res && isResSent(res)) {
