@@ -103,7 +103,8 @@ function getServerconfig(pageName) {
                 amd: 'isomorphic-fetch'
             }
         },
-        resolve: baseConfig.resolve
+        resolve: baseConfig.resolve,
+        plugins: []
     };
     return combineConfig(config, true);
 }
