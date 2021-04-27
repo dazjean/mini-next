@@ -97,8 +97,8 @@ props除了挂载我们getInitialProps的返回值外，还会挂载url中的的
 
 # 高级配置
 
-## `mini-next.config`
-可在config/mini-next.config.js下对我们的项目进行相关配置。
+## `ssr.config.js`
+可在config/ssr.config.js下对我们的项目进行相关配置。
 ```
 module.exports = {
     ssr: true, // 全局开启服务端渲染

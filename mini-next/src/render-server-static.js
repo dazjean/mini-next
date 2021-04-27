@@ -149,9 +149,10 @@ export const renderServerDynamic = async (ctx, initProps) => {
             }
         }
         let rootNode = ctx._miniNextOptions.rootNode;
+        let replaceReg = new RegExp(`<div id="${rootNode}"><\/div>`);
         // 把渲染后的 React HTML 插入到 div 中
         let document = data.replace(
-            `/<div id="${rootNode}"><\/div>/`,
+            replaceReg,
             `<div id="${rootNode}">${Html}</div>
              <script>var __miniNext_DATA__ = 
                 {
