@@ -59,7 +59,7 @@ const useMsgTip = () => {
         let timer = setTimeout(() => {
             setMsgtip({ text: msgtips[nextKey], key: nextKey });
         }, 2000);
-        return function() {
+        return function () {
             clearTimeout(timer);
         };
     }, [msgtip]);

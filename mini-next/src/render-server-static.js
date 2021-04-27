@@ -16,8 +16,8 @@ const TDKPath = path.join(process.cwd() + `/${entryDir}`);
  * @param {*} Content 内容
  */
 const writeFile = async (path, Content) => {
-    return new Promise(resolve => {
-        fs.writeFile(path, Content, { encoding: 'utf8' }, function(err) {
+    return new Promise((resolve) => {
+        fs.writeFile(path, Content, { encoding: 'utf8' }, function (err) {
             if (err) {
                 resolve(false);
             } else {
@@ -33,7 +33,7 @@ const writeFile = async (path, Content) => {
  * @param  {string} page html文件名称
  * @return {promise}
  */
-export const render = pagename => {
+export const render = (pagename) => {
     return new Promise((resolve, reject) => {
         let viewUrl = `${clientDir}/${pagename}/${pagename}.html`;
         fs.readFile(viewUrl, 'utf8', (err, data) => {
@@ -46,7 +46,7 @@ export const render = pagename => {
     });
 };
 
-const filterXss = str => {
+const filterXss = (str) => {
     var s = '';
     s = str.replace(/&/g, '&amp;');
     s = s.replace(/</g, '&lt;');
@@ -58,11 +58,11 @@ const filterXss = str => {
 };
 
 const writeFileHander = (name, Content) => {
-    fs.exists(tempDir, exists => {
+    fs.exists(tempDir, (exists) => {
         if (exists) {
             writeFile(name, Content);
         } else {
-            fs.mkdir(tempDir, err => {
+            fs.mkdir(tempDir, (err) => {
                 if (err) {
                     Logger.error(`[miniNext]:${err.stack}`);
                 } else {
@@ -76,7 +76,7 @@ const writeFileHander = (name, Content) => {
  *
  * @param {*} pagename
  */
-export const checkDistJsmodules = async pagename => {
+export const checkDistJsmodules = async (pagename) => {
     let jspath = `${serverDir}/${pagename}/${pagename}.js`;
     let jsClientdir = `${clientDir}/${pagename}`;
     if (!fs.existsSync(jspath)) {
@@ -120,16 +120,15 @@ export const renderServerDynamic = async (ctx, initProps) => {
         props = Object.assign(props, initProps);
     }
     let Html = '';
-    // let Htmlstream = ''; 使用renderToNodeStream暂时没有多大的效益 当前方案得修改替换基础模板 后续通过stream替换基础模板内容？
-    let locationUrl = ctx.request.url.split(pagename)[1];
+    let location = ctx.url.split(pagename)[1];
     try {
         Html = ReactDOMServer.renderToString(
-            <StaticRouter location={locationUrl || '/'} context={context}>
+            <StaticRouter location={location || '/'} context={context}>
                 <App pageName={pagename} pathName={pathname} query={query} {...props} />
             </StaticRouter>
         );
     } catch (error) {
-        Logger.warn('服务端渲染异常，降级使用客户端渲染！' + error);
+        Logger.warn('服务端渲染异常，降级使用客户端渲染！' + error.stack);
     }
     if (context.url) {
         ctx.response.writeHead(301, {
@@ -142,17 +141,18 @@ export const renderServerDynamic = async (ctx, initProps) => {
         //进行xss过滤
         for (let key in query) {
             if (query[key] instanceof Array) {
-                query[key] = query[key].map(item => {
+                query[key] = query[key].map((item) => {
                     return filterXss(item);
                 });
             } else {
                 query[key] = filterXss(query[key]);
             }
         }
+        let rootNode = ctx._miniNextOptions.rootNode;
         // 把渲染后的 React HTML 插入到 div 中
         let document = data.replace(
-            /<div id="app"><\/div>/,
-            `<div id="app">${Html}</div>
+            `/<div id="${rootNode}"><\/div>/`,
+            `<div id="${rootNode}">${Html}</div>
              <script>var __miniNext_DATA__ = 
                 {
                     initProps:${JSON.stringify(props)},
@@ -174,15 +174,15 @@ export const renderServerDynamic = async (ctx, initProps) => {
  */
 export const renderServerStatic = async (ctx, initProps) => {
     let pageName = ctx._miniNext.pagename;
-    let { ssrCache, ssrIngore, ssr, statiPages } = ctx._miniNextOptions;
-    return new Promise(async resolve => {
+    let { cache, ssrIngore, ssr, staticPages } = ctx._miniNextOptions;
+    return new Promise(async (resolve) => {
         if (!ssr || (ssrIngore && ssrIngore.test(pageName))) {
             // 客户端渲染模式
             return resolve(await render(pageName));
         }
 
         let viewUrl = `${tempDir}/${pageName}.html`;
-        if (help.isDev() || (!ssrCache && statiPages.indexOf(pageName) == -1)) {
+        if (help.isDev() || (!cache && staticPages.indexOf(pageName) == -1)) {
             // ssr无缓存模式，适用每次请求都是动态渲染页面场景
             Logger.info(`[miniNext]: ${ctx.path} route uses SSR mode to access.`);
             resolve(await renderServerDynamic(ctx, initProps));

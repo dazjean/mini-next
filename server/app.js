@@ -4,12 +4,12 @@
  * @Last  description: undefined
  */
 const Koa = require('koa');
-const path = require('path');
+// const path = require('path');
 const miniNext = require('../mini-next/src');
-const koaStatic = require('koa-static');
+// const koaStatic = require('koa-static');
 
 const app = new Koa();
-app.use(koaStatic(path.resolve(__dirname, './../public')));
+// app.use(koaStatic(path.resolve(__dirname, './../public')));
 
 new miniNext(app);
 

@@ -1,17 +1,17 @@
 import help from '../utils';
+import HTMLWebpackPlugin from 'html-webpack-plugin';
+import ExtractTextPlugin from 'mini-css-extract-plugin';
+import AutoDllPlugin from 'autodll-webpack-plugin';
+import moment from 'moment';
+import webpack from 'webpack';
+import path from 'path';
+import fs from 'fs';
 
-const HTMLWebpackPlugin = require('html-webpack-plugin');
-const ExtractTextPlugin = require('mini-css-extract-plugin'); //css单独打包
-const moment = require('moment');
-const webpack = require('webpack');
-const AutoDllPlugin = require('autodll-webpack-plugin');
-const path = require('path');
-const fs = require('fs');
 const entryDir = help.getOptions('rootDir');
 function getPlugin(entryObj) {
     var pages = Object.keys(entryObj);
     let webpackPlugin = [];
-    pages.forEach(function(pathname) {
+    pages.forEach(function (pathname) {
         var htmlName = entryObj[pathname];
         var entryName = pathname.split('/')[0];
         var template_local = (htmlName + '.html').replace(

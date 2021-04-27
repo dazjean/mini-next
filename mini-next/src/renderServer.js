@@ -17,7 +17,7 @@ import Logger from './log';
  * @param {*} pagename
  * @param {*} App
  */
-const renderServerDynamic = async pagename => {
+const renderServerDynamic = async (pagename) => {
     const context = {};
     let Html = '';
     let Htmlstream = '';

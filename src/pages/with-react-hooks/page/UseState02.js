@@ -10,7 +10,7 @@ let APP = () => {
             <button onClick={() => setBooks({ name: '数学' })}>修改书名称</button>
             <button
                 onClick={() =>
-                    setBooks(prevState => {
+                    setBooks((prevState) => {
                         //或者通过Object.assign合并对象
                         return { ...prevState, ...{ name: '数学' } };
                     })

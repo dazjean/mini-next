@@ -24,7 +24,7 @@ const pageInit = async () => {
 const readEntryPages = () => {
     return new Promise((resolve, reject) => {
         try {
-            fs.readdir(entryDir, function(err, files) {
+            fs.readdir(entryDir, function (err, files) {
                 if (err) {
                     reject(err);
                 } else {

@@ -8,7 +8,7 @@ let APP = () => {
 
     const [count, setCount] = useState(0);
     useEffect(() => {
-        initState().then(defaultCount => {
+        initState().then((defaultCount) => {
             setCount(defaultCount);
             console.log(`useEffect异步获取count${defaultCount}`);
         });
@@ -19,7 +19,7 @@ let APP = () => {
             <div>
                 <span>Count:{count}</span>
             </div>
-            <button onClick={() => setCount(prevCount => prevCount + 1)}>加一</button>
+            <button onClick={() => setCount((prevCount) => prevCount + 1)}>加一</button>
         </div>
     );
 };

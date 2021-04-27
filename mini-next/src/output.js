@@ -11,17 +11,17 @@ const fs = require('fs');
 
 const RenderServer = require('./renderServer');
 const writeFile = (name, Content) => {
-    fs.writeFile(tempDir + '/' + name + '.html', Content, function(err) {
+    fs.writeFile(tempDir + '/' + name + '.html', Content, function (err) {
         if (err) console.log('[miniNext]:写文件操作失败');
         else console.log(`[miniNext]:${name}.html构建成功！`);
     });
 };
 const writeFileHander = (name, Content) => {
-    fs.exists(tempDir, exists => {
+    fs.exists(tempDir, (exists) => {
         if (exists) {
             writeFile(name, Content);
         } else {
-            fs.mkdir(tempDir, err => {
+            fs.mkdir(tempDir, (err) => {
                 if (err) {
                     console.log('[miniNext]:创建文件夹失败！');
                 } else {
@@ -31,7 +31,7 @@ const writeFileHander = (name, Content) => {
         }
     });
 };
-export const output = async cateName => {
+export const output = async (cateName) => {
     if (cateName == true || !cateName) {
         //构建导出当前项目所有页面
         const PageComponent = await require('./pageInit').getPageComponent(); //初始化ssr页面入口文件导入配置

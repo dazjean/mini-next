@@ -1,3 +1,8 @@
+# HtmlTemplate
+
+## 默认模板
+框架内置`HTMLWebpackPlugin`提供了默认的构建输出的html模板`template.html`
+```
 <!DOCTYPE html>
 <html>
 
@@ -11,8 +16,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="keywords" content="">
-    <title>with-react-router</title>
+    <title>mini-next-webapp-<%= htmlWebpackPlugin.options.title %></title>
 </head>
+
 <body>
     <div id="app"></div>
     <script type="text/javascript">
@@ -20,6 +26,7 @@
             function t() {
                 n.style.fontSize = 16 * e().width / 375 + "px"
             }
+
             function e() {
                 return {
                     width: document.documentElement.clientWidth || document.body.clientWidth,
@@ -35,6 +42,14 @@
             }   
         };
     </script>
-</body>
+    </body>
 
 </html>
+```
+
+## 自定义模板
+为满足业务引入第三方脚本也提供了以下方式自定义template模板。
+- `src/pages/xxx/xxx.html`（局部）
+- `src/template.html`（全局）
+
+`src/pages/xxx/xxx.html` > `src/template.html`

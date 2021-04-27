@@ -1,6 +1,4 @@
-// var HTMLWebpackPlugin = require('html-webpack-plugin');
-// var fs = require('fs');
-var { getBaseconfig } = require('./baseconfig');
+import { getBaseconfig } from './baseconfig';
 
 function getDevconfig(pageName, isServer) {
     let config = getBaseconfig(pageName, isServer);

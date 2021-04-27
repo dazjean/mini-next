@@ -3,11 +3,11 @@ let APP = () => {
     const [time, setTime] = useState(new Date().getTime());
     const [flag, setFlag] = useState(true);
     useEffect(() => {
-        let timer = setTimeout(function() {
+        let timer = setTimeout(function () {
             setTime(new Date().getTime());
         }, 0);
         console.log('effect has be run!');
-        return function() {
+        return function () {
             clearTimeout(timer);
         };
     }, [flag]); //只有flag参数变化后才会重现执行effect

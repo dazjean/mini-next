@@ -1,4 +1,4 @@
-module.exports = async ctx => {
+module.exports = async (ctx) => {
     return {
         title: '测试with-react-hashRouter',
         keywords: '测试，key，words',

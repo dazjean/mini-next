@@ -1,5 +1,5 @@
-var { getBaseconfig } = require('./baseconfig');
-var { getPlugin } = require('./get-plugin');
+import { getBaseconfig } from './baseconfig';
+import { getPlugin } from './get-plugin';
 
 function getProconfig(pageName, isServer) {
     let config = getBaseconfig(pageName);

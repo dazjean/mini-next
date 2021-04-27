@@ -15,7 +15,7 @@ class App extends Component {
                 <span>
                     <img src={require('images/with-react/addressIcon.jpg')} />
                 </span>
-                hello mini-next!！
+                hello mini-next!
             </div>
         );
     }

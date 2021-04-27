@@ -3,7 +3,7 @@ let APP = () => {
     const [time, setTime] = useState(new Date().getTime());
     useEffect(() => {
         console.log('初始渲染!');
-        return function() {
+        return function () {
             // clearTimeout(timer);
             console.log('被卸载了!');
         };

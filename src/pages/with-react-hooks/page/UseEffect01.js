@@ -10,7 +10,7 @@ let APP = () => {
             <div>
                 <span>Count: {count}</span>
             </div>
-            <button onClick={() => setCount(prevCount => prevCount + 1)}>加一</button>
+            <button onClick={() => setCount((prevCount) => prevCount + 1)}>加一</button>
         </div>
     );
 };

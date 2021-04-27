@@ -1,7 +1,6 @@
-const path = require('path');
-const clientPath = path.join(process.cwd() + '/dist/server');
-const { getBaseconfig } = require('./baseconfig');
-const combineConfig = require('./combineConfig');
+import { serverDir } from '../utils';
+import { getBaseconfig } from './baseconfig';
+import combine from './combine';
 
 function getServerconfig(pageName) {
     let baseConfig = getBaseconfig(pageName, true);
@@ -14,7 +13,7 @@ function getServerconfig(pageName) {
             libraryTarget: 'umd',
             globalObject: 'this', //webpack4之后如果umd构建在浏览器和node环境中均可使用需要设置成this
             filename: '[name].js', //打包后输出文件的文件名
-            path: clientPath //打包后的文件存放的地方
+            path: serverDir //打包后的文件存放的地方
         },
         module: {
             rules: [
@@ -96,6 +95,12 @@ function getServerconfig(pageName) {
                 commonjs: 'react-dom',
                 commonjs2: 'react-dom'
             },
+            'react-router-dom': {
+                amd: 'react-router-dom',
+                root: 'ReactRouterDom',
+                commonjs: 'react-router-dom',
+                commonjs2: 'react-router-dom'
+            },
             'isomorphic-fetch': {
                 root: 'isomorphic-fetch',
                 commonjs2: 'isomorphic-fetch',
@@ -106,6 +111,6 @@ function getServerconfig(pageName) {
         resolve: baseConfig.resolve,
         plugins: []
     };
-    return combineConfig(config, true);
+    return combine(config, true);
 }
 module.exports = getServerconfig;

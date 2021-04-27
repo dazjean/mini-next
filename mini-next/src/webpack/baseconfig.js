@@ -1,13 +1,13 @@
-const path = require('path');
-const webpack = require('webpack');
-const ExtractTextPlugin = require('mini-css-extract-plugin'); //css单独打包
-const moment = require('moment');
-const { getEntry } = require('./getEntry');
-const { getPlugin } = require('./get-plugin');
-const clientPath = path.join(process.cwd() + '/dist/client');
-const combineConfig = require('./combineConfig');
-
+import ExtractTextPlugin from 'mini-css-extract-plugin';
+import moment from 'moment';
+import webpack from 'webpack';
+import path from 'path';
+import { getPlugin } from './get-plugin';
+import { getEntry } from './get-entry';
+import combine from './combine';
 import help, { getCoreConfig } from '../utils';
+
+const clientPath = path.join(process.cwd() + '/dist/client');
 const { prefixCDN, cssModule, lessModule, scssModule } = getCoreConfig();
 const rootDir = help.getOptions('rootDir');
 const srcPath = path.join(process.cwd() + `/${rootDir}`);
@@ -148,11 +148,9 @@ function getBaseconfig(pageName, isServer = false, hotReload = false) {
             ]
         },
         devServer: {
-            contentBase: srcPath, //本地服务器所加载的页面所在的目录
+            contentBase: srcPath,
             port: 8080,
             hot: true
-            // open:true,
-            // openPage:"_home/_home.html"
         },
         plugins: pluginsObj,
         externals: {
@@ -175,7 +173,7 @@ function getBaseconfig(pageName, isServer = false, hotReload = false) {
             }
         }
     };
-    return combineConfig(config);
+    return combine(config);
 }
 module.exports = {
     getBaseconfig

@@ -2,9 +2,8 @@
  * @Author: zhang dajia * @Date: 2018-11-05 14:16:25
  * @Last Modified by: zhang dajia
  * @Last Modified time: 2020-12-01 19:53:25
- * @Last  description: mini-next-router
+ * @Last  description: mini-next-core
  */
-import { readEntryPages } from './pageInit';
 import fs from 'fs';
 import path from 'path';
 import send from 'koa-send';
@@ -14,25 +13,28 @@ import { renderServerStatic } from './render-server-static';
 import HotReload from './webpack/hot-reload';
 import WatchPage from './watch';
 import Logger from './log';
+import { readEntryPages } from './pageInit';
 import help, { getCoreConfig, getIndexConfig, getEntryDir, clientDir } from './utils';
+
 const entryDir = getEntryDir();
 
 export default class MiniNext {
-    constructor(app, dev = true, useRouter = true) {
+    constructor(app, dev = true, useRouter = true, options = {}) {
         this.routes = [];
         this.app = app;
         this.dev = dev && help.isDev();
-        this.options = getCoreConfig(app);
+        this.options = Object.assign(getCoreConfig(app), options);
         this.config = getIndexConfig();
         this.hotReload();
         useRouter && this.usePageRouter();
         this.serverStatic();
     }
+
     async usePageRouter() {
         let pages = await readEntryPages();
         const EntryTypes = ['.js', '.jsx', '.ts', '.tsx'];
-        pages.forEach(page => {
-            const exists = EntryTypes.some(suffix => {
+        pages.forEach((page) => {
+            const exists = EntryTypes.some((suffix) => {
                 const entryjs = path.join(entryDir, `${page}/${page}${suffix}`);
                 if (fs.existsSync(entryjs)) {
                     return true; // 存在任意一个返回true
@@ -52,17 +54,16 @@ export default class MiniNext {
                 }
             }
         });
-        // this.app.use(this.router.routes());
-        // this.app.use(this.router.allowedMethods());
         this.app.use(this.middleware());
     }
+
     serverStatic() {
         this.app.use(async (ctx, next) => {
             let staticStatus;
             try {
                 staticStatus = await send(ctx, ctx.path, {
                     root: clientDir,
-                    setHeaders: function(res) {
+                    setHeaders: function (res) {
                         res.setHeader('Cache-Control', ['max-age=2592000']);
                     }
                 });
@@ -74,6 +75,7 @@ export default class MiniNext {
             }
         });
     }
+
     rootMiddleware(homePage) {
         this.app.use(async (ctx, next) => {
             if (ctx.path === '/') {
@@ -93,6 +95,7 @@ export default class MiniNext {
             }
         });
     }
+
     addRouter(page) {
         var rePath = new RegExp('^/' + page + '(/?.*)'); // re为/^\d+bl$
         let { prefixRouter } = this.options;
@@ -102,6 +105,7 @@ export default class MiniNext {
         Logger.info(`[miniNext]: ${rePath}---->/${page}/${page}`);
         this.routes.push(rePath);
     }
+
     middleware() {
         const self = this;
         return async (ctx, next) => {
@@ -120,6 +124,7 @@ export default class MiniNext {
             await next();
         };
     }
+
     setContext(ctx, viewName) {
         let { prefixRouter } = this.options;
         ctx._miniNext = ctx._miniNext || {};
@@ -135,6 +140,7 @@ export default class MiniNext {
             ''
         );
     }
+
     /**
      *
      * @param {*} ctx
@@ -148,15 +154,19 @@ export default class MiniNext {
         const document = await renderServerStatic(ctx, initProps);
         this.renderHtml(ctx, document);
     }
+
     render404(ctx, path) {
         ctx.body = 'not found:' + path.pathname;
     }
+
     renderError(ctx, path, err) {
         ctx.body = 'service error:' + path.pathname + '\n' + err;
     }
+
     renderHtml(ctx, html) {
         sendHTML(ctx, html, { generateEtags: true });
     }
+
     hotReload() {
         if (this.dev) {
             new HotReload(this.app);

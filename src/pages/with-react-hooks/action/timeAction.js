@@ -2,14 +2,14 @@ const GET_TIME = 'GET_TIME';
 const RESET_TIME = 'RESET_TIME';
 const ADD_TIME = 'ADD_TIME';
 
-const getTime = time => {
+const getTime = (time) => {
     return {
         type: GET_TIME,
         time
     };
 };
 
-const resetTime = time => {
+const resetTime = (time) => {
     return {
         type: RESET_TIME,
         time

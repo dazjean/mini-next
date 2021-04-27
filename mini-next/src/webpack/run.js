@@ -3,7 +3,6 @@ import path from 'path';
 import { getProconfig } from './proconfig';
 import { getDevconfig } from './devconfig';
 import serverConfig from './serverconfig';
-// import Logger from './../log';
 
 const clientPath = path.join(process.cwd() + '/dist/client');
 
