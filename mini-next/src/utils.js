@@ -1,13 +1,14 @@
 import fs from 'fs';
 import path from 'path';
-const oldOptionsPath = path.resolve(process.cwd(), './config/mini-next.config.js');
-const newOptionsPath = path.resolve(process.cwd(), './config/ssr.config.js');
-const configPath = path.resolve(process.cwd(), './config/index.config.js');
 export const webpackConfigPath = path.join(process.cwd() + './webpack.config.js');
 export const tempDir = path.join(process.cwd() + '/.mini-next');
 export const serverDir = path.join(process.cwd() + '/dist/server');
 export const clientDir = path.join(process.cwd() + '/dist/client');
 
+const oldOptionsPath = path.resolve(process.cwd(), './config/mini-next.config.js');
+const newOptionsPath = path.resolve(process.cwd(), './config/ssr.config.js');
+const configPath = path.resolve(process.cwd(), './config/index.config.js');
+let coreOptions = null;
 const defaultOptions = {
     ssr: true, // 开启服务端渲染
     cache: true, // 开启缓存
@@ -17,7 +18,7 @@ const defaultOptions = {
     ssrIngore: null, // 指定某一个或者多个page项目不采用服务端渲染  正则
     rootDir: 'src', // 工程根文件夹目录名称
     rootNode: 'app', // 客户端渲染挂载根元素ID
-    logger: true, // 是否开启日志记录 默认路径根目录下logs
+    logger: false, // 开启日志记录 默认路径根目录下logs
     prefixCDN: '/', // 构建后静态资源CDN地址前缀
     prefixRouter: '', // 页面路由前缀 默认/pagename  添加后前缀后访问方式为 /prefixUrl/pagename
     cssModule: false, // 暂不支持
@@ -26,6 +27,24 @@ const defaultOptions = {
 };
 export function isResSent(res) {
     return res.finished || res.headersSent;
+}
+
+/**
+ * 兼容@umajs/plugin-react-ssr配置文件模式
+ * @returns
+ */
+function umajs_plugin_options() {
+    let opt = {};
+    try {
+        let { Uma } = require('@umajs/core');
+        Uma.instance({ ROOT: './app' }).loadConfig();
+        opt = Uma.config?.ssr || {}; // ssr.config.ts
+        const reactSsrPlugin = Uma.config?.plugin['react-ssr'];
+        if (reactSsrPlugin?.options) {
+            opt = reactSsrPlugin.options;
+        }
+    } catch (_error) {}
+    return opt;
 }
 
 function loadConfig(path) {
@@ -38,7 +57,7 @@ function loadConfig(path) {
     if (options && options.hasOwnProperty('ssrCache')) {
         options.cache = options.ssrCache;
     }
-    return Object.assign({}, defaultOptions, options);
+    return Object.assign({}, defaultOptions, options, umajs_plugin_options());
 }
 
 function normalizeConfig(config) {
@@ -56,13 +75,16 @@ function normalizeConfig(config) {
  * @param {*} App
  */
 export function getCoreConfig() {
+    if (coreOptions) return coreOptions;
+
     if (fs.existsSync(oldOptionsPath)) {
-        return loadConfig(oldOptionsPath);
+        coreOptions = loadConfig(oldOptionsPath);
     } else if (fs.existsSync(newOptionsPath)) {
-        return loadConfig(newOptionsPath);
+        coreOptions = loadConfig(newOptionsPath);
     } else {
-        return defaultOptions;
+        coreOptions = Object.assign({}, defaultOptions, umajs_plugin_options());
     }
+    return coreOptions;
 }
 /**
  * 获取index.config.js配置

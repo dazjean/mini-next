@@ -6,7 +6,7 @@ if (logger) {
     Logger.default.init({
         level: 'ALL', //日志输出级别
         dir: dir, //日志输出目录
-        file: `${dir}/mininext.log`,
+        file: `${dir}/react-ssr.log`,
         encoding: 'utf-8', //日志编码格式
         outputJSON: true, //是否格式化输出携带pid等信息 false仅输出msg
         consoleLevel: 'ALL', //终端日志输出级别

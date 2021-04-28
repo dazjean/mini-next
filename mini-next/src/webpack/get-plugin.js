@@ -59,13 +59,6 @@ function getPlugin(entryObj) {
             })
         );
     });
-    // isServer &&
-    // webpackPlugin.push(
-    //     new OpenBrowserPlugin({
-    //         url: 'http://localhost:8001/'
-    //     })
-    // );
-    // !isServer && webpackPlugin.push(new webpack.HotModuleReplacementPlugin()),
     webpackPlugin.push(
         new ExtractTextPlugin({
             filename: help.isDev()
