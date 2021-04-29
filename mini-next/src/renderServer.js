@@ -14,14 +14,14 @@ import { render, checkDistJsmodules } from './render-server-static';
 import Logger from './log';
 /**
  * Router类型页面渲染解析
- * @param {*} pagename
+ * @param {*} page
  * @param {*} App
  */
-const renderServerDynamic = async (pagename) => {
+const renderServerDynamic = async (page) => {
     const context = {};
     let Html = '';
     let Htmlstream = '';
-    let jspath = await checkDistJsmodules(pagename);
+    let jspath = await checkDistJsmodules(page);
     let App = require(jspath);
     let props = await loadGetInitialProps(App);
 
@@ -32,14 +32,14 @@ const renderServerDynamic = async (pagename) => {
             </StaticRouter>
         );
     } catch (error) {
-        Logger.warn(`[mini-next] ${pagename}服务端渲染异常，降级使用客户端渲染！`);
+        Logger.warn(`[mini-next] ${page}服务端渲染异常，降级使用客户端渲染！`);
     }
     // 加载 index.html 的内容
-    let data = await render(pagename);
+    let data = await render(page);
     try {
         Html = await getStream(Htmlstream);
     } catch (error) {
-        Logger.warn(`[mini-next] ${pagename}流转化字符串异常!-${error.stack}`);
+        Logger.warn(`[mini-next] ${page}流转化字符串异常!-${error.stack}`);
     }
     // 把渲染后的 React HTML 插入到 div 中
     let document = data.replace(/<div id="app"><\/div>/, `<div id="app">${Html}</div>`);

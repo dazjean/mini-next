@@ -1,34 +1,23 @@
 import webpack from 'webpack';
-import path from 'path';
 import { getProconfig } from './proconfig';
 import { getDevconfig } from './devconfig';
 import serverConfig from './serverconfig';
 
-const clientPath = path.join(process.cwd() + '/dist/client');
-
 class Webpack {
     constructor(pages, dev = true, buildserver = false) {
-        this.pageName = pages;
-        this.config = buildserver
-            ? serverConfig(this.pageName)
-            : this.getWebpackConfig(this.pageName, dev);
+        this.page = pages;
+        this.config = buildserver ? serverConfig(this.page) : this.getWebpackConfig(this.page, dev);
         this.Compiler = webpack(this.config);
     }
-    getWebpackConfig(pageName, dev) {
+    getWebpackConfig(page, dev) {
         if (dev) {
-            return getDevconfig(pageName, true);
+            return getDevconfig(page, true);
         } else {
-            return getProconfig(pageName, true);
+            return getProconfig(page, true);
         }
     }
     async run() {
-        let pagename = this.pageName;
-        let callback = await this.compilerRun();
-        if (callback === true) {
-            let pagefile = clientPath + '/' + pagename + '/' + pagename + '.js';
-            this.clearRequireCache(pagefile);
-        }
-        return true;
+        return await this.compilerRun();
     }
 
     compilerRun() {

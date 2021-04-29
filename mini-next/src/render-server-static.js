@@ -4,6 +4,7 @@ import ReactDOMServer from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom';
 import path from 'path';
 import { loadGetInitialProps } from './get-static-props';
+import { EntryList } from './webpack/get-entry';
 import webPack from './webpack/run';
 import help, { tempDir, clientDir, serverDir } from './utils';
 import Logger from './log';
@@ -33,9 +34,9 @@ const writeFile = async (path, Content) => {
  * @param  {string} page html文件名称
  * @return {promise}
  */
-export const render = (pagename) => {
+export const render = (page) => {
     return new Promise((resolve, reject) => {
-        let viewUrl = `${clientDir}/${pagename}/${pagename}.html`;
+        let viewUrl = `${clientDir}/${page}/${page}.html`;
         fs.readFile(viewUrl, 'utf8', (err, data) => {
             if (err) {
                 reject(err);
@@ -72,21 +73,18 @@ const writeFileHander = (name, Content) => {
         }
     });
 };
-/**
- *
- * @param {*} pagename
- */
-export const checkDistJsmodules = async (pagename) => {
-    let jspath = `${serverDir}/${pagename}/${pagename}.js`;
-    let jsClientdir = `${clientDir}/${pagename}`;
+
+export const checkDistJsmodules = async (page) => {
+    let jspath = `${serverDir}/${page}/${page}.js`;
+    let jsClientdir = `${clientDir}/${page}`;
     if (!fs.existsSync(jspath)) {
         //服务端代码打包
-        let compiler = new webPack(pagename, help.isDev(), true);
+        let compiler = new webPack(page, help.isDev(), true);
         await compiler.run();
     }
     if (!fs.existsSync(jsClientdir)) {
         //客户端代码打包
-        let compiler = new webPack(pagename, help.isDev());
+        let compiler = new webPack(page, help.isDev());
         await compiler.run();
     }
     return jspath;
@@ -98,9 +96,12 @@ export const checkDistJsmodules = async (pagename) => {
  */
 export const renderServerDynamic = async (ctx, initProps) => {
     const context = {};
-    var { pagename, pathname, query } = ctx._miniNext;
+    var { page, query } = ctx._miniNext;
+    if (!EntryList.has(page)) {
+        return false;
+    }
     let App = {};
-    let jspath = await checkDistJsmodules(pagename);
+    let jspath = await checkDistJsmodules(page);
     try {
         // eslint-disable-next-line no-undef
         if (help.isDev()) {
@@ -109,10 +110,7 @@ export const renderServerDynamic = async (ctx, initProps) => {
         App = require(jspath);
     } catch (error) {
         // eslint-disable-next-line no-console
-        Logger.error(
-            'place move  windows/location object into React componentDidMount(){} ',
-            pagename
-        );
+        Logger.error('place move  windows/location object into React componentDidMount(){} ', page);
         Logger.error(error.stack);
     }
     let props = await loadGetInitialProps(App, ctx);
@@ -120,11 +118,11 @@ export const renderServerDynamic = async (ctx, initProps) => {
         props = Object.assign(props, initProps);
     }
     let Html = '';
-    let location = ctx.url.split(pagename)[1];
+    let location = ctx.url.split(page)[1];
     try {
         Html = ReactDOMServer.renderToString(
             <StaticRouter location={location || '/'} context={context}>
-                <App pageName={pagename} pathName={pathname} query={query} {...props} />
+                <App page={page} path={ctx._miniNext.path} query={query} {...props} />
             </StaticRouter>
         );
     } catch (error) {
@@ -137,7 +135,7 @@ export const renderServerDynamic = async (ctx, initProps) => {
         ctx.response.end();
     } else {
         // 加载 index.html 的内容
-        let data = await render(pagename);
+        let data = await render(page);
         //进行xss过滤
         for (let key in query) {
             if (query[key] instanceof Array) {
@@ -157,15 +155,15 @@ export const renderServerDynamic = async (ctx, initProps) => {
              <script>var __miniNext_DATA__ = 
                 {
                     initProps:${JSON.stringify(props)},
-                    page: "${pagename}",
-                    path:"${pathname}",
+                    page: "${page}",
+                    path:"${ctx._miniNext.path}",
                     query:${JSON.stringify(query || {})},
                     config:${JSON.stringify(ctx._miniNextConfig || {})},
                     options:${JSON.stringify(ctx._miniNextOptions || {})}
                 }
              </script>`
         );
-        return await renderTDK(document, pagename, ctx, App);
+        return await renderTDK(document, page, ctx, App);
     }
 };
 
@@ -174,32 +172,32 @@ export const renderServerDynamic = async (ctx, initProps) => {
  * @param {*} ctx
  */
 export const renderServerStatic = async (ctx, initProps) => {
-    let pageName = ctx._miniNext.pagename;
+    let page = ctx._miniNext.page;
     let { cache, ssrIngore, ssr, staticPages } = ctx._miniNextOptions;
     return new Promise(async (resolve) => {
-        if (!ssr || (ssrIngore && ssrIngore.test(pageName))) {
+        if (!ssr || (ssrIngore && ssrIngore.test(page))) {
             // 客户端渲染模式
-            return resolve(await render(pageName));
+            return resolve(await render(page));
         }
 
-        let viewUrl = `${tempDir}/${pageName}.html`;
-        if (help.isDev() || (!cache && staticPages.indexOf(pageName) == -1)) {
+        let viewUrl = `${tempDir}/${page}.html`;
+        if (help.isDev() || (!cache && staticPages.indexOf(page) == -1)) {
             // ssr无缓存模式，适用每次请求都是动态渲染页面场景
-            Logger.info(`[miniNext]: ${ctx.path} route uses SSR mode to access.`);
+            // Logger.info(`[miniNext]: ${ctx.path} route uses SSR mode to access.`);
             resolve(await renderServerDynamic(ctx, initProps));
         } else {
             if (fs.existsSync(viewUrl)) {
                 // ssr缓存模式，执行一次ssr 第二次直接返回缓存后的html静态资源
-                Logger.info(`[miniNext]: ${ctx.path} route is accessed by SSR cache mode.`);
+                // Logger.info(`[miniNext]: ${ctx.path} route is accessed by SSR cache mode.`);
                 let rs = fs.createReadStream(viewUrl, 'utf-8');
                 resolve(rs);
             } else {
                 // ssr缓存模式,首次执行
-                Logger.info(`[miniNext]: ${ctx.path} route uses SSR mode for the first time.`);
+                // Logger.info(`[miniNext]: ${ctx.path} route uses SSR mode for the first time.`);
                 let document = await renderServerDynamic(ctx, initProps);
                 resolve(document);
                 process.nextTick(() => {
-                    writeFileHander(tempDir + '/' + pageName + '.html', document); //异步写入服务器缓存目录
+                    writeFileHander(tempDir + '/' + page + '.html', document); //异步写入服务器缓存目录
                 });
             }
         }
@@ -208,11 +206,11 @@ export const renderServerStatic = async (ctx, initProps) => {
 /**
  * TDK解析 seo优化
  * @param {*} document
- * @param {*} pagename
+ * @param {*} page
  * @param {*} ctx
  */
-export const renderTDK = async (document, pagename, ctx, App) => {
-    let pageTDKPath = TDKPath + '/pages/' + pagename + '/' + 'TDK.js';
+export const renderTDK = async (document, page, ctx, App) => {
+    let pageTDKPath = TDKPath + '/pages/' + page + '/' + 'TDK.js';
     let defaultTDKPath = TDKPath + '/' + 'TDK.js';
     let getInitialTDK = null;
     try {
@@ -237,7 +235,7 @@ export const renderTDK = async (document, pagename, ctx, App) => {
             let res = await getInitialTDK(
                 ctx,
                 (ctx._miniNext && ctx._miniNext.query) || null,
-                (ctx._miniNext && ctx._miniNext.pathname) || null
+                (ctx._miniNext && ctx._miniNext.path) || null
             );
             //解析结果拿到最终模板
             if (res.headContent) {
@@ -273,7 +271,7 @@ export const renderTDK = async (document, pagename, ctx, App) => {
     } catch (error) {
         // eslint-disable-next-line no-console
         Logger.error(
-            `please check getInitialTDK in /${entryDir}/${pagename}/${pagename}.js or TDK.js in/${entryDir} or /${entryDir}/`
+            `please check getInitialTDK in /${entryDir}/${page}/${page}.js or TDK.js in/${entryDir} or /${entryDir}/`
         );
         Logger.error(error.stack);
     }

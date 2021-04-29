@@ -12,8 +12,8 @@ const { prefixCDN, cssModule, lessModule, scssModule } = getCoreConfig();
 const rootDir = help.getOptions('rootDir');
 const srcPath = path.join(process.cwd() + `/${rootDir}`);
 
-function getBaseconfig(pageName, isServer = false, hotReload = false) {
-    let entryObj = getEntry(pageName);
+function getBaseconfig(page, isServer = false, hotReload = false) {
+    let entryObj = getEntry(page);
     let tempObj = {};
     let pluginsObj = [];
     if (hotReload) {

@@ -1,6 +1,6 @@
 import chokidar from 'chokidar';
 import path from 'path';
-import { readEntryPages } from './pageInit';
+import { EntryList as Directories } from './webpack/get-entry';
 import webPack from './webpack/run';
 import Logger from './log';
 
@@ -15,7 +15,6 @@ export default class WatchPages {
     }
     async startWathc() {
         let listOfDirectories = [];
-        let Directories = await readEntryPages();
         Directories.forEach((cateName) => {
             let pageMain = entryDir + '/' + cateName;
             listOfDirectories.push(pageMain);
@@ -27,16 +26,16 @@ export default class WatchPages {
         watcher.on('change', async (fileName) => {
             process.nextTick(async () => {
                 let beginTime = new Date().getTime();
-                let pageName = '/' + path.relative(entryDir, fileName).replace(/\\+/g, '/');
+                let page = '/' + path.relative(entryDir, fileName).replace(/\\+/g, '/');
                 Logger.warn(
-                    `[miniNext]:Listen to ${pageName} file change, will recompile webpack........`
+                    `[miniNext]:Listen to ${page} file change, will recompile webpack........`
                 );
-                pageName = pageName.replace(/^\//, '').split('/')[0];
+                page = page.replace(/^\//, '').split('/')[0];
                 if (fileName.endsWith('.html')) {
                     //html改动，重新编译client
-                    await new webPack(pageName, true, false).run(); // 更新client
+                    await new webPack(page, true, false).run(); // 更新client
                 } else {
-                    await new webPack(pageName, true, true).run(); // 更新server
+                    await new webPack(page, true, true).run(); // 更新server
                 }
                 Logger.warn(
                     '[miniNext]:webpack recompile success in ' +

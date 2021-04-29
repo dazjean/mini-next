@@ -1,4 +1,3 @@
-import help from '../utils';
 import HTMLWebpackPlugin from 'html-webpack-plugin';
 import ExtractTextPlugin from 'mini-css-extract-plugin';
 import AutoDllPlugin from 'autodll-webpack-plugin';
@@ -6,19 +5,37 @@ import moment from 'moment';
 import webpack from 'webpack';
 import path from 'path';
 import fs from 'fs';
+import help, { getEntryDir } from '../utils';
 
-const entryDir = help.getOptions('rootDir');
+const entryDir = getEntryDir();
+const rootDir = path.join(process.cwd() + '/' + help.getOptions('rootDir'));
+const global_local = `${rootDir}/template.html`;
+function loadPluginHtml(page) {
+    const htmlList = ['index.html', `${page}.html`];
+    let template_local;
+    const exists = htmlList.some((file) => {
+        const htmlPath = path.join(entryDir, `${page}/${file}`);
+        if (fs.existsSync(htmlPath)) {
+            template_local = htmlPath;
+            return true;
+        }
+    });
+    if (exists) {
+        return template_local;
+    } else if (fs.existsSync(global_local)) {
+        return global_local;
+    } else {
+        return path.join(__dirname, './template.html');
+    }
+}
+
 function getPlugin(entryObj) {
-    var pages = Object.keys(entryObj);
+    let pages = Object.keys(entryObj);
     let webpackPlugin = [];
     pages.forEach(function (pathname) {
-        var htmlName = entryObj[pathname];
-        var entryName = pathname.split('/')[0];
-        var template_local = (htmlName + '.html').replace(
-            '.mini-next',
-            `${entryDir}/pages/${entryName}`
-        );
-        var conf = {
+        let entryName = pathname.split('/')[0];
+        let template_local = loadPluginHtml(entryName);
+        let conf = {
             filename: entryName + '/' + entryName + '.html', //生成的html存放路径，相对于path
             template: template_local, //html模板路径
             title: entryName,
@@ -31,23 +48,7 @@ function getPlugin(entryObj) {
                 collapseWhitespace: false //删除空白符与换行符
             }
         };
-        const templateHtml = `${entryDir}/template.html`;
-        var defineConf = Object.assign({}, conf, { template: templateHtml });
-        var exists = fs.existsSync(template_local);
-        var existsTemplate = fs.existsSync(templateHtml);
-        if (exists) {
-            webpackPlugin.push(new HTMLWebpackPlugin(conf));
-        } else if (existsTemplate) {
-            webpackPlugin.push(new HTMLWebpackPlugin(defineConf));
-        } else {
-            webpackPlugin.push(
-                new HTMLWebpackPlugin(
-                    Object.assign({}, conf, {
-                        template: path.join(__dirname, './template.html')
-                    })
-                )
-            );
-        }
+        webpackPlugin.push(new HTMLWebpackPlugin(conf));
         webpackPlugin.push(
             new AutoDllPlugin({
                 inject: true,

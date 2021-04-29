@@ -4,8 +4,6 @@
  * @Last Modified time: 2020-12-01 19:53:25
  * @Last  description: mini-next-core
  */
-import fs from 'fs';
-import path from 'path';
 import send from 'koa-send';
 import { sendHTML } from './send-html';
 import { parseQuery } from './parse-query';
@@ -13,10 +11,8 @@ import { renderServerStatic } from './render-server-static';
 import HotReload from './webpack/hot-reload';
 import WatchPage from './watch';
 import Logger from './log';
-import { readEntryPages } from './pageInit';
-import help, { getCoreConfig, getIndexConfig, getEntryDir, clientDir } from './utils';
-
-const entryDir = getEntryDir();
+import { EntryList } from './webpack/get-entry';
+import help, { getCoreConfig, getIndexConfig, clientDir } from './utils';
 
 export default class MiniNext {
     constructor(app, dev = true, useRouter = true, options = {}) {
@@ -31,27 +27,16 @@ export default class MiniNext {
     }
 
     async usePageRouter() {
-        let pages = await readEntryPages();
-        const EntryTypes = ['.js', '.jsx', '.ts', '.tsx'];
-        pages.forEach((page) => {
-            const exists = EntryTypes.some((suffix) => {
-                const entryjs = path.join(entryDir, `${page}/${page}${suffix}`);
-                if (fs.existsSync(entryjs)) {
-                    return true; // 存在任意一个返回true
-                }
-            });
-
-            if (exists) {
-                if (this.dev && page == 'index') {
-                    Logger.warn(
-                        'Pagename is best not to call index, Otherwise, there will be unexpected situations'
-                    );
-                }
-                if (page === '_home') {
-                    this.rootMiddleware(page);
-                } else {
-                    this.addRouter(page);
-                }
+        EntryList.forEach((page) => {
+            if (this.dev && page == 'index') {
+                Logger.warn(
+                    'Pagename is best not to call index, Otherwise, there will be unexpected situations'
+                );
+            }
+            if (page === '_home') {
+                this.rootMiddleware(page);
+            } else {
+                this.addRouter(page);
             }
         });
         this.app.use(this.middleware());
@@ -85,9 +70,9 @@ export default class MiniNext {
                 if (!ctx._miniNext) {
                     ctx._miniNext = {};
                 }
-                ctx._miniNext.pagename = homePage;
+                ctx._miniNext.page = homePage;
                 ctx._miniNext.query = parseQ.query;
-                ctx._miniNext.pathname = '/';
+                ctx._miniNext.path = '/';
                 let document = await renderServerStatic(ctx);
                 this.renderHtml(ctx, document);
             } else {
@@ -117,6 +102,9 @@ export default class MiniNext {
                 if (regRouter.test(ctx.path)) {
                     self.setContext(ctx);
                     const document = await renderServerStatic(ctx);
+                    if (!document) {
+                        await next();
+                    }
                     this.renderHtml(ctx, document);
                     break;
                 }
@@ -129,14 +117,14 @@ export default class MiniNext {
         let { prefixRouter } = this.options;
         ctx._miniNext = ctx._miniNext || {};
         const parseQ = parseQuery(ctx);
-        const pageName = parseQ.pathname
+        const page = parseQ.pathname
             .replace('/' + prefixRouter, '')
             .replace(/^\//, '')
             .split('/')[0];
-        ctx._miniNext.pagename = viewName || pageName;
+        ctx._miniNext.page = viewName || page;
         ctx._miniNext.query = parseQ.query;
-        ctx._miniNext.pathname = parseQ.pathname.replace(
-            new RegExp('^/' + viewName || pageName + '(/?)'),
+        ctx._miniNext.path = parseQ.pathname.replace(
+            new RegExp('^/' + viewName || page + '(/?)'),
             ''
         );
     }

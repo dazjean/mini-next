@@ -17,18 +17,6 @@ mini-next是一个基于react v16.0+,react-router-dom v4.0+,koa2.0搭建的一�
 mini-next-cli init name
 ```
 
-# 项目目录结构
-```
-├── app.js  // ssr node启动文件
-├── package.json
-└── src
-    └── pages
-        └── demo
-            ├── demo.js // 入口文件
-            └── demo.scss
-
-```
-
 ## 安装
 ```
 yarn add mini-next 
@@ -49,9 +37,8 @@ app.listen(8001);
 ## package.json
 ```
 "scripts": {
-    "start":"node app.js", // 服务端渲染模式【推荐】
-    "dev":"npx mini-next dev",  // 客户端渲染预览开发【不建议】
-    "build":"npx mini-next build" // 服务端渲染模式时提前编译
+    "start":"node app.js", // 启动
+    "build":"npx mini-next build" // 生产环境部署前预编译构建
     "output":"npx mini-next output" // 导出静态资源
   },
 
@@ -63,7 +50,7 @@ app.listen(8001);
 └── src
     └── pages
         └── demo
-            ├── demo.js // 入口文件
+            ├── index.js 
             └── demo.scss
 ```
 

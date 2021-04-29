@@ -1,7 +1,7 @@
 import { getBaseconfig } from './baseconfig';
 
-function getDevconfig(pageName, isServer) {
-    let config = getBaseconfig(pageName, isServer);
+function getDevconfig(page, isServer) {
+    let config = getBaseconfig(page, isServer);
     return config;
 }
 

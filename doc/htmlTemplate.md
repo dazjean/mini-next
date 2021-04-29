@@ -49,7 +49,7 @@
 
 ## 自定义模板
 为满足业务引入第三方脚本也提供了以下方式自定义template模板。
-- `src/pages/xxx/xxx.html`（局部）
+- `src/pages/xxx/index.html`（局部）
 - `src/template.html`（全局）
 
-`src/pages/xxx/xxx.html` > `src/template.html`
+`src/pages/xxx/index.html` > `src/template.html`

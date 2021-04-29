@@ -20,7 +20,7 @@ const defaultOptions = {
     rootNode: 'app', // 客户端渲染挂载根元素ID
     logger: false, // 开启日志记录 默认路径根目录下logs
     prefixCDN: '/', // 构建后静态资源CDN地址前缀
-    prefixRouter: '', // 页面路由前缀 默认/pagename  添加后前缀后访问方式为 /prefixUrl/pagename
+    prefixRouter: '', // 页面路由前缀 默认/page  添加后前缀后访问方式为 /prefixUrl/page
     cssModule: false, // 暂不支持
     lessModule: false, // 暂不支持
     scssModule: false // 暂不支持

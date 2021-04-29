@@ -2,8 +2,8 @@ import { serverDir } from '../utils';
 import { getBaseconfig } from './baseconfig';
 import combine from './combine';
 
-function getServerconfig(pageName) {
-    let baseConfig = getBaseconfig(pageName, true);
+function getServerconfig(page) {
+    let baseConfig = getBaseconfig(page, true);
     let config = {
         devtool: false,
         mode: 'production',

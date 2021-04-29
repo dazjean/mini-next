@@ -12,9 +12,9 @@ class App extends Component {
         this.state = { data: '' };
     }
     async getInitData() {
-        let response = await fetch('http://localhost:9991/mock/test.json');
-        let listData = await response.json();
-        return listData;
+        return {
+            text: 'hello, mini-next-ssr! This is the mock data~'
+        };
     }
     async componentWillMount() {
         let self = this;
