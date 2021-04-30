@@ -1,5 +1,4 @@
 import ExtractTextPlugin from 'mini-css-extract-plugin';
-import moment from 'moment';
 import webpack from 'webpack';
 import path from 'path';
 import { getPlugin } from './get-plugin';
@@ -51,9 +50,7 @@ function getBaseconfig(page, isServer = false, hotReload = false) {
             publicPath: !tools.isDev() ? prefixCDN : '/',
             libraryTarget: 'umd',
             globalObject: 'this', //webpack4之后如果umd构建在浏览器和node环境中均可使用需要设置成this
-            filename: tools.isDev()
-                ? '[name].js'
-                : `[name].js?v=${moment().format('YYYYMMDDHHmmss')}`, //打包后输出文件的文件名
+            filename: `[name].js?v=[hash]`, //打包后输出文件的文件名
             path: clientPath //打包后的文件存放的地方
         },
         module: {
@@ -153,14 +150,6 @@ function getBaseconfig(page, isServer = false, hotReload = false) {
             hot: true
         },
         plugins: pluginsObj,
-        externals: {
-            'isomorphic-fetch': {
-                root: 'isomorphic-fetch',
-                commonjs2: 'isomorphic-fetch',
-                commonjs: 'isomorphic-fetch',
-                amd: 'isomorphic-fetch'
-            }
-        },
         resolve: {
             extensions: ['.js', '.jsx', '.ts', '.tsx', '.css', '.scss', '.less'],
             alias: {

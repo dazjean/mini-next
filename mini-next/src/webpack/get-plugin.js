@@ -1,8 +1,7 @@
 import HTMLWebpackPlugin from 'html-webpack-plugin';
 import ExtractTextPlugin from 'mini-css-extract-plugin';
 import AutoDllPlugin from 'autodll-webpack-plugin';
-import moment from 'moment';
-import webpack from 'webpack';
+import HardSourceWebpackPlugin from 'hard-source-webpack-plugin';
 import path from 'path';
 import fs from 'fs';
 import tools, { getEntryDir } from '../tools';
@@ -32,6 +31,7 @@ function loadPluginHtml(page) {
 function getPlugin(entryObj) {
     let pages = Object.keys(entryObj);
     let webpackPlugin = [];
+    webpackPlugin.push(new HardSourceWebpackPlugin());
     pages.forEach(function (pathname) {
         let entryName = pathname.split('/')[0];
         let template_local = loadPluginHtml(entryName);
@@ -40,7 +40,7 @@ function getPlugin(entryObj) {
             template: template_local, //html模板路径
             title: entryName,
             inject: true, //js插入的位置，true/'head'/'body'/false
-            hash: tools.isDev() ? true : false, //为静态资源生成hash值
+            hash: false, //为静态资源生成hash值
             chunks: [pathname], //需要引入的chunk，不配置就会引入所有页面的资源
             minify: {
                 //压缩HTML文件
@@ -49,29 +49,19 @@ function getPlugin(entryObj) {
             }
         };
         webpackPlugin.push(new HTMLWebpackPlugin(conf));
-        webpackPlugin.push(
-            new AutoDllPlugin({
-                inject: true,
-                filename: '[name]_[hash].js',
-                entry: {
-                    dll_react: ['react'],
-                    dll_react_dom: ['react-dom']
-                }
-            })
-        );
     });
     webpackPlugin.push(
-        new ExtractTextPlugin({
-            filename: tools.isDev()
-                ? '[name].css'
-                : `[name].css?v=${moment().format('YYYYMMDDHHmmss')}`
+        new AutoDllPlugin({
+            inject: true,
+            filename: '[name].js',
+            entry: {
+                vendor: ['react', 'react-dom', 'react-router-dom']
+            }
         })
     );
     webpackPlugin.push(
-        new webpack.DefinePlugin({
-            'process.env': {
-                NODE_ENV: JSON.stringify(tools.isDev() ? 'development' : 'production')
-            }
+        new ExtractTextPlugin({
+            filename: `[name].css?v=[hash]`
         })
     );
     return webpackPlugin;

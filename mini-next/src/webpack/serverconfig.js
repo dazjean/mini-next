@@ -100,12 +100,6 @@ function getServerconfig(page) {
                 root: 'ReactRouterDom',
                 commonjs: 'react-router-dom',
                 commonjs2: 'react-router-dom'
-            },
-            'isomorphic-fetch': {
-                root: 'isomorphic-fetch',
-                commonjs2: 'isomorphic-fetch',
-                commonjs: 'isomorphic-fetch',
-                amd: 'isomorphic-fetch'
             }
         },
         resolve: baseConfig.resolve,
