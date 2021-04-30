@@ -1,6 +1,6 @@
 {
   "name": "mini-next",
-  "version": "3.0.0-beta7",
+  "version": "3.0.0-beta9",
   "description": "mini-next是一个近乎零成本升级react服务端渲染的框架,支持静态导出,cdn部署,前后端同构,自定义路由前缀,自定义webpack,服务端渲染缓存",
   "main": "lib/index.js",
   "directories": {
@@ -55,7 +55,7 @@
     "cssnano": "^4.1.10",
     "file-loader": "^2.0.0",
     "get-stream": "^4.1.0",
-    "html-webpack-plugin": "^3.2.0",
+    "html-webpack-plugin": "4",
     "isomorphic-fetch": "^2.2.1",
     "jsx-loader": "^0.13.2",
     "koa-send": "^5.0.0",

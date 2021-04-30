@@ -96,7 +96,7 @@ export default class MiniNext {
         if (prefixRouter != '') {
             rePath = new RegExp('^/' + prefixRouter + '/' + page + '(/?.*)'); // re为/^\d+bl$
         }
-        Logger.info(`umajs-react-ssr: ${rePath}---->/${page}/${page}`);
+        Logger.info(`react-ssr: ${rePath}---->/${page}/${page}`);
         this.routes.push(rePath);
     }
 
@@ -119,10 +119,10 @@ export default class MiniNext {
         };
     }
 
-    setContext(ctx, viewName) {
+    setContext(ctx, viewName, options = {}) {
         let { prefixRouter } = this.options;
         ctx[SSRKEY] = ctx[SSRKEY] || {};
-        ctx[SSRKEY].options = this.options;
+        ctx[SSRKEY].options = Object.assign({}, this.options, options);
         ctx[SSRKEY].config = this.config;
         const parseQ = parseQuery(ctx);
         const page = parseQ.pathname
@@ -145,10 +145,9 @@ export default class MiniNext {
      * @param {*} options
      */
     async render(ctx, viewName, initProps, options) {
-        ctx[SSRKEY].options = Object.assign({}, this.options, options);
-        this.setContext(ctx, viewName);
-        const document = await renderServerStatic(ctx, initProps);
-        this.renderHtml(ctx, document);
+        this.setContext(ctx, viewName, options);
+        const html = await renderServerStatic(ctx, initProps);
+        return html;
     }
 
     render404(ctx, path) {

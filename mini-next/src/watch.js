@@ -27,7 +27,7 @@ export default class WatchPages {
                 let beginTime = new Date().getTime();
                 let page = '/' + path.relative(entryDir, fileName).replace(/\\+/g, '/');
                 Logger.warn(
-                    `umajs-react-ssr:Listen to ${page} file change, will recompile webpack........`
+                    `react-ssr:Listen to ${page} file change, will recompile webpack........`
                 );
                 page = page.replace(/^\//, '').split('/')[0];
                 if (fileName.endsWith('.html')) {
@@ -37,7 +37,7 @@ export default class WatchPages {
                     await new webPack(page, true, true).run(); // 更新server
                 }
                 Logger.warn(
-                    'umajs-react-ssr:webpack recompile success in ' +
+                    'react-ssr:webpack recompile success in ' +
                         (new Date().getTime() - beginTime) +
                         'ms'
                 );

@@ -12,8 +12,8 @@ import { EntryList as Directories } from './webpack/get-entry';
 const RenderServer = require('./renderServer');
 const writeFile = (name, Content) => {
     fs.writeFile(outPutDir + '/' + name + '.html', Content, function (err) {
-        if (err) console.log('umajs-react-ssr:写文件操作失败');
-        else console.log(`umajs-react-ssr:${name}.html构建成功！`);
+        if (err) console.log('react-ssr:写文件操作失败');
+        else console.log(`react-ssr:${name}.html构建成功！`);
     });
 };
 const writeFileHander = (name, Content) => {
@@ -23,7 +23,7 @@ const writeFileHander = (name, Content) => {
         } else {
             fs.mkdir(outPutDir, (err) => {
                 if (err) {
-                    console.log('umajs-react-ssr:创建文件夹失败！');
+                    console.log('react-ssr:创建文件夹失败！');
                 } else {
                     writeFile(name, Content);
                 }
@@ -35,7 +35,7 @@ export const output = async (cateName) => {
     if (cateName == true || !cateName) {
         //构建导出当前项目所有页面
         for (const page of Directories) {
-            console.log(`umajs-react-ssr:开始编译文件:${page}`);
+            console.log(`react-ssr:开始编译文件:${page}`);
             let Content = await RenderServer.renderServerDynamic(page);
             writeFileHander(page, Content);
         }
@@ -43,5 +43,5 @@ export const output = async (cateName) => {
         let Content = await RenderServer.renderServerDynamic(cateName);
         writeFileHander(cateName, Content);
     }
-    console.log('umajs-react-ssr:..................初始化');
+    console.log('react-ssr:..................初始化');
 };

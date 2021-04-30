@@ -44,13 +44,13 @@ class Webpack {
 
                 const info = stats.toJson();
                 if (stats.hasErrors()) {
-                    console.error('umajs-react-ssr:编译错误!!!', info.errors.join());
+                    console.error('react-ssr:编译错误!!!', info.errors.join());
                     reject(info.errors);
                     return;
                 }
                 //处理代码编译中产生的warning
                 if (stats.hasWarnings()) {
-                    console.warn('umajs-react-ssr:编译警告!!!', info.warnings.join());
+                    console.warn('react-ssr:编译警告!!!', info.warnings.join());
                 }
 
                 resove(true);
@@ -64,7 +64,7 @@ class Webpack {
                 colors: true
             })
         );
-        console.info('umajs-react-ssr:compiler....ok!');
+        console.info('react-ssr:compiler....ok!');
     }
     clearRequireCache(moduleFilename) {
         delete require.cache[moduleFilename];

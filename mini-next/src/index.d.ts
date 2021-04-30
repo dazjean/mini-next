@@ -23,7 +23,7 @@ declare  class MiniNext {
      * @param initProps 初始化props
      * @param options 局部属性
      */
-    render(ctx:Koa.Context, viewName:string, initProps?:object, options?:TssrOptions):void;
+    render(ctx:Koa.Context, viewName:string, initProps?:object, options?:TssrOptions):string;
 }
 
 export default MiniNext;

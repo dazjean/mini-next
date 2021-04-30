@@ -7,7 +7,7 @@ import Koa from 'koa';
 import miniNext from '../mini-next/src';
 const app = new Koa();
 
-new miniNext(app, false);
+new miniNext(app);
 
 app.listen(8001);
 

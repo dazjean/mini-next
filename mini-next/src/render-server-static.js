@@ -23,7 +23,7 @@ const writeFile = async (path, Content) => {
             } else {
                 resolve(true);
                 Logger.info(
-                    `umajs-react-ssr:Page component ${path} successfully writes the server rendering cache`
+                    `react-ssr:Page component ${path} successfully writes the server rendering cache`
                 );
             }
         });
@@ -66,7 +66,7 @@ const writeFileHander = (cacheDir, cacheUrl, Content) => {
         } else {
             fs.mkdir(cacheDir, { recursive: true }, (err) => {
                 if (err) {
-                    Logger.error(`umajs-react-ssr:${err.stack}`);
+                    Logger.error(`react-ssr:${err.stack}`);
                 } else {
                     writeFile(cacheUrl, Content);
                 }
@@ -112,7 +112,7 @@ export const renderServerDynamic = async (ctx, initProps, ssr = true) => {
     } catch (error) {
         // eslint-disable-next-line no-console
         Logger.error(
-            `umajs-react-ssr: ${page} Remove browser feature keywords such as windows/location from the react component, 
+            `react-ssr: ${page} Remove browser feature keywords such as windows/location from the react component, 
             or move into the real component didmount lifecycle for use`
         );
         Logger.error(error.stack);
@@ -131,9 +131,9 @@ export const renderServerDynamic = async (ctx, initProps, ssr = true) => {
                 </StaticRouter>
             );
         } catch (error) {
-            Logger.warn('umajs-react-ssr:服务端渲染异常，降级使用客户端渲染！' + error.stack);
+            Logger.warn('react-ssr:服务端渲染异常，降级使用客户端渲染！' + error.stack);
             Logger.warn(
-                `umajs-react-ssr: ${page} Remove browser feature keywords such as windows/location from the react component, 
+                `react-ssr: ${page} Remove browser feature keywords such as windows/location from the react component, 
                 or move into the real component didmount lifecycle for use`
             );
         }
