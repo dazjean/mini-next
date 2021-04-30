@@ -7,7 +7,7 @@
  * 服务端渲染静态资源页面导出入口
  */
 import fs from 'fs';
-import { outPutDir } from './utils';
+import { outPutDir } from './tools';
 import { EntryList as Directories } from './webpack/get-entry';
 const RenderServer = require('./renderServer');
 const writeFile = (name, Content) => {

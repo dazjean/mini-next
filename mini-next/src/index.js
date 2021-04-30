@@ -12,16 +12,16 @@ import HotReload from './webpack/hot-reload';
 import WatchPage from './watch';
 import Logger from './log';
 import { EntryList } from './webpack/get-entry';
-import tools, { getCoreConfig, getIndexConfig, clientDir } from './tools';
+import tools, { getCoreConfig, getIndexConfig, clientDir, SSRKEY } from './tools';
 
 export default class MiniNext {
     /**
      *
      * @param {*} app koa实例对象
      * @param {*} dev 是否开发环境
-     * @param {*} useRouter 是否使用默认文件路由
+     * @param {*} defaultRouter 是否使用默认文件路由
      */
-    constructor(app, dev = true, useRouter = true) {
+    constructor(app, dev = true, defaultRouter = true) {
         this.routes = [];
         this.app = app;
         if (dev) {
@@ -33,8 +33,8 @@ export default class MiniNext {
         this.options = Object.assign(getCoreConfig(app));
         this.config = getIndexConfig();
         this.hotReload();
-        useRouter && this.usePageRouter();
         this.serverStatic();
+        defaultRouter && this.usePageRouter();
     }
 
     async usePageRouter() {
@@ -63,7 +63,7 @@ export default class MiniNext {
                         res.setHeader('Cache-Control', ['max-age=2592000']);
                     }
                 });
-            } catch (err) {
+            } catch (_err) {
                 return next();
             }
             if (staticStatus == undefined) {
@@ -76,14 +76,12 @@ export default class MiniNext {
         this.app.use(async (ctx, next) => {
             if (ctx.path === '/') {
                 let parseQ = parseQuery(ctx);
-                ctx._miniNextOptions = this.options;
-                ctx._miniNextConfig = this.config;
-                if (!ctx._miniNext) {
-                    ctx._miniNext = {};
-                }
-                ctx._miniNext.page = homePage;
-                ctx._miniNext.query = parseQ.query;
-                ctx._miniNext.path = '/';
+                ctx[SSRKEY] = ctx[SSRKEY] || {};
+                ctx[SSRKEY].options = this.options;
+                ctx[SSRKEY].config = this.config;
+                ctx[SSRKEY].page = homePage;
+                ctx[SSRKEY].query = parseQ.query;
+                ctx[SSRKEY].path = '/';
                 let document = await renderServerStatic(ctx);
                 this.renderHtml(ctx, document);
             } else {
@@ -105,16 +103,13 @@ export default class MiniNext {
     middleware() {
         const self = this;
         return async (ctx, next) => {
-            ctx._miniNextOptions = this.options;
-            ctx._miniNextConfig = this.config;
-
             for (let i = 0; i < self.routes.length; i++) {
                 const regRouter = self.routes[i];
                 if (regRouter.test(ctx.path)) {
                     self.setContext(ctx);
                     const document = await renderServerStatic(ctx);
                     if (!document) {
-                        await next();
+                        return next();
                     }
                     this.renderHtml(ctx, document);
                     break;
@@ -126,15 +121,17 @@ export default class MiniNext {
 
     setContext(ctx, viewName) {
         let { prefixRouter } = this.options;
-        ctx._miniNext = ctx._miniNext || {};
+        ctx[SSRKEY] = ctx[SSRKEY] || {};
+        ctx[SSRKEY].options = this.options;
+        ctx[SSRKEY].config = this.config;
         const parseQ = parseQuery(ctx);
         const page = parseQ.pathname
             .replace('/' + prefixRouter, '')
             .replace(/^\//, '')
             .split('/')[0];
-        ctx._miniNext.page = viewName || page;
-        ctx._miniNext.query = parseQ.query;
-        ctx._miniNext.path = parseQ.pathname.replace(
+        ctx[SSRKEY].page = viewName || page;
+        ctx[SSRKEY].query = parseQ.query;
+        ctx[SSRKEY].path = parseQ.pathname.replace(
             new RegExp('^/' + viewName || page + '(/?)'),
             ''
         );
@@ -148,7 +145,7 @@ export default class MiniNext {
      * @param {*} options
      */
     async render(ctx, viewName, initProps, options) {
-        ctx._miniNextOptions = Object.assign({}, this.options, options);
+        ctx[SSRKEY].options = Object.assign({}, this.options, options);
         this.setContext(ctx, viewName);
         const document = await renderServerStatic(ctx, initProps);
         this.renderHtml(ctx, document);

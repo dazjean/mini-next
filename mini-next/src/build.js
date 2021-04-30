@@ -1,5 +1,5 @@
 import webPack from './webpack/run';
-import tools, { getCoreConfig } from './utils';
+import tools, { getCoreConfig } from './tools';
 
 export const build = async (page = true) => {
     const dev = tools.isDev();

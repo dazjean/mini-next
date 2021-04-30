@@ -12,9 +12,9 @@ declare  class MiniNext {
      * 
      * @param app koa实例
      * @param dev 默认true,将改写process.env.NODE_ENV为development
-     * @param useRouter 使用默认路由 默认true
+     * @param defaultRouter 使用默认路由 默认true
      */
-    constructor(app:Koa, dev:boolean, useRouter:boolean);
+    constructor(app:Koa, dev:boolean, defaultRouter:boolean);
 
     /**
      * 

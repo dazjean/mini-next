@@ -1,4 +1,4 @@
-import tools, { isResSent } from './tools';
+import tools, { SSRKEY } from './tools';
 import Logger from './log';
 
 export function getDisplayName(Component) {
@@ -32,8 +32,8 @@ export async function loadGetInitialProps(App, ctx) {
 
     const props = await App.getInitialProps(
         ctx,
-        (ctx._miniNext && ctx._miniNext.query) || null,
-        (ctx._miniNext && ctx._miniNext.pathname) || null
+        (ctx[SSRKEY] && ctx[SSRKEY].query) || null,
+        (ctx[SSRKEY] && ctx[SSRKEY].pathname) || null
     );
 
     if (res && (res.finished || res.headersSent)) {

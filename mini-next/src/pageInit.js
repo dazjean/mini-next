@@ -3,7 +3,7 @@
  * @Last Modified time: 2019-12-10 11:06:08
  * @Last  description: 服务端启动时初始化page入口文件 */
 const fs = require('fs');
-const { getCoreConfig, getEntryDir } = require('./utils');
+const { getCoreConfig, getEntryDir } = require('./tools');
 const entryDir = getEntryDir();
 
 let pageComponent = [];
