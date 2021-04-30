@@ -3,15 +3,11 @@
  * @Last Modified time: 2019-12-10 11:09:21
  * @Last  description: undefined
  */
-const Koa = require('koa');
-// const path = require('path');
-const miniNext = require('../mini-next/src');
-// const koaStatic = require('koa-static');
-
+import Koa from 'koa';
+import miniNext from '../mini-next/src';
 const app = new Koa();
-// app.use(koaStatic(path.resolve(__dirname, './../public')));
 
-new miniNext(app);
+new miniNext(app, false);
 
 app.listen(8001);
 

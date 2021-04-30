@@ -6,7 +6,7 @@ import path from 'path';
 import { loadGetInitialProps } from './get-static-props';
 import { EntryList } from './webpack/get-entry';
 import webPack from './webpack/run';
-import help, { tempDir, clientDir, serverDir } from './utils';
+import help, { clientDir, serverDir, cacheDir } from './utils';
 import Logger from './log';
 const entryDir = help.getOptions('rootDir');
 const TDKPath = path.join(process.cwd() + `/${entryDir}`);
@@ -23,7 +23,9 @@ const writeFile = async (path, Content) => {
                 resolve(false);
             } else {
                 resolve(true);
-                Logger.info(`[miniNext]:${path} SSR static resource HTML cache successful.`);
+                Logger.info(
+                    `[miniNext]:Page component ${path} successfully writes the server rendering cache`
+                );
             }
         });
     });
@@ -59,11 +61,11 @@ const filterXss = (str) => {
 };
 
 const writeFileHander = (name, Content) => {
-    fs.exists(tempDir, (exists) => {
+    fs.exists(cacheDir, (exists) => {
         if (exists) {
             writeFile(name, Content);
         } else {
-            fs.mkdir(tempDir, (err) => {
+            fs.mkdir(cacheDir, (err) => {
                 if (err) {
                     Logger.error(`[miniNext]:${err.stack}`);
                 } else {
@@ -180,7 +182,7 @@ export const renderServerStatic = async (ctx, initProps) => {
             return resolve(await render(page));
         }
 
-        let viewUrl = `${tempDir}/${page}.html`;
+        let viewUrl = `${cacheDir}/${page}.html`;
         if (help.isDev() || (!cache && staticPages.indexOf(page) == -1)) {
             // ssr无缓存模式，适用每次请求都是动态渲染页面场景
             // Logger.info(`[miniNext]: ${ctx.path} route uses SSR mode to access.`);
@@ -197,7 +199,7 @@ export const renderServerStatic = async (ctx, initProps) => {
                 let document = await renderServerDynamic(ctx, initProps);
                 resolve(document);
                 process.nextTick(() => {
-                    writeFileHander(tempDir + '/' + page + '.html', document); //异步写入服务器缓存目录
+                    writeFileHander(cacheDir + '/' + page + '.html', document); //异步写入服务器缓存目录
                 });
             }
         }
@@ -271,7 +273,7 @@ export const renderTDK = async (document, page, ctx, App) => {
     } catch (error) {
         // eslint-disable-next-line no-console
         Logger.error(
-            `please check getInitialTDK in /${entryDir}/${page}/${page}.js or TDK.js in/${entryDir} or /${entryDir}/`
+            `please check getInitialTDK in /${entryDir}/${page}/${page}.js or TDK.js in/${entryDir}`
         );
         Logger.error(error.stack);
     }

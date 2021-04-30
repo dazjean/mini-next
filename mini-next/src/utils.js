@@ -1,9 +1,11 @@
 import fs from 'fs';
 import path from 'path';
-export const webpackConfigPath = path.join(process.cwd() + './webpack.config.js');
 export const tempDir = path.join(process.cwd() + '/.mini-next');
+export const cacheDir = path.join(process.cwd() + '/.mini-next/cache');
+export const outPutDir = path.join(process.cwd() + '/.mini-next/output');
 export const serverDir = path.join(process.cwd() + '/dist/server');
 export const clientDir = path.join(process.cwd() + '/dist/client');
+export const webpackConfigPath = path.join(process.cwd() + './webpack.config.js');
 
 const oldOptionsPath = path.resolve(process.cwd(), './config/mini-next.config.js');
 const newOptionsPath = path.resolve(process.cwd(), './config/ssr.config.js');
