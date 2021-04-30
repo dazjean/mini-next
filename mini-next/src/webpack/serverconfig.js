@@ -1,4 +1,4 @@
-import { serverDir } from '../utils';
+import { serverDir } from '../tools';
 import { getBaseconfig } from './baseconfig';
 import combine from './combine';
 

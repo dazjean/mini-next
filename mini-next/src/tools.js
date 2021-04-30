@@ -1,8 +1,8 @@
 import fs from 'fs';
 import path from 'path';
-export const tempDir = path.join(process.cwd() + '/.mini-next');
-export const cacheDir = path.join(process.cwd() + '/.mini-next/cache');
-export const outPutDir = path.join(process.cwd() + '/.mini-next/output');
+export const tempDir = path.join(process.cwd() + '/.ssr');
+export const cacheDir = path.join(process.cwd() + '/.ssr/cache');
+export const outPutDir = path.join(process.cwd() + '/.ssr/output');
 export const serverDir = path.join(process.cwd() + '/dist/server');
 export const clientDir = path.join(process.cwd() + '/dist/client');
 export const webpackConfigPath = path.join(process.cwd() + './webpack.config.js');
@@ -27,10 +27,6 @@ const defaultOptions = {
     lessModule: false, // 暂不支持
     scssModule: false // 暂不支持
 };
-export function isResSent(res) {
-    return res.finished || res.headersSent;
-}
-
 /**
  * 兼容@umajs/plugin-react-ssr配置文件模式
  * @returns

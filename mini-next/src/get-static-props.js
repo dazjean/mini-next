@@ -1,4 +1,4 @@
-import help, { isResSent } from './utils';
+import tools, { isResSent } from './tools';
 import Logger from './log';
 
 export function getDisplayName(Component) {
@@ -7,7 +7,7 @@ export function getDisplayName(Component) {
         : Component.displayName || Component.name || 'Unknown';
 }
 export async function loadGetInitialProps(App, ctx) {
-    if (help.isDev()) {
+    if (tools.isDev()) {
         if (App.prototype && App.prototype.getInitialProps) {
             const message = `"${getDisplayName(
                 App
@@ -36,7 +36,7 @@ export async function loadGetInitialProps(App, ctx) {
         (ctx._miniNext && ctx._miniNext.pathname) || null
     );
 
-    if (res && isResSent(res)) {
+    if (res && (res.finished || res.headersSent)) {
         return props;
     }
 
@@ -47,7 +47,7 @@ export async function loadGetInitialProps(App, ctx) {
         throw new Error(message);
     }
 
-    if (help.isDev()) {
+    if (tools.isDev()) {
         if (Object.keys(props).length === 0 && !ctx.ctx) {
             Logger.warn(
                 `${getDisplayName(

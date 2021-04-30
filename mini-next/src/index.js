@@ -12,7 +12,7 @@ import HotReload from './webpack/hot-reload';
 import WatchPage from './watch';
 import Logger from './log';
 import { EntryList } from './webpack/get-entry';
-import help, { getCoreConfig, getIndexConfig, clientDir } from './utils';
+import tools, { getCoreConfig, getIndexConfig, clientDir } from './tools';
 
 export default class MiniNext {
     /**
@@ -29,7 +29,7 @@ export default class MiniNext {
         } else {
             process.env.NODE_ENV = 'production';
         }
-        this.dev = dev && help.isDev();
+        this.dev = dev && tools.isDev();
         this.options = Object.assign(getCoreConfig(app));
         this.config = getIndexConfig();
         this.hotReload();
@@ -98,7 +98,7 @@ export default class MiniNext {
         if (prefixRouter != '') {
             rePath = new RegExp('^/' + prefixRouter + '/' + page + '(/?.*)'); // re为/^\d+bl$
         }
-        Logger.info(`[miniNext]: ${rePath}---->/${page}/${page}`);
+        Logger.info(`umajs-react-ssr: ${rePath}---->/${page}/${page}`);
         this.routes.push(rePath);
     }
 

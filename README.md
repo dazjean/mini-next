@@ -79,7 +79,7 @@ let APP = props => {
     );
 };
 ```
-props除了挂载我们getInitialProps的返回值外，还会挂载url中的的pathname和query，可通过全局对象`window.__miniNext_DATA__`访问服务端预渲染返回的初始化数据。
+props除了挂载我们getInitialProps的返回值外，还会挂载url中的的pathname和query，可通过全局对象`window.__SSR_DATA__`访问服务端预渲染返回的初始化数据。
 
 
 # 高级配置

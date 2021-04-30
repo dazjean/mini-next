@@ -17,6 +17,6 @@ export const dev = (page = true) => {
     const server = new WebpackDevServer(compiler, devServerOptions);
 
     server.listen(devServerOptions.port, '127.0.0.1', () => {
-        console.log('[miniNext]:Starting server on http://localhost:' + devServerOptions.port);
+        console.log('umajs-react-ssr:Starting server on http://localhost:' + devServerOptions.port);
     });
 };

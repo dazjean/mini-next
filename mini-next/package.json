@@ -6,6 +6,11 @@
   "directories": {
     "lib": "lib"
   },
+  "files": [
+    "bin",
+    "lib",
+    "index.d.ts"
+  ],
   "keywords": [
     "ssr",
     "react",

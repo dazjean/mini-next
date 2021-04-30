@@ -1,6 +1,6 @@
 import path from 'path';
 import fs from 'fs';
-import util, { getEntryDir, tempDir } from '../utils';
+import tools, { getEntryDir, tempDir } from '../tools';
 export let EntryFilesMap = new Map();
 export let EntryList = new Set([]);
 export let webpackEntry = {};
@@ -23,7 +23,7 @@ export function getEntry(page) {
 
 function initPropsInject(page) {
     try {
-        const rootDir = util.getOptions('rootDir');
+        const rootDir = tools.getOptions('rootDir');
         let data = fs.readFileSync(path.join(__dirname, '..', 'webpack-entry.js'), 'utf8');
         let entryName = false;
         const entrysFileList = [
@@ -48,7 +48,7 @@ function initPropsInject(page) {
                 '$injectApp$',
                 `require('../${rootDir}/pages/${page}/${entryName}')`
             );
-            data = data.replace('__miniNext_DATA__pathname', page);
+            data = data.replace('__SSR_DATA__pathname', page);
             let exists = fs.existsSync(tempDir);
             if (!exists) {
                 fs.mkdirSync(tempDir);

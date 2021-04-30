@@ -2,6 +2,7 @@ node_modules
 dist
 .vscode
 .mini-next
+.ssr
 mini-next/lib
 logs
 package-lock.json

@@ -1,9 +1,12 @@
 import generateETag from 'etag';
 import fresh from 'fresh';
-import { isResSent } from './utils';
 
 export function sendHTML(ctx, html, { generateEtags }) {
     let { req, res } = ctx;
+    function isResSent(res) {
+        return res.finished || res.headersSent;
+    }
+
     if (isResSent(res)) return;
     if (typeof html == 'object') {
         res.statusCode = 200;

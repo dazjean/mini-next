@@ -6,9 +6,9 @@ import path from 'path';
 import { loadGetInitialProps } from './get-static-props';
 import { EntryList } from './webpack/get-entry';
 import webPack from './webpack/run';
-import help, { clientDir, serverDir, cacheDir } from './utils';
+import tools, { clientDir, serverDir, cacheDir } from './tools';
 import Logger from './log';
-const entryDir = help.getOptions('rootDir');
+const entryDir = tools.getOptions('rootDir');
 const TDKPath = path.join(process.cwd() + `/${entryDir}`);
 
 /**
@@ -24,7 +24,7 @@ const writeFile = async (path, Content) => {
             } else {
                 resolve(true);
                 Logger.info(
-                    `[miniNext]:Page component ${path} successfully writes the server rendering cache`
+                    `umajs-react-ssr:Page component ${path} successfully writes the server rendering cache`
                 );
             }
         });
@@ -67,7 +67,7 @@ const writeFileHander = (name, Content) => {
         } else {
             fs.mkdir(cacheDir, (err) => {
                 if (err) {
-                    Logger.error(`[miniNext]:${err.stack}`);
+                    Logger.error(`umajs-react-ssr:${err.stack}`);
                 } else {
                     writeFile(name, Content);
                 }
@@ -81,12 +81,12 @@ export const checkDistJsmodules = async (page) => {
     let jsClientdir = `${clientDir}/${page}`;
     if (!fs.existsSync(jspath)) {
         //服务端代码打包
-        let compiler = new webPack(page, help.isDev(), true);
+        let compiler = new webPack(page, tools.isDev(), true);
         await compiler.run();
     }
     if (!fs.existsSync(jsClientdir)) {
         //客户端代码打包
-        let compiler = new webPack(page, help.isDev());
+        let compiler = new webPack(page, tools.isDev());
         await compiler.run();
     }
     return jspath;
@@ -106,7 +106,7 @@ export const renderServerDynamic = async (ctx, initProps) => {
     let jspath = await checkDistJsmodules(page);
     try {
         // eslint-disable-next-line no-undef
-        if (help.isDev()) {
+        if (tools.isDev()) {
             delete require.cache[require.resolve(jspath)];
         }
         App = require(jspath);
@@ -154,7 +154,7 @@ export const renderServerDynamic = async (ctx, initProps) => {
         let document = data.replace(
             replaceReg,
             `<div id="${rootNode}">${Html}</div>
-             <script>var __miniNext_DATA__ = 
+             <script>var __SSR_DATA__ = 
                 {
                     initProps:${JSON.stringify(props)},
                     page: "${page}",
@@ -183,19 +183,16 @@ export const renderServerStatic = async (ctx, initProps) => {
         }
 
         let viewUrl = `${cacheDir}/${page}.html`;
-        if (help.isDev() || (!cache && staticPages.indexOf(page) == -1)) {
+        if (tools.isDev() || (!cache && staticPages.indexOf(page) == -1)) {
             // ssr无缓存模式，适用每次请求都是动态渲染页面场景
-            // Logger.info(`[miniNext]: ${ctx.path} route uses SSR mode to access.`);
             resolve(await renderServerDynamic(ctx, initProps));
         } else {
             if (fs.existsSync(viewUrl)) {
                 // ssr缓存模式，执行一次ssr 第二次直接返回缓存后的html静态资源
-                // Logger.info(`[miniNext]: ${ctx.path} route is accessed by SSR cache mode.`);
                 let rs = fs.createReadStream(viewUrl, 'utf-8');
                 resolve(rs);
             } else {
                 // ssr缓存模式,首次执行
-                // Logger.info(`[miniNext]: ${ctx.path} route uses SSR mode for the first time.`);
                 let document = await renderServerDynamic(ctx, initProps);
                 resolve(document);
                 process.nextTick(() => {
@@ -220,12 +217,12 @@ export const renderTDK = async (document, page, ctx, App) => {
         if (App.getInitialTDK) {
             getInitialTDK = App.getInitialTDK;
         } else if (fs.existsSync(pageTDKPath)) {
-            if (help.isDev()) {
+            if (tools.isDev()) {
                 delete require.cache[require.resolve(pageTDKPath)];
             }
             getInitialTDK = require(pageTDKPath);
         } else if (fs.existsSync(defaultTDKPath)) {
-            if (help.isDev()) {
+            if (tools.isDev()) {
                 delete require.cache[require.resolve(defaultTDKPath)];
             }
             getInitialTDK = require(defaultTDKPath);

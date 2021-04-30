@@ -5,10 +5,10 @@ import moment from 'moment';
 import webpack from 'webpack';
 import path from 'path';
 import fs from 'fs';
-import help, { getEntryDir } from '../utils';
+import tools, { getEntryDir } from '../tools';
 
 const entryDir = getEntryDir();
-const rootDir = path.join(process.cwd() + '/' + help.getOptions('rootDir'));
+const rootDir = path.join(process.cwd() + '/' + tools.getOptions('rootDir'));
 const global_local = `${rootDir}/template.html`;
 function loadPluginHtml(page) {
     const htmlList = ['index.html', `${page}.html`];
@@ -40,7 +40,7 @@ function getPlugin(entryObj) {
             template: template_local, //html模板路径
             title: entryName,
             inject: true, //js插入的位置，true/'head'/'body'/false
-            hash: help.isDev() ? true : false, //为静态资源生成hash值
+            hash: tools.isDev() ? true : false, //为静态资源生成hash值
             chunks: [pathname], //需要引入的chunk，不配置就会引入所有页面的资源
             minify: {
                 //压缩HTML文件
@@ -62,7 +62,7 @@ function getPlugin(entryObj) {
     });
     webpackPlugin.push(
         new ExtractTextPlugin({
-            filename: help.isDev()
+            filename: tools.isDev()
                 ? '[name].css'
                 : `[name].css?v=${moment().format('YYYYMMDDHHmmss')}`
         })
@@ -70,7 +70,7 @@ function getPlugin(entryObj) {
     webpackPlugin.push(
         new webpack.DefinePlugin({
             'process.env': {
-                NODE_ENV: JSON.stringify(help.isDev() ? 'development' : 'production')
+                NODE_ENV: JSON.stringify(tools.isDev() ? 'development' : 'production')
             }
         })
     );

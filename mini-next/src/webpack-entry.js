@@ -9,7 +9,7 @@ App = App.default ? App.default : App;
 
 const inBrowser = typeof window !== 'undefined';
 if (inBrowser) {
-    window.__miniNext_DATA__ = window.__miniNext_DATA__ || {};
+    window.__SSR_DATA__ = window.__SSR_DATA__ || {};
     const root = document.getElementById('app');
     if (!root) {
         let rootDom = document.createElement('div');
@@ -19,12 +19,12 @@ if (inBrowser) {
 }
 inBrowser &&
     ReactDom.hydrate(
-        <Router basename="/__miniNext_DATA__pathname">
+        <Router basename="/__SSR_DATA__pathname">
             <App
-                {...window.__miniNext_DATA__.initProps}
-                path={window.__miniNext_DATA__.path || ''}
-                page={window.__miniNext_DATA__.page || ''}
-                query={window.__miniNext_DATA__.query || ''}
+                {...window.__SSR_DATA__.initProps}
+                path={window.__SSR_DATA__.path || ''}
+                page={window.__SSR_DATA__.page || ''}
+                query={window.__SSR_DATA__.query || ''}
             />
         </Router>,
         document.getElementById('app')

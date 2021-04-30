@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { webpackConfigPath } from '../utils';
+import { webpackConfigPath } from '../tools';
 
 const loaderDefaultArr = [
     '.js',

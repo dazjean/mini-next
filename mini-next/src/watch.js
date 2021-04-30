@@ -3,8 +3,7 @@ import path from 'path';
 import { EntryList as Directories } from './webpack/get-entry';
 import webPack from './webpack/run';
 import Logger from './log';
-
-const { getEntryDir } = require('./utils');
+import { getEntryDir } from './tools';
 
 const entryDir = getEntryDir();
 
@@ -28,7 +27,7 @@ export default class WatchPages {
                 let beginTime = new Date().getTime();
                 let page = '/' + path.relative(entryDir, fileName).replace(/\\+/g, '/');
                 Logger.warn(
-                    `[miniNext]:Listen to ${page} file change, will recompile webpack........`
+                    `umajs-react-ssr:Listen to ${page} file change, will recompile webpack........`
                 );
                 page = page.replace(/^\//, '').split('/')[0];
                 if (fileName.endsWith('.html')) {
@@ -38,7 +37,7 @@ export default class WatchPages {
                     await new webPack(page, true, true).run(); // 更新server
                 }
                 Logger.warn(
-                    '[miniNext]:webpack recompile success in ' +
+                    'umajs-react-ssr:webpack recompile success in ' +
                         (new Date().getTime() - beginTime) +
                         'ms'
                 );
