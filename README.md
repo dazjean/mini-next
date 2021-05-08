@@ -67,7 +67,7 @@ APP.getInitialProps = async (ctx,query,pathname) => {
     }
 ```
 
-客户端通过组件的props获取服务端数据,**getInitialProps**return返回的属性会挂载到组件的props上
+客户端通过组件的props获取服务端数据,**getInitialProps**函数返回的属性会被初始化昨晚props传递到页面组件中
 
 ```js
 let APP = props => {
