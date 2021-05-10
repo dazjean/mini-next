@@ -1,3 +1,16 @@
+>  **mini-next现在已经升级成[srejs](https://github.com/dazjean/srejs)**,Server rendering engine 缩写为 **sre** 即服务器端渲染引擎，为React，Vue提供轻量级封装的服务端渲染骨架。mini-next也将继续维护，强烈建议迁移到[srejs](https://github.com/dazjean/srejs)。
+
+# srejs和mini-next区别
+- 包名升级`@srejs/react`
+- 默认不采用文件路由格式
+- 配置项命只保留了：`ssr,cache,rootDir,rootNode`
+- 不再支持`staticPages，ssrIngor`e配置
+- 客户端根元素节点可配置
+- 不再依赖根目录下的`.babelrc`
+
+
+
+# 简介
 mini-next是一个基于react v16.0+,react-router-dom v4.0+,koa2.0搭建的一个服务端渲染框架。可近乎零成本使历史项目工程具备服务端渲染能力，并支持导出静态资源功能。
 
 # 初衷
